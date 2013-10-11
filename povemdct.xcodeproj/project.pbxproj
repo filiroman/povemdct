@@ -21,7 +21,6 @@
 		E3623D9E17F5885000866CB2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D7E17F5885000866CB2 /* Foundation.framework */; };
 		E3623D9F17F5885000866CB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D8217F5885000866CB2 /* UIKit.framework */; };
 		E3623DA017F5885000866CB2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D8417F5885000866CB2 /* CoreData.framework */; };
-		E3623DB517F588A200866CB2 /* PVMainViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E3623DB417F588A200866CB2 /* PVMainViewController.mm */; };
 		E3623DB717F5895F00866CB2 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DB617F5895F00866CB2 /* opencv2.framework */; };
 		E3623DBB17F589FA00866CB2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DB817F589FA00866CB2 /* AVFoundation.framework */; };
 		E3623DBC17F589FA00866CB2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DB917F589FA00866CB2 /* CoreMedia.framework */; };
@@ -29,6 +28,8 @@
 		E3623DC117F5A25F00866CB2 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DBE17F5A25F00866CB2 /* Accelerate.framework */; };
 		E3623DC217F5A25F00866CB2 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DBF17F5A25F00866CB2 /* AssetsLibrary.framework */; };
 		E3623DC317F5A25F00866CB2 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DC017F5A25F00866CB2 /* CoreImage.framework */; };
+		E3CEB77E1808581B00E460E5 /* VideoCaptureViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E3CEB77D1808581B00E460E5 /* VideoCaptureViewController.mm */; };
+		E3CEB7811808582D00E460E5 /* MainViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E3CEB7801808582D00E460E5 /* MainViewController.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,8 +59,6 @@
 		E3623D9517F5885000866CB2 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		E3623D9B17F5885000866CB2 /* povemdctTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = povemdctTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3623D9C17F5885000866CB2 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		E3623DB317F588A200866CB2 /* PVMainViewController.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = PVMainViewController.h; sourceTree = "<group>"; };
-		E3623DB417F588A200866CB2 /* PVMainViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PVMainViewController.mm; sourceTree = "<group>"; };
 		E3623DB617F5895F00866CB2 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = povemdct/opencv2.framework; sourceTree = "<group>"; };
 		E3623DB817F589FA00866CB2 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		E3623DB917F589FA00866CB2 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -67,6 +66,10 @@
 		E3623DBE17F5A25F00866CB2 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		E3623DBF17F5A25F00866CB2 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		E3623DC017F5A25F00866CB2 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		E3CEB77C1808581B00E460E5 /* VideoCaptureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoCaptureViewController.h; sourceTree = "<group>"; };
+		E3CEB77D1808581B00E460E5 /* VideoCaptureViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VideoCaptureViewController.mm; sourceTree = "<group>"; };
+		E3CEB77F1808582D00E460E5 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		E3CEB7801808582D00E460E5 /* MainViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MainViewController.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,11 +153,13 @@
 		E3623D8617F5885000866CB2 /* povemdct */ = {
 			isa = PBXGroup;
 			children = (
+				E3CEB77C1808581B00E460E5 /* VideoCaptureViewController.h */,
+				E3CEB77D1808581B00E460E5 /* VideoCaptureViewController.mm */,
+				E3CEB77F1808582D00E460E5 /* MainViewController.h */,
+				E3CEB7801808582D00E460E5 /* MainViewController.mm */,
 				E34288D0180828DA004737C7 /* Resources */,
 				E3623D8F17F5885000866CB2 /* AppDelegate.h */,
 				E3623D9017F5885000866CB2 /* AppDelegate.m */,
-				E3623DB317F588A200866CB2 /* PVMainViewController.h */,
-				E3623DB417F588A200866CB2 /* PVMainViewController.mm */,
 				E3623D9517F5885000866CB2 /* Images.xcassets */,
 				E3623D9217F5885000866CB2 /* povemdct.xcdatamodeld */,
 				E3623D8717F5885000866CB2 /* Supporting Files */,
@@ -269,9 +274,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				E3623D9117F5885000866CB2 /* AppDelegate.m in Sources */,
+				E3CEB7811808582D00E460E5 /* MainViewController.mm in Sources */,
 				E3623D8D17F5885000866CB2 /* main.m in Sources */,
 				E3623D9417F5885000866CB2 /* povemdct.xcdatamodeld in Sources */,
-				E3623DB517F588A200866CB2 /* PVMainViewController.mm in Sources */,
+				E3CEB77E1808581B00E460E5 /* VideoCaptureViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

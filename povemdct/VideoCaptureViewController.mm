@@ -1,78 +1,86 @@
 //
-//  PVMainViewController.m
-//  povemdct
+//  OpenCVClientViewController.m
+//  OpenCVClient
 //
-//  Created by Roman Filippov on 27.09.13.
-//  Copyright (c) 2013 Roman Filippov. All rights reserved.
+//  Created by Robin Summerhill on 02/09/2011.
+//  Copyright 2011 Aptogo Limited. All rights reserved.
+//
+//  Permission is given to use this source code file without charge in any
+//  project, commercial or otherwise, entirely at your risk, with the condition
+//  that any redistribution (in part or whole) of source code must retain
+//  this copyright and permission notice. Attribution in compiled projects is
+//  appreciated but not required.
 //
 
-#import "PVMainViewController.h"
-#import <opencv2/opencv.hpp>
+//#import "UIImage+OpenCV.h"
 
-// Name of face cascade resource file without xml extension
-NSString * const kFaceCascadeFilename = @"haarcascade_frontalface_alt2";
+#import "VideoCaptureViewController.h"
 
+// Number of frames to average for FPS calculation
 const int kFrameTimeBufferSize = 5;
 
-// Options for cv::CascadeClassifier::detectMultiScale
-const int kHaarOptions =  CV_HAAR_FIND_BIGGEST_OBJECT | CV_HAAR_DO_ROUGH_SEARCH;
-
-@interface PVMainViewController ()
-{
-    cv::CascadeClassifier _faceCascade;
-    
-    // Fps calculation
-    CMTimeValue _lastFrameTimestamp;
-    float *_frameTimes;
-    int _frameTimesIndex;
-    int _framesToAverage;
-    float _captureQueueFps;
-}
+// Private interface
+@interface VideoCaptureViewController ()
+- (BOOL)createCaptureSessionForCamera:(NSInteger)camera qualityPreset:(NSString *)qualityPreset grayscale:(BOOL)grayscale;
+- (void)destroyCaptureSession;
+- (void)processFrame:(cv::Mat&)mat videoRect:(CGRect)rect videoOrientation:(AVCaptureVideoOrientation)orientation;
+- (void)updateDebugInfo;
 
 @property (nonatomic, assign) float fps;
-@property (nonatomic, retain) UIButton* startButton;
-@property (nonatomic, retain) UIButton* switchButton;
-@property (nonatomic, retain) UILabel *fpsLabel;
 
 @end
 
-@implementation PVMainViewController
+@implementation VideoCaptureViewController
 
-- (id)init {
-    self = [super init];
+@synthesize fps = _fps;
+@synthesize camera = _camera;
+@synthesize captureGrayscale = _captureGrayscale;
+@synthesize qualityPreset = _qualityPreset;
+@synthesize captureSession = _captureSession;
+@synthesize captureDevice = _captureDevice;
+@synthesize videoOutput = _videoOutput;
+@synthesize videoPreviewLayer = _videoPreviewLayer;
+
+@dynamic showDebugInfo;
+@dynamic torchOn;
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        
         _camera = -1;
         _qualityPreset = AVCaptureSessionPresetMedium;
         _captureGrayscale = YES;
         
         // Create frame time circular buffer for calculating averaged fps
         _frameTimes = (float*)malloc(sizeof(float) * kFrameTimeBufferSize);
-
     }
     return self;
 }
 
-- (void)viewDidLoad {
+- (void)dealloc
+{
+    [self destroyCaptureSession];
+    [_fpsLabel release];
+    _fpsLabel = nil;
+    if (_frameTimes) {
+        free(_frameTimes);
+    }
     
+    [super dealloc];
+}
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Release any cached data, images, etc that aren't in use.
+}
+
+#pragma mark - View lifecycle
+
+- (void)viewDidLoad
+{
     [super viewDidLoad];
-    
-    self.view.backgroundColor = [UIColor grayColor];
-    
-    self.startButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.startButton setTitle:@"Start" forState:UIControlStateNormal];
-    [self.startButton addTarget:self action:@selector(startPressed) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:self.startButton];
-    
-    self.switchButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [self.switchButton setTitle:@"Switch" forState:UIControlStateNormal];
-    [self.switchButton addTarget:self action:@selector(switchPressed) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:self.switchButton];
-    
-    [self initClassifier];
-    [self initCapture];
-    
-    [self layoutSubviews];
+    [self createCaptureSessionForCamera:_camera qualityPreset:_qualityPreset grayscale:_captureGrayscale];
 }
 
 - (void)viewDidUnload
@@ -82,29 +90,6 @@ const int kHaarOptions =  CV_HAAR_FIND_BIGGEST_OBJECT | CV_HAAR_DO_ROUGH_SEARCH;
     [self destroyCaptureSession];
     [_fpsLabel release];
     _fpsLabel = nil;
-}
-
-- (void)initClassifier
-{
-    NSString *faceCascadePath = [[NSBundle mainBundle] pathForResource:kFaceCascadeFilename ofType:@"xml"];
-    
-    if (!_faceCascade.load([faceCascadePath UTF8String])) {
-        NSLog(@"Could not load face cascade: %@", faceCascadePath);
-    }
-}
-
-- (void)initCapture
-{
-    [self createCaptureSessionForCamera:_camera qualityPreset:_qualityPreset grayscale:_captureGrayscale];
-    [_captureSession startRunning];
-}
-
-- (void)layoutSubviews
-{
-    CGRect screen = self.view.bounds;
-    self.startButton.frame = CGRectMake(screen.size.width/4 - 40, screen.size.height - 80, 80, 40);
-    self.switchButton.frame = CGRectMake(screen.size.width/4*3 - 40, screen.size.height - 80, 80, 40);
-    
 }
 
 // MARK: Accessors
@@ -122,7 +107,7 @@ const int kHaarOptions =  CV_HAAR_FIND_BIGGEST_OBJECT | CV_HAAR_DO_ROUGH_SEARCH;
     return (_fpsLabel != nil);
 }
 
-// Show/hide debug panel with current FPS
+// Show/hide debug panel with current FPS 
 - (void)setShowDebugInfo:(BOOL)showDebugInfo
 {
     if (!showDebugInfo && _fpsLabel) {
@@ -144,6 +129,24 @@ const int kHaarOptions =  CV_HAAR_FIND_BIGGEST_OBJECT | CV_HAAR_DO_ROUGH_SEARCH;
     }
 }
 
+// Set torch on or off (if supported)
+- (void)setTorchOn:(BOOL)torch
+{
+    NSError *error = nil;
+    if ([_captureDevice hasTorch]) {
+        BOOL locked = [_captureDevice lockForConfiguration:&error];
+        if (locked) {
+            _captureDevice.torchMode = (torch)? AVCaptureTorchModeOn : AVCaptureTorchModeOff;
+            [_captureDevice unlockForConfiguration];
+        }
+    }
+}
+
+// Return YES if the torch is on
+- (BOOL)torchOn
+{
+    return (_captureDevice.torchMode == AVCaptureTorchModeOn);
+}
 
 
 // Switch camera 'on-the-fly'
@@ -162,7 +165,7 @@ const int kHaarOptions =  CV_HAAR_FIND_BIGGEST_OBJECT | CV_HAAR_DO_ROUGH_SEARCH;
             [_captureSession beginConfiguration];
             
             [_captureSession removeInput:[[_captureSession inputs] lastObject]];
-            
+    
             [_captureDevice release];
             
             if (_camera >= 0 && _camera < [devices count]) {
@@ -171,7 +174,7 @@ const int kHaarOptions =  CV_HAAR_FIND_BIGGEST_OBJECT | CV_HAAR_DO_ROUGH_SEARCH;
             else {
                 _captureDevice = [[AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo] retain];
             }
-            
+         
             // Create device input
             NSError *error = nil;
             AVCaptureDeviceInput *input = [[AVCaptureDeviceInput alloc] initWithDevice:_captureDevice error:&error];
@@ -182,93 +185,14 @@ const int kHaarOptions =  CV_HAAR_FIND_BIGGEST_OBJECT | CV_HAAR_DO_ROUGH_SEARCH;
     }
 }
 
-
-- (void)startPressed
-{
-    if (self.captureSession.running)
-    {
-        [self.captureSession stopRunning];
-        [self.videoPreviewLayer setHidden:YES];
-        [self.startButton setTitle:@"Start" forState:UIControlStateNormal];
-    }
-    else
-    {
-        [self.captureSession startRunning];
-        [self.videoPreviewLayer setHidden:NO];
-        [self.startButton setTitle:@"Stop" forState:UIControlStateNormal];
-    }
-    
-}
-
-- (void)switchPressed
-{
-    [self setCamera:1-_camera];
-}
-
-- (void)dealloc {
-
-    self.startButton = nil;
-    self.switchButton = nil;
-    
-    [self destroyCaptureSession];
-    [_fpsLabel release];
-    _fpsLabel = nil;
-    if (_frameTimes) {
-        free(_frameTimes);
-    }
-    [super dealloc];
-}
-
-
-
-- (void)processFrame:(cv::Mat &)mat videoRect:(CGRect)rect videoOrientation:(AVCaptureVideoOrientation)videOrientation
-{
-    // Shrink video frame to 320X240
-    cv::resize(mat, mat, cv::Size(), 0.5f, 0.5f, CV_INTER_LINEAR);
-    rect.size.width /= 2.0f;
-    rect.size.height /= 2.0f;
-    
-    // Rotate video frame by 90deg to portrait by combining a transpose and a flip
-    // Note that AVCaptureVideoDataOutput connection does NOT support hardware-accelerated
-    // rotation and mirroring via videoOrientation and setVideoMirrored properties so we
-    // need to do the rotation in software here.
-    /*cv::transpose(mat, mat);
-    CGFloat temp = rect.size.width;
-    rect.size.width = rect.size.height;
-    rect.size.height = temp;*/
-    
-    if (videOrientation == AVCaptureVideoOrientationLandscapeRight)
-    {
-        // flip around y axis for back camera
-        cv::flip(mat, mat, 1);
-    }
-    else {
-        // Front camera output needs to be mirrored to match preview layer so no flip is required here
-    }
-    
-    videOrientation = AVCaptureVideoOrientationPortrait;
-    
-    // Detect faces
-    std::vector<cv::Rect> faces;
-    
-    _faceCascade.detectMultiScale(mat, faces, 1.1, 2, kHaarOptions, cv::Size(60, 60));
-    
-    // Dispatch updating of face markers to main queue
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        [self displayFaces:faces
-              forVideoRect:rect
-          videoOrientation:videOrientation];
-    });
-}
-
 // MARK: AVCaptureVideoDataOutputSampleBufferDelegate delegate methods
 
 // AVCaptureVideoDataOutputSampleBufferDelegate delegate method called when a video frame is available
 //
 // This method is called on the video capture GCD queue. A cv::Mat is created from the frame data and
 // passed on for processing with OpenCV.
-- (void)captureOutput:(AVCaptureOutput *)captureOutput
-didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
+- (void)captureOutput:(AVCaptureOutput *)captureOutput 
+didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer 
        fromConnection:(AVCaptureConnection *)connection
 {
     NSAutoreleasePool* localpool = [[NSAutoreleasePool alloc] init];
@@ -287,7 +211,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         
         [self processFrame:mat videoRect:videoRect videoOrientation:videoOrientation];
         
-        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0); 
     }
     else if (format == kCVPixelFormatType_32BGRA) {
         // For color mode a 4-channel cv::Mat is created from the BGRA data
@@ -298,7 +222,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         
         [self processFrame:mat videoRect:videoRect videoOrientation:videoOrientation];
         
-        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);    
     }
     else {
         NSLog(@"Unsupported video format");
@@ -333,7 +257,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             _captureQueueFps = fps;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self setFps:fps];
-            });
+            });    
         }
         
         _framesToAverage++;
@@ -345,6 +269,24 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     [localpool drain];
 }
 
+
+// MARK: Methods to override
+
+// Override this method to process the video frame with OpenCV
+//
+// Note that this method is called on the video capture GCD queue. Use dispatch_sync or dispatch_async to update UI
+// from the main queue.
+//
+// mat: The frame as an OpenCV::Mat object. The matrix will have 1 channel for grayscale frames and 4 channels for
+//      BGRA frames. (Use -[VideoCaptureViewController setGrayscale:])
+// rect: A CGRect describing the video frame dimensions
+// orientation: Will generally by AVCaptureVideoOrientationLandscapeRight for the back camera and
+//              AVCaptureVideoOrientationLandscapeRight for the front camera
+//
+- (void)processFrame:(cv::Mat &)mat videoRect:(CGRect)rect videoOrientation:(AVCaptureVideoOrientation)orientation
+{
+
+}
 
 // MARK: Geometry methods
 
@@ -412,7 +354,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     
     // Move origin back from center
     t = CGAffineTransformConcat(t, CGAffineTransformMakeTranslation(viewSize.width / 2.0f, viewSize.height / 2.0f));
-    
+                                
     return t;
 }
 
@@ -441,7 +383,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
     
     if (camera == -1) {
-        _camera = 0;
+        _camera = -1;
         _captureDevice = [[AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo] retain];
     }
     else if (camera >= 0 && camera < [devices count]) {
@@ -465,18 +407,18 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     // Create and configure device output
     _videoOutput = [[AVCaptureVideoDataOutput alloc] init];
     
-    dispatch_queue_t queue = dispatch_queue_create("cameraQueue", NULL);
+    dispatch_queue_t queue = dispatch_queue_create("cameraQueue", NULL); 
     [_videoOutput setSampleBufferDelegate:self queue:queue];
-    dispatch_release(queue);
+    dispatch_release(queue); 
     
-    _videoOutput.alwaysDiscardsLateVideoFrames = YES;
+    _videoOutput.alwaysDiscardsLateVideoFrames = YES; 
     _videoOutput.minFrameDuration = CMTimeMake(1, 30);
     
     
     // For grayscale mode, the luminance channel from the YUV fromat is used
     // For color mode, BGRA format is used
     OSType format = kCVPixelFormatType_32BGRA;
-    
+
     // Check YUV format is available before selecting it (iPhone 3 does not support it)
     if (grayscale && [_videoOutput.availableVideoCVPixelFormatTypes containsObject:
                       [NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange]]) {
@@ -500,70 +442,10 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     // Create the preview layer
     _videoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:_captureSession];
     [_videoPreviewLayer setFrame:self.view.bounds];
-    _videoPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspect;
+    _videoPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     [self.view.layer insertSublayer:_videoPreviewLayer atIndex:0];
     
     return YES;
-}
-
-
-
-// Update face markers given vector of face rectangles
-- (void)displayFaces:(const std::vector<cv::Rect> &)faces
-        forVideoRect:(CGRect)rect
-    videoOrientation:(AVCaptureVideoOrientation)videoOrientation
-{
-    NSArray *sublayers = [NSArray arrayWithArray:[self.view.layer sublayers]];
-    int sublayersCount = [sublayers count];
-    int currentSublayer = 0;
-    
-	[CATransaction begin];
-	[CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
-	
-	// hide all the face layers
-	for (CALayer *layer in sublayers) {
-        NSString *layerName = [layer name];
-		if ([layerName isEqualToString:@"FaceLayer"])
-			[layer setHidden:YES];
-	}
-    
-    // Create transform to convert from vide frame coordinate space to view coordinate space
-    CGAffineTransform t = [self affineTransformForVideoFrame:rect orientation:videoOrientation];
-    
-    for (int i = 0; i < faces.size(); i++) {
-        
-        CGRect faceRect;
-        faceRect.origin.x = faces[i].x;
-        faceRect.origin.y = faces[i].y;
-        faceRect.size.width = faces[i].width;
-        faceRect.size.height = faces[i].height;
-        
-        faceRect = CGRectApplyAffineTransform(faceRect, t);
-        
-        CALayer *featureLayer = nil;
-        
-        while (!featureLayer && (currentSublayer < sublayersCount)) {
-			CALayer *currentLayer = [sublayers objectAtIndex:currentSublayer++];
-			if ([[currentLayer name] isEqualToString:@"FaceLayer"]) {
-				featureLayer = currentLayer;
-				[currentLayer setHidden:NO];
-			}
-		}
-        
-        if (!featureLayer) {
-            // Create a new feature marker layer
-			featureLayer = [[CALayer alloc] init];
-            featureLayer.name = @"FaceLayer";
-            featureLayer.borderColor = [[UIColor redColor] CGColor];
-            featureLayer.borderWidth = 10.0f;
-			[self.view.layer addSublayer:featureLayer];
-			[featureLayer release];
-		}
-        
-        featureLayer.frame = faceRect;
-    }
-    
-    [CATransaction commit];
 }
 
 // Tear down the video capture session
@@ -588,5 +470,4 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         _fpsLabel.text = [NSString stringWithFormat:@"FPS: %0.1f", _fps];
     }
 }
-
 @end
