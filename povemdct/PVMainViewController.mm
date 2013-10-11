@@ -12,17 +12,27 @@
 // Name of face cascade resource file without xml extension
 NSString * const kFaceCascadeFilename = @"haarcascade_frontalface_alt2";
 
+const int kFrameTimeBufferSize = 5;
+
 // Options for cv::CascadeClassifier::detectMultiScale
 const int kHaarOptions =  CV_HAAR_FIND_BIGGEST_OBJECT | CV_HAAR_DO_ROUGH_SEARCH;
 
 @interface PVMainViewController ()
 {
     cv::CascadeClassifier _faceCascade;
+    
+    // Fps calculation
+    CMTimeValue _lastFrameTimestamp;
+    float *_frameTimes;
+    int _frameTimesIndex;
+    int _framesToAverage;
+    float _captureQueueFps;
 }
 
 @property (nonatomic, assign) float fps;
 @property (nonatomic, retain) UIButton* startButton;
 @property (nonatomic, retain) UIButton* switchButton;
+@property (nonatomic, retain) UILabel *fpsLabel;
 
 @end
 
@@ -31,6 +41,13 @@ const int kHaarOptions =  CV_HAAR_FIND_BIGGEST_OBJECT | CV_HAAR_DO_ROUGH_SEARCH;
 - (id)init {
     self = [super init];
     if (self) {
+        
+        _camera = -1;
+        _qualityPreset = AVCaptureSessionPresetMedium;
+        _captureGrayscale = YES;
+        
+        // Create frame time circular buffer for calculating averaged fps
+        _frameTimes = (float*)malloc(sizeof(float) * kFrameTimeBufferSize);
 
     }
     return self;
@@ -39,13 +56,6 @@ const int kHaarOptions =  CV_HAAR_FIND_BIGGEST_OBJECT | CV_HAAR_DO_ROUGH_SEARCH;
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    
-    NSString *faceCascadePath = [[NSBundle mainBundle] pathForResource:kFaceCascadeFilename ofType:@"xml"];
-    
-    if (!_faceCascade.load([faceCascadePath UTF8String])) {
-        NSLog(@"Could not load face cascade: %@", faceCascadePath);
-    }
-
     
     self.view.backgroundColor = [UIColor grayColor];
     
@@ -60,8 +70,32 @@ const int kHaarOptions =  CV_HAAR_FIND_BIGGEST_OBJECT | CV_HAAR_DO_ROUGH_SEARCH;
     [self.view addSubview:self.switchButton];
     
     [self initCapture];
+    [self initClassifier];
     
     [self layoutSubviews];
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    
+    [self destroyCaptureSession];
+    [_fpsLabel release];
+    _fpsLabel = nil;
+}
+
+- (void)initClassifier
+{
+    NSString *faceCascadePath = [[NSBundle mainBundle] pathForResource:kFaceCascadeFilename ofType:@"xml"];
+    
+    if (!_faceCascade.load([faceCascadePath UTF8String])) {
+        NSLog(@"Could not load face cascade: %@", faceCascadePath);
+    }
+}
+
+- (void)initCapture
+{
+    [self createCaptureSessionForCamera:_camera qualityPreset:_qualityPreset grayscale:_captureGrayscale];
 }
 
 - (void)layoutSubviews
@@ -69,65 +103,121 @@ const int kHaarOptions =  CV_HAAR_FIND_BIGGEST_OBJECT | CV_HAAR_DO_ROUGH_SEARCH;
     CGRect screen = self.view.bounds;
     self.startButton.frame = CGRectMake(screen.size.width/4 - 40, screen.size.height - 80, 80, 40);
     self.switchButton.frame = CGRectMake(screen.size.width/4*3 - 40, screen.size.height - 80, 80, 40);
-    self.photoView.frame = self.view.bounds;
     
 }
 
-- (void)initCapture {
-    self.videoCamera = [[CvVideoCamera alloc] initWithParentView:self.photoView];
-    self.videoCamera.delegate = self;
-    self.videoCamera.defaultAVCaptureDevicePosition = AVCaptureDevicePositionFront;
-    self.videoCamera.defaultAVCaptureSessionPreset = AVCaptureSessionPresetLow;
-    self.videoCamera.defaultAVCaptureVideoOrientation = AVCaptureVideoOrientationPortrait;
-    self.videoCamera.defaultFPS = 30;
+// MARK: Accessors
+- (void)setFps:(float)fps
+{
+    [self willChangeValueForKey:@"fps"];
+    _fps = fps;
+    [self didChangeValueForKey:@"fps"];
     
-    self.photoView.contentMode = UIViewContentModeScaleAspectFit;
+    [self updateDebugInfo];
 }
+
+- (BOOL)showDebugInfo
+{
+    return (_fpsLabel != nil);
+}
+
+// Show/hide debug panel with current FPS
+- (void)setShowDebugInfo:(BOOL)showDebugInfo
+{
+    if (!showDebugInfo && _fpsLabel) {
+        [_fpsLabel removeFromSuperview];
+        [_fpsLabel release];
+        _fpsLabel = nil;
+    }
+    
+    if (showDebugInfo && !_fpsLabel) {
+        // Create label to show FPS
+        CGRect frame = self.view.bounds;
+        frame.size.height = 40.0f;
+        _fpsLabel = [[UILabel alloc] initWithFrame:frame];
+        _fpsLabel.textColor = [UIColor whiteColor];
+        _fpsLabel.backgroundColor = [UIColor colorWithWhite:0.0f alpha:0.5f];
+        [self.view addSubview:_fpsLabel];
+        
+        [self updateDebugInfo];
+    }
+}
+
+
+
+// Switch camera 'on-the-fly'
+//
+// camera: 0 for back camera, 1 for front camera
+//
+- (void)setCamera:(int)camera
+{
+    if (camera != _camera)
+    {
+        _camera = camera;
+        
+        if (_captureSession) {
+            NSArray* devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+            
+            [_captureSession beginConfiguration];
+            
+            [_captureSession removeInput:[[_captureSession inputs] lastObject]];
+            
+            [_captureDevice release];
+            
+            if (_camera >= 0 && _camera < [devices count]) {
+                _captureDevice = [devices objectAtIndex:camera];
+            }
+            else {
+                _captureDevice = [[AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo] retain];
+            }
+            
+            // Create device input
+            NSError *error = nil;
+            AVCaptureDeviceInput *input = [[AVCaptureDeviceInput alloc] initWithDevice:_captureDevice error:&error];
+            [_captureSession addInput:input];
+            
+            [_captureSession commitConfiguration];
+        }
+    }
+}
+
 
 - (void)startPressed
 {
-    if (self.videoCamera.captureSessionLoaded)
+    if (self.captureSession.running)
     {
-        [self.videoCamera stop];
+        [self.captureSession stopRunning];
+        [self.videoPreviewLayer setHidden:YES];
         [self.startButton setTitle:@"Start" forState:UIControlStateNormal];
-        
-    } else {
-    
-        [self.videoCamera start];
+    }
+    else
+    {
+        [self.captureSession startRunning];
+        [self.videoPreviewLayer setHidden:NO];
         [self.startButton setTitle:@"Stop" forState:UIControlStateNormal];
     }
+    
 }
 
 - (void)switchPressed
 {
-    [self.videoCamera switchCameras];
+    [self setCamera:1-_camera];
 }
 
 - (void)dealloc {
 
     self.startButton = nil;
     self.switchButton = nil;
-    self.photoView = nil;
+    
+    [self destroyCaptureSession];
+    [_fpsLabel release];
+    _fpsLabel = nil;
+    if (_frameTimes) {
+        free(_frameTimes);
+    }
     [super dealloc];
 }
 
-#pragma mark - Protocol CvVideoCameraDelegate
-
-#ifdef __cplusplus
-using namespace cv;
-- (void)processImage:(Mat&)image;
-{
-    // Do some OpenCV stuff with the image
-    //Mat image_copy;
-    //cvtColor(image, image_copy, CV_BGRA2BGR);
-    
-    // invert image
-    //bitwise_not(image_copy, image_copy);
-    //cvtColor(image_copy, image, CV_BGR2BGRA);
-    [self processFrame:image videoRect:self.view.bounds videoOrientation:AVCaptureVideoOrientationPortrait];
-    self.photoView.contentMode = UIViewContentModeScaleAspectFit;
-}
-#endif
 
 
 - (void)processFrame:(cv::Mat &)mat videoRect:(CGRect)rect videoOrientation:(AVCaptureVideoOrientation)videOrientation
@@ -170,10 +260,111 @@ using namespace cv;
     });
 }
 
+// MARK: AVCaptureVideoDataOutputSampleBufferDelegate delegate methods
+
+// AVCaptureVideoDataOutputSampleBufferDelegate delegate method called when a video frame is available
+//
+// This method is called on the video capture GCD queue. A cv::Mat is created from the frame data and
+// passed on for processing with OpenCV.
+- (void)captureOutput:(AVCaptureOutput *)captureOutput
+didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
+       fromConnection:(AVCaptureConnection *)connection
+{
+    NSAutoreleasePool* localpool = [[NSAutoreleasePool alloc] init];
+    
+    CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    OSType format = CVPixelBufferGetPixelFormatType(pixelBuffer);
+    CGRect videoRect = CGRectMake(0.0f, 0.0f, CVPixelBufferGetWidth(pixelBuffer), CVPixelBufferGetHeight(pixelBuffer));
+    AVCaptureVideoOrientation videoOrientation = [[[_videoOutput connections] objectAtIndex:0] videoOrientation];
+    
+    if (format == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange) {
+        // For grayscale mode, the luminance channel of the YUV data is used
+        CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+        void *baseaddress = CVPixelBufferGetBaseAddressOfPlane(pixelBuffer, 0);
+        
+        cv::Mat mat(videoRect.size.height, videoRect.size.width, CV_8UC1, baseaddress, 0);
+        
+        [self processFrame:mat videoRect:videoRect videoOrientation:videoOrientation];
+        
+        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+    }
+    else if (format == kCVPixelFormatType_32BGRA) {
+        // For color mode a 4-channel cv::Mat is created from the BGRA data
+        CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+        void *baseaddress = CVPixelBufferGetBaseAddress(pixelBuffer);
+        
+        cv::Mat mat(videoRect.size.height, videoRect.size.width, CV_8UC4, baseaddress, 0);
+        
+        [self processFrame:mat videoRect:videoRect videoOrientation:videoOrientation];
+        
+        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+    }
+    else {
+        NSLog(@"Unsupported video format");
+    }
+    
+    // Update FPS calculation
+    CMTime presentationTime = CMSampleBufferGetOutputPresentationTimeStamp(sampleBuffer);
+    
+    if (_lastFrameTimestamp == 0) {
+        _lastFrameTimestamp = presentationTime.value;
+        _framesToAverage = 1;
+    }
+    else {
+        float frameTime = (float)(presentationTime.value - _lastFrameTimestamp) / presentationTime.timescale;
+        _lastFrameTimestamp = presentationTime.value;
+        
+        _frameTimes[_frameTimesIndex++] = frameTime;
+        
+        if (_frameTimesIndex >= kFrameTimeBufferSize) {
+            _frameTimesIndex = 0;
+        }
+        
+        float totalFrameTime = 0.0f;
+        for (int i = 0; i < _framesToAverage; i++) {
+            totalFrameTime += _frameTimes[i];
+        }
+        
+        float averageFrameTime = totalFrameTime / _framesToAverage;
+        float fps = 1.0f / averageFrameTime;
+        
+        if (fabsf(fps - _captureQueueFps) > 0.1f) {
+            _captureQueueFps = fps;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self setFps:fps];
+            });
+        }
+        
+        _framesToAverage++;
+        if (_framesToAverage > kFrameTimeBufferSize) {
+            _framesToAverage = kFrameTimeBufferSize;
+        }
+    }
+    
+    [localpool drain];
+}
+
+
+// MARK: Geometry methods
+
+// Create an affine transform for converting CGPoints and CGRects from the video frame coordinate space to the
+// preview layer coordinate space. Usage:
+//
+// CGPoint viewPoint = CGPointApplyAffineTransform(videoPoint, transform);
+// CGRect viewRect = CGRectApplyAffineTransform(videoRect, transform);
+//
+// Use CGAffineTransformInvert to create an inverse transform for converting from the view cooridinate space to
+// the video frame coordinate space.
+//
+// videoFrame: a rect describing the dimensions of the video frame
+// video orientation: the video orientation
+//
+// Returns an affine transform
+//
 - (CGAffineTransform)affineTransformForVideoFrame:(CGRect)videoFrame orientation:(AVCaptureVideoOrientation)videoOrientation
 {
     CGSize viewSize = self.view.bounds.size;
-    NSString * const videoGravity = AVLayerVideoGravityResizeAspectFill;
+    NSString * const videoGravity = _videoPreviewLayer.videoGravity;
     CGFloat widthScale = 1.0f;
     CGFloat heightScale = 1.0f;
     
@@ -223,6 +414,97 @@ using namespace cv;
     
     return t;
 }
+
+// MARK: Private methods
+
+// Sets up the video capture session for the specified camera, quality and grayscale mode
+//
+//
+// camera: -1 for default, 0 for back camera, 1 for front camera
+// qualityPreset: [AVCaptureSession sessionPreset] value
+// grayscale: YES to capture grayscale frames, NO to capture RGBA frames
+//
+- (BOOL)createCaptureSessionForCamera:(NSInteger)camera qualityPreset:(NSString *)qualityPreset grayscale:(BOOL)grayscale
+{
+    _lastFrameTimestamp = 0;
+    _frameTimesIndex = 0;
+    _captureQueueFps = 0.0f;
+    _fps = 0.0f;
+	
+    // Set up AV capture
+    NSArray* devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+    
+    if ([devices count] == 0) {
+        NSLog(@"No video capture devices found");
+        return NO;
+    }
+    
+    if (camera == -1) {
+        _camera = -1;
+        _captureDevice = [[AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo] retain];
+    }
+    else if (camera >= 0 && camera < [devices count]) {
+        _camera = camera;
+        _captureDevice = [[devices objectAtIndex:camera] retain];
+    }
+    else {
+        _camera = -1;
+        _captureDevice = [[AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo] retain];
+        NSLog(@"Camera number out of range. Using default camera");
+    }
+    
+    // Create the capture session
+    _captureSession = [[AVCaptureSession alloc] init];
+    _captureSession.sessionPreset = (qualityPreset)? qualityPreset : AVCaptureSessionPresetMedium;
+    
+    // Create device input
+    NSError *error = nil;
+    AVCaptureDeviceInput *input = [[AVCaptureDeviceInput alloc] initWithDevice:_captureDevice error:&error];
+    
+    // Create and configure device output
+    _videoOutput = [[AVCaptureVideoDataOutput alloc] init];
+    
+    dispatch_queue_t queue = dispatch_queue_create("cameraQueue", NULL);
+    [_videoOutput setSampleBufferDelegate:self queue:queue];
+    dispatch_release(queue);
+    
+    _videoOutput.alwaysDiscardsLateVideoFrames = YES;
+    _videoOutput.minFrameDuration = CMTimeMake(1, 30);
+    
+    
+    // For grayscale mode, the luminance channel from the YUV fromat is used
+    // For color mode, BGRA format is used
+    OSType format = kCVPixelFormatType_32BGRA;
+    
+    // Check YUV format is available before selecting it (iPhone 3 does not support it)
+    if (grayscale && [_videoOutput.availableVideoCVPixelFormatTypes containsObject:
+                      [NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange]]) {
+        format = kCVPixelFormatType_420YpCbCr8BiPlanarFullRange;
+    }
+    
+    _videoOutput.videoSettings = [NSDictionary dictionaryWithObject:[NSNumber numberWithUnsignedInt:format]
+                                                             forKey:(id)kCVPixelBufferPixelFormatTypeKey];
+    
+    // Connect up inputs and outputs
+    if ([_captureSession canAddInput:input]) {
+        [_captureSession addInput:input];
+    }
+    
+    if ([_captureSession canAddOutput:_videoOutput]) {
+        [_captureSession addOutput:_videoOutput];
+    }
+    
+    [input release];
+    
+    // Create the preview layer
+    _videoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:_captureSession];
+    [_videoPreviewLayer setFrame:self.view.bounds];
+    _videoPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspect;
+    [self.view.layer insertSublayer:_videoPreviewLayer atIndex:0];
+    
+    return YES;
+}
+
 
 
 // Update face markers given vector of face rectangles
@@ -281,6 +563,29 @@ using namespace cv;
     }
     
     [CATransaction commit];
+}
+
+// Tear down the video capture session
+- (void)destroyCaptureSession
+{
+    [_captureSession stopRunning];
+    
+    [_videoPreviewLayer removeFromSuperlayer];
+    [_videoPreviewLayer release];
+    [_videoOutput release];
+    [_captureDevice release];
+    [_captureSession release];
+    
+    _videoPreviewLayer = nil;
+    _videoOutput = nil;
+    _captureDevice = nil;
+    _captureSession = nil;
+}
+
+- (void)updateDebugInfo {
+    if (_fpsLabel) {
+        _fpsLabel.text = [NSString stringWithFormat:@"FPS: %0.1f", _fps];
+    }
 }
 
 @end
