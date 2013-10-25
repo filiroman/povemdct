@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E33697901817DB8800A80510 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = E336978D1817DB8800A80510 /* GCDAsyncSocket.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		E33697911817DB8800A80510 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = E336978F1817DB8800A80510 /* GCDAsyncUdpSocket.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		E33697941817E0B800A80510 /* PVNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E33697931817E0B800A80510 /* PVNetworkManager.m */; };
+		E33697971817E1B200A80510 /* PVObserverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E33697961817E1B200A80510 /* PVObserverViewController.m */; };
 		E34288D2180828E4004737C7 /* haarcascade_frontalface_alt2.xml in Resources */ = {isa = PBXBuildFile; fileRef = E34288D1180828E4004737C7 /* haarcascade_frontalface_alt2.xml */; };
 		E3623D7F17F5885000866CB2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D7E17F5885000866CB2 /* Foundation.framework */; };
 		E3623D8117F5885000866CB2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D8017F5885000866CB2 /* CoreGraphics.framework */; };
@@ -28,8 +32,15 @@
 		E3623DC117F5A25F00866CB2 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DBE17F5A25F00866CB2 /* Accelerate.framework */; };
 		E3623DC217F5A25F00866CB2 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DBF17F5A25F00866CB2 /* AssetsLibrary.framework */; };
 		E3623DC317F5A25F00866CB2 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DC017F5A25F00866CB2 /* CoreImage.framework */; };
+		E37A7136181919E500983B72 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E37A7135181919E500983B72 /* Localizable.strings */; };
+		E37A713B1819A3A500983B72 /* PVRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A713A1819A3A500983B72 /* PVRootViewController.m */; };
+		E37A713E1819A9DF00983B72 /* PVActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A713D1819A9DF00983B72 /* PVActivityView.m */; };
+		E37A71491819AD3400983B72 /* PVNotifierView.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A71481819AD3400983B72 /* PVNotifierView.m */; };
+		E37A714C1819C4C800983B72 /* PVClientMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A714B1819C4C800983B72 /* PVClientMainViewController.m */; };
+		E37A714F1819C72700983B72 /* PVCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A714E1819C72700983B72 /* PVCaptureManager.m */; };
+		E37A71521819CA8A00983B72 /* NSData+NSValue.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A71511819CA8A00983B72 /* NSData+NSValue.m */; };
 		E3CEB77E1808581B00E460E5 /* VideoCaptureViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E3CEB77D1808581B00E460E5 /* VideoCaptureViewController.mm */; };
-		E3CEB7811808582D00E460E5 /* MainViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E3CEB7801808582D00E460E5 /* MainViewController.mm */; };
+		E3CEB7811808582D00E460E5 /* PVMainViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E3CEB7801808582D00E460E5 /* PVMainViewController.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +54,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E336978C1817DB8800A80510 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
+		E336978D1817DB8800A80510 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
+		E336978E1817DB8800A80510 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
+		E336978F1817DB8800A80510 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
+		E33697921817E0B800A80510 /* PVNetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVNetworkManager.h; sourceTree = "<group>"; };
+		E33697931817E0B800A80510 /* PVNetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVNetworkManager.m; sourceTree = "<group>"; };
+		E33697951817E1B200A80510 /* PVObserverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVObserverViewController.h; sourceTree = "<group>"; };
+		E33697961817E1B200A80510 /* PVObserverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVObserverViewController.m; sourceTree = "<group>"; };
 		E34288D1180828E4004737C7 /* haarcascade_frontalface_alt2.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = haarcascade_frontalface_alt2.xml; sourceTree = "<group>"; };
 		E3623D7B17F5885000866CB2 /* povemdct.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = povemdct.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3623D7E17F5885000866CB2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -66,10 +85,23 @@
 		E3623DBE17F5A25F00866CB2 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		E3623DBF17F5A25F00866CB2 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		E3623DC017F5A25F00866CB2 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		E37A7135181919E500983B72 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		E37A71391819A3A500983B72 /* PVRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRootViewController.h; sourceTree = "<group>"; };
+		E37A713A1819A3A500983B72 /* PVRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVRootViewController.m; sourceTree = "<group>"; };
+		E37A713C1819A9DF00983B72 /* PVActivityView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVActivityView.h; sourceTree = "<group>"; };
+		E37A713D1819A9DF00983B72 /* PVActivityView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVActivityView.m; sourceTree = "<group>"; };
+		E37A71471819AD3400983B72 /* PVNotifierView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVNotifierView.h; sourceTree = "<group>"; };
+		E37A71481819AD3400983B72 /* PVNotifierView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVNotifierView.m; sourceTree = "<group>"; };
+		E37A714A1819C4C800983B72 /* PVClientMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVClientMainViewController.h; sourceTree = "<group>"; };
+		E37A714B1819C4C800983B72 /* PVClientMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVClientMainViewController.m; sourceTree = "<group>"; };
+		E37A714D1819C72700983B72 /* PVCaptureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVCaptureManager.h; sourceTree = "<group>"; };
+		E37A714E1819C72700983B72 /* PVCaptureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVCaptureManager.m; sourceTree = "<group>"; };
+		E37A71501819CA8A00983B72 /* NSData+NSValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+NSValue.h"; sourceTree = "<group>"; };
+		E37A71511819CA8A00983B72 /* NSData+NSValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+NSValue.m"; sourceTree = "<group>"; };
 		E3CEB77C1808581B00E460E5 /* VideoCaptureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoCaptureViewController.h; sourceTree = "<group>"; };
 		E3CEB77D1808581B00E460E5 /* VideoCaptureViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VideoCaptureViewController.mm; sourceTree = "<group>"; };
-		E3CEB77F1808582D00E460E5 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
-		E3CEB7801808582D00E460E5 /* MainViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MainViewController.mm; sourceTree = "<group>"; };
+		E3CEB77F1808582D00E460E5 /* PVMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVMainViewController.h; sourceTree = "<group>"; };
+		E3CEB7801808582D00E460E5 /* PVMainViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PVMainViewController.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,9 +137,56 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E3300B3A181A7ABA00F9BCA4 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				E37A71501819CA8A00983B72 /* NSData+NSValue.h */,
+				E37A71511819CA8A00983B72 /* NSData+NSValue.m */,
+				E37A71471819AD3400983B72 /* PVNotifierView.h */,
+				E37A71481819AD3400983B72 /* PVNotifierView.m */,
+				E37A713C1819A9DF00983B72 /* PVActivityView.h */,
+				E37A713D1819A9DF00983B72 /* PVActivityView.m */,
+			);
+			name = Common;
+			sourceTree = "<group>";
+		};
+		E3300B3B181A7ACD00F9BCA4 /* Interface */ = {
+			isa = PBXGroup;
+			children = (
+				E3300B3C181A7AE000F9BCA4 /* Main */,
+				E37A71371819A2E200983B72 /* VideoCapture */,
+				E3300B3A181A7ABA00F9BCA4 /* Common */,
+			);
+			name = Interface;
+			sourceTree = "<group>";
+		};
+		E3300B3C181A7AE000F9BCA4 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				E33697951817E1B200A80510 /* PVObserverViewController.h */,
+				E33697961817E1B200A80510 /* PVObserverViewController.m */,
+				E37A714A1819C4C800983B72 /* PVClientMainViewController.h */,
+				E37A714B1819C4C800983B72 /* PVClientMainViewController.m */,
+				E37A71391819A3A500983B72 /* PVRootViewController.h */,
+				E37A713A1819A3A500983B72 /* PVRootViewController.m */,
+			);
+			name = Main;
+			sourceTree = "<group>";
+		};
+		E336978B1817DB7300A80510 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				E37A71381819A2FD00983B72 /* Libs */,
+				E33697921817E0B800A80510 /* PVNetworkManager.h */,
+				E33697931817E0B800A80510 /* PVNetworkManager.m */,
+			);
+			name = Network;
+			sourceTree = "<group>";
+		};
 		E34288D0180828DA004737C7 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				E37A71301819197000983B72 /* Localization */,
 				E34288D1180828E4004737C7 /* haarcascade_frontalface_alt2.xml */,
 			);
 			name = Resources;
@@ -153,10 +232,10 @@
 		E3623D8617F5885000866CB2 /* povemdct */ = {
 			isa = PBXGroup;
 			children = (
-				E3CEB77C1808581B00E460E5 /* VideoCaptureViewController.h */,
-				E3CEB77D1808581B00E460E5 /* VideoCaptureViewController.mm */,
-				E3CEB77F1808582D00E460E5 /* MainViewController.h */,
-				E3CEB7801808582D00E460E5 /* MainViewController.mm */,
+				E3300B3B181A7ACD00F9BCA4 /* Interface */,
+				E37A714D1819C72700983B72 /* PVCaptureManager.h */,
+				E37A714E1819C72700983B72 /* PVCaptureManager.m */,
+				E336978B1817DB7300A80510 /* Network */,
 				E34288D0180828DA004737C7 /* Resources */,
 				E3623D8F17F5885000866CB2 /* AppDelegate.h */,
 				E3623D9017F5885000866CB2 /* AppDelegate.m */,
@@ -176,6 +255,36 @@
 				E3623D8E17F5885000866CB2 /* povemdct-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E37A71301819197000983B72 /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				E37A7135181919E500983B72 /* Localizable.strings */,
+			);
+			name = Localization;
+			sourceTree = "<group>";
+		};
+		E37A71371819A2E200983B72 /* VideoCapture */ = {
+			isa = PBXGroup;
+			children = (
+				E3CEB77C1808581B00E460E5 /* VideoCaptureViewController.h */,
+				E3CEB77D1808581B00E460E5 /* VideoCaptureViewController.mm */,
+				E3CEB77F1808582D00E460E5 /* PVMainViewController.h */,
+				E3CEB7801808582D00E460E5 /* PVMainViewController.mm */,
+			);
+			name = VideoCapture;
+			sourceTree = "<group>";
+		};
+		E37A71381819A2FD00983B72 /* Libs */ = {
+			isa = PBXGroup;
+			children = (
+				E336978C1817DB8800A80510 /* GCDAsyncSocket.h */,
+				E336978D1817DB8800A80510 /* GCDAsyncSocket.m */,
+				E336978E1817DB8800A80510 /* GCDAsyncUdpSocket.h */,
+				E336978F1817DB8800A80510 /* GCDAsyncUdpSocket.m */,
+			);
+			name = Libs;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -254,6 +363,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E34288D2180828E4004737C7 /* haarcascade_frontalface_alt2.xml in Resources */,
+				E37A7136181919E500983B72 /* Localizable.strings in Resources */,
 				E3623D8B17F5885000866CB2 /* InfoPlist.strings in Resources */,
 				E3623D9617F5885000866CB2 /* Images.xcassets in Resources */,
 			);
@@ -273,11 +383,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E37A713B1819A3A500983B72 /* PVRootViewController.m in Sources */,
+				E33697901817DB8800A80510 /* GCDAsyncSocket.m in Sources */,
+				E37A714F1819C72700983B72 /* PVCaptureManager.m in Sources */,
+				E33697941817E0B800A80510 /* PVNetworkManager.m in Sources */,
 				E3623D9117F5885000866CB2 /* AppDelegate.m in Sources */,
-				E3CEB7811808582D00E460E5 /* MainViewController.mm in Sources */,
+				E33697971817E1B200A80510 /* PVObserverViewController.m in Sources */,
+				E3CEB7811808582D00E460E5 /* PVMainViewController.mm in Sources */,
 				E3623D8D17F5885000866CB2 /* main.m in Sources */,
+				E33697911817DB8800A80510 /* GCDAsyncUdpSocket.m in Sources */,
+				E37A71521819CA8A00983B72 /* NSData+NSValue.m in Sources */,
+				E37A71491819AD3400983B72 /* PVNotifierView.m in Sources */,
+				E37A714C1819C4C800983B72 /* PVClientMainViewController.m in Sources */,
 				E3623D9417F5885000866CB2 /* povemdct.xcdatamodeld in Sources */,
 				E3CEB77E1808581B00E460E5 /* VideoCaptureViewController.mm in Sources */,
+				E37A713E1819A9DF00983B72 /* PVActivityView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

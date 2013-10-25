@@ -1,0 +1,15 @@
+/* 
+  Localizable.strings
+  povemdct
+
+  Created by Roman Filippov on 24.10.13.
+  Copyright (c) 2013 Roman Filippov. All rights reserved.
+*/
+
+"ok_button" = "OK";
+"done_button" = "DONE";
+"cancel_button" = "CANCEL";
+"continue_button" = "Continue";
+"server_button" = "server";
+"client_button" = "client";
+"client_main_label" = "Waiting for server messages";

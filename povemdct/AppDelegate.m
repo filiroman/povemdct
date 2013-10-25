@@ -7,7 +7,8 @@
 //
 
 #import "AppDelegate.h"
-#import "MainViewController.h"
+#import "PVObserverViewController.h"
+#import "PVRootViewController.h"
 
 @implementation AppDelegate
 
@@ -20,9 +21,11 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
-    MainViewController *rootViewController = [[MainViewController alloc] init];
+    PVObserverViewController *obsViewController = [[PVObserverViewController alloc] init];
+    PVRootViewController *rootViewController = [[PVRootViewController alloc] initWithRootViewController:obsViewController];
     self.window.rootViewController = rootViewController;
     [self.window makeKeyAndVisible];
+    [obsViewController release];
     [rootViewController release];
     return YES;
 }
