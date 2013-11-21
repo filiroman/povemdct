@@ -6,8 +6,9 @@
 //  Copyright (c) 2013 Roman Filippov. All rights reserved.
 //
 
-#define CONNECT_DATA 123
+#define CONNECT_DATA 1
 #define CAPTURE_DATA 2
+#define WINSIZE_DATA 3
 
 #import <Foundation/Foundation.h>
 #import "PVObserverViewController.h"
@@ -33,6 +34,7 @@
 - (void)start:(id<PVNetworkManagerDelegate>)delegate;
 - (void)stop:(id<PVNetworkManagerDelegate>)delegate;
 - (void)sendData:(NSData*)data_to_send toDevice:(NSDictionary*)choosenDevice withType:(long)dataType;
+- (void)sendData:(NSData*)data_to_send withType:(long)dataType;
 - (void)sendData:(NSData*)data_to_send;
 
 - (void)connectWithDevice:(NSDictionary*)device;
@@ -45,5 +47,6 @@
 - (void)PVNetworkManager:(PVNetworkManager*)manager didFoundDevice:(NSDictionary*)device;
 - (void)PVNetworkManager:(PVNetworkManager*)manager didConnectedToDevice:(NSDictionary*)device;
 - (void)PVNetworkManager:(PVNetworkManager*)manager didReceivedData:(NSData*)data fromDevice:(NSDictionary*)device;
+- (void)PVNetworkManager:(PVNetworkManager*)manager didReceivedData:(NSData*)data fromDevice:(NSDictionary*)device withType:(long)dataType;
 
 @end

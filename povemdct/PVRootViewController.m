@@ -37,6 +37,8 @@
     if (self.rootViewController == nil)
         self.rootViewController = [self.viewControllers objectAtIndex:0];
     
+    self.view.backgroundColor = self.rootViewController.view.backgroundColor;
+    
     [self.view addSubview:self.rootViewController.view];
 }
 

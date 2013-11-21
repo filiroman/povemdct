@@ -15,6 +15,8 @@
 @property (retain, nonatomic) UITextView *textView;
 @property (retain, nonatomic) PVCaptureManager *captureManager;
 
+@property (assign) CGSize winSize;
+
 @end
 
 @implementation PVClientMainViewController
@@ -86,6 +88,12 @@
         [self.textView scrollRangeToVisible:range];
     }
     //});
+}
+
+- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedWindowSize:(CGSize)winSize
+{
+    self.winSize = winSize;
+    NSLog(@"Winsize received: %@", winSize);
 }
 
 @end

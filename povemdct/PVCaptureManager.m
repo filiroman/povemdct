@@ -44,12 +44,29 @@ static PVCaptureManager *sharedManager;
     [self.networkManager sendData:sendingData];
 }
 
-- (void)PVNetworkManager:(PVNetworkManager*)manager didReceivedData:(NSData*)data fromDevice:(NSDictionary*)device
+- (void)sendWindowSize:(CGSize)wsize
 {
-    NSDictionary *rdict = (NSDictionary*) [NSKeyedUnarchiver unarchiveObjectWithData:data];
-    CGRect captureRect = CGRectMake([[rdict objectForKey:@"x"] floatValue], [[rdict objectForKey:@"y"] floatValue], [[rdict objectForKey:@"width"] floatValue], [[rdict objectForKey:@"height"] floatValue]);
-    if ([self.delegate respondsToSelector:@selector(PVCaptureManager:didRecievedFaceCaptureAtRect:)])
-        [self.delegate PVCaptureManager:self didRecievedFaceCaptureAtRect:captureRect];
+    NSDictionary *sdata = @{@"width" : [NSNumber numberWithFloat:wsize.width], @"height" : [NSNumber numberWithFloat:wsize.height]};
+    NSData *sendingData = [NSKeyedArchiver archivedDataWithRootObject:sdata];
+    [self.networkManager sendData:sendingData withType:WINSIZE_DATA];
+}
+
+- (void)PVNetworkManager:(PVNetworkManager*)manager didReceivedData:(NSData*)data fromDevice:(NSDictionary*)device withType:(long)dataType
+{
+    if (dataType == CAPTURE_DATA) {
+        
+        NSDictionary *rdict = (NSDictionary*) [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        CGRect captureRect = CGRectMake([[rdict objectForKey:@"x"] floatValue], [[rdict objectForKey:@"y"] floatValue], [[rdict objectForKey:@"width"] floatValue], [[rdict objectForKey:@"height"] floatValue]);
+        if ([self.delegate respondsToSelector:@selector(PVCaptureManager:didRecievedFaceCaptureAtRect:)])
+            [self.delegate PVCaptureManager:self didRecievedFaceCaptureAtRect:captureRect];
+    } else if (dataType == WINSIZE_DATA)
+    {
+        
+        NSDictionary *rdict = (NSDictionary*) [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        CGSize winSize = CGSizeMake([[rdict objectForKey:@"width"] floatValue], [[rdict objectForKey:@"height"] floatValue]);
+        if ([self.delegate respondsToSelector:@selector(PVCaptureManager:didRecievedWindowSize:)])
+            [self.delegate PVCaptureManager:self didRecievedWindowSize:winSize];
+    }
 }
 
 

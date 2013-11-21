@@ -16,11 +16,16 @@
 
 + (id)sharedManager;
 - (void)sendFaceCaptureWithRect:(CGRect)captureRect;
+- (void)sendData:(NSData*)data;
+- (void)sendWindowSize:(CGSize)wsize;
 
 @end
 
 @protocol PVCaptureManagerDelegate <NSObject>
 
 - (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedFaceCaptureAtRect:(CGRect)captureRect;
+- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedData:(NSData*)data;
+- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedWindowSize:(CGSize)winSize;
+//- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedGyroscopeData;
 
 @end

@@ -166,14 +166,18 @@ static PVNetworkManager *sharedNetworkManager = nil;
     
 }
 
-- (void)sendData:(NSData*)data_to_send
+- (void)sendData:(NSData*)data_to_send withType:(long)dataType
 {
     GCDAsyncSocket *newSocket = [self.connectedDevices objectAtIndex:0];
     NSString *host = [newSocket connectedHost];
     uint16_t port = [newSocket connectedPort];
     
-    [self sendData:data_to_send toDevice:@{@"host": host, @"port" : [NSNumber numberWithInt:port]} withType:CAPTURE_DATA];
-    
+    [self sendData:data_to_send toDevice:@{@"host": host, @"port" : [NSNumber numberWithInt:port]} withType:dataType];
+}
+
+- (void)sendData:(NSData*)data_to_send
+{
+    [self sendData:data_to_send withType:CAPTURE_DATA];
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
@@ -284,21 +288,26 @@ withFilterContext:(id)filterContext
 
 - (void)socket:(GCDAsyncSocket *)sender didReadData:(NSData *)data withTag:(long)tag
 {
+    NSString *host = [sender connectedHost];
+    uint16_t port = [sender connectedPort];
+    
+    for (id<PVNetworkManagerDelegate> delegate in self.delegates) {
+        if ([delegate respondsToSelector:@selector(PVNetworkManager:didReceivedData:fromDevice:withType:)]) {
+            [delegate PVNetworkManager:self didReceivedData:data fromDevice:@{@"host": host, @"port" : [NSNumber numberWithInt:port]} withType:tag];
+        }
+    }
+    
     if (tag == CAPTURE_DATA) {
         
-        NSString *host = [sender connectedHost];
-        uint16_t port = [sender connectedPort];
-        
-        NSLog(@"Capture data received on client side");
-        
-        for (id<PVNetworkManagerDelegate> delegate in self.delegates) {
-            if ([delegate respondsToSelector:@selector(PVNetworkManager:didReceivedData:fromDevice:)]) {
-                [delegate PVNetworkManager:self didReceivedData:data fromDevice:@{@"host": host, @"port" : [NSNumber numberWithInt:port]}];
-            }
-        }
-        
+        //NSLog(@"Capture data received on client side");
         [self.tcpSocket readDataToLength:378 withTimeout:-1 tag:CAPTURE_DATA];
-    } else
+        
+    } else if (tag == WINSIZE_DATA)
+    {
+        NSLog(@"Winsize data received");
+    }
+    
+    else
         NSLog(@"Other data received");
 }
 

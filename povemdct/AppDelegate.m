@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "PVObserverViewController.h"
 #import "PVRootViewController.h"
+#import "PVGyroCaptureViewController.h"
 
 @implementation AppDelegate
 
@@ -21,7 +22,8 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
-    PVObserverViewController *obsViewController = [[PVObserverViewController alloc] init];
+    //PVObserverViewController *obsViewController = [[PVObserverViewController alloc] init];
+    PVGyroCaptureViewController *obsViewController = [[PVGyroCaptureViewController alloc] initViewController];
     PVRootViewController *rootViewController = [[PVRootViewController alloc] initWithRootViewController:obsViewController];
     self.window.rootViewController = rootViewController;
     [self.window makeKeyAndVisible];
