@@ -39,8 +39,8 @@ static PVNetworkManager *sharedNetworkManager = nil;
         numberOfSends = 5;
         
         self.delegates = [[[NSMutableArray alloc] init] autorelease];
-        self.inPort = 9997;         // port for incoming connections
-        self.outMultiPort = 9997;       //port for outcoming udp multicast
+        self.inPort = 9998;         // port for incoming connections
+        self.outMultiPort = 9998;       //port for outcoming udp multicast
         self.host = @"255.255.255.255";     // multicast address
         self.socketQueue = nil;
         self.connectedDevices = [NSMutableArray array];
@@ -172,7 +172,8 @@ static PVNetworkManager *sharedNetworkManager = nil;
     NSString *host = [newSocket connectedHost];
     uint16_t port = [newSocket connectedPort];
     
-    [self sendData:data_to_send toDevice:@{@"host": host, @"port" : [NSNumber numberWithInt:port]} withType:dataType];
+    if (host != nil)
+        [self sendData:data_to_send toDevice:@{@"host": host, @"port" : [NSNumber numberWithInt:port]} withType:dataType];
 }
 
 - (void)sendData:(NSData*)data_to_send
@@ -274,7 +275,8 @@ withFilterContext:(id)filterContext
     
     NSLog(@"Connected to host %@:%d", host, port);
     
-    [self.tcpSocket readDataToLength:378 withTimeout:-1 tag:CAPTURE_DATA];
+    //[self.tcpSocket readDataToLength:378 withTimeout:-1 tag:CAPTURE_DATA];
+    
     
     if (self.appType == PVApplicationTypeClient) {
         for (id<PVNetworkManagerDelegate> delegate in self.delegates) {

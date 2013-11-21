@@ -9,6 +9,8 @@
 #define CONNECT_DATA 1
 #define CAPTURE_DATA 2
 #define WINSIZE_DATA 3
+#define GYRO_DATA 4
+#define ACCL_DATA 5
 
 #import <Foundation/Foundation.h>
 #import "PVObserverViewController.h"

@@ -32,6 +32,7 @@
 		E3623DC117F5A25F00866CB2 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DBE17F5A25F00866CB2 /* Accelerate.framework */; };
 		E3623DC217F5A25F00866CB2 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DBF17F5A25F00866CB2 /* AssetsLibrary.framework */; };
 		E3623DC317F5A25F00866CB2 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DC017F5A25F00866CB2 /* CoreImage.framework */; };
+		E3654ADF183EA85500352835 /* PVServerMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3654ADE183EA85500352835 /* PVServerMainViewController.m */; };
 		E37A7136181919E500983B72 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E37A7135181919E500983B72 /* Localizable.strings */; };
 		E37A713B1819A3A500983B72 /* PVRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A713A1819A3A500983B72 /* PVRootViewController.m */; };
 		E37A713E1819A9DF00983B72 /* PVActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A713D1819A9DF00983B72 /* PVActivityView.m */; };
@@ -87,6 +88,8 @@
 		E3623DBE17F5A25F00866CB2 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		E3623DBF17F5A25F00866CB2 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		E3623DC017F5A25F00866CB2 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		E3654ADD183EA85500352835 /* PVServerMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVServerMainViewController.h; sourceTree = "<group>"; };
+		E3654ADE183EA85500352835 /* PVServerMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVServerMainViewController.m; sourceTree = "<group>"; };
 		E37A7135181919E500983B72 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		E37A71391819A3A500983B72 /* PVRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRootViewController.h; sourceTree = "<group>"; };
 		E37A713A1819A3A500983B72 /* PVRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVRootViewController.m; sourceTree = "<group>"; };
@@ -159,7 +162,7 @@
 		E3300B3B181A7ACD00F9BCA4 /* Interface */ = {
 			isa = PBXGroup;
 			children = (
-				E3863574183E1DE700A8606A /* Gyro */,
+				E3863574183E1DE700A8606A /* Gyro&Accl */,
 				E3300B3C181A7AE000F9BCA4 /* Main */,
 				E37A71371819A2E200983B72 /* VideoCapture */,
 				E3300B3A181A7ABA00F9BCA4 /* Common */,
@@ -176,6 +179,8 @@
 				E37A714B1819C4C800983B72 /* PVClientMainViewController.m */,
 				E37A71391819A3A500983B72 /* PVRootViewController.h */,
 				E37A713A1819A3A500983B72 /* PVRootViewController.m */,
+				E3654ADD183EA85500352835 /* PVServerMainViewController.h */,
+				E3654ADE183EA85500352835 /* PVServerMainViewController.m */,
 			);
 			name = Main;
 			sourceTree = "<group>";
@@ -295,13 +300,13 @@
 			name = Libs;
 			sourceTree = "<group>";
 		};
-		E3863574183E1DE700A8606A /* Gyro */ = {
+		E3863574183E1DE700A8606A /* Gyro&Accl */ = {
 			isa = PBXGroup;
 			children = (
 				E3863575183E1E2700A8606A /* PVGyroCaptureViewController.h */,
 				E3863576183E1E2700A8606A /* PVGyroCaptureViewController.m */,
 			);
-			name = Gyro;
+			name = "Gyro&Accl";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -414,6 +419,7 @@
 				E37A71491819AD3400983B72 /* PVNotifierView.m in Sources */,
 				E37A714C1819C4C800983B72 /* PVClientMainViewController.m in Sources */,
 				E3623D9417F5885000866CB2 /* povemdct.xcdatamodeld in Sources */,
+				E3654ADF183EA85500352835 /* PVServerMainViewController.m in Sources */,
 				E3CEB77E1808581B00E460E5 /* VideoCaptureViewController.mm in Sources */,
 				E37A713E1819A9DF00983B72 /* PVActivityView.m in Sources */,
 			);

@@ -37,6 +37,8 @@ static PVCaptureManager *sharedManager;
     return sharedManager;
 }
 
+#pragma mark send methods
+
 - (void)sendFaceCaptureWithRect:(CGRect)captureRect
 {
     NSDictionary *sdata = @{@"x": [NSNumber numberWithFloat:captureRect.origin.x], @"y" : [NSNumber numberWithFloat:captureRect.origin.y], @"width" : [NSNumber numberWithFloat:captureRect.size.width], @"height" : [NSNumber numberWithFloat:captureRect.size.height]};
@@ -50,6 +52,20 @@ static PVCaptureManager *sharedManager;
     NSData *sendingData = [NSKeyedArchiver archivedDataWithRootObject:sdata];
     [self.networkManager sendData:sendingData withType:WINSIZE_DATA];
 }
+
+- (void)sendGyroData:(CMGyroData*)gdata
+{
+    NSData *sendingData = [NSKeyedArchiver archivedDataWithRootObject:gdata];
+    [self.networkManager sendData:sendingData withType:GYRO_DATA];
+}
+
+- (void)sendAccelerometerData:(CMAccelerometerData*)accdata
+{
+    NSData *sendingData = [NSKeyedArchiver archivedDataWithRootObject:accdata];
+    [self.networkManager sendData:sendingData withType:ACCL_DATA];
+}
+
+#pragma mark network methods
 
 - (void)PVNetworkManager:(PVNetworkManager*)manager didReceivedData:(NSData*)data fromDevice:(NSDictionary*)device withType:(long)dataType
 {
@@ -66,6 +82,16 @@ static PVCaptureManager *sharedManager;
         CGSize winSize = CGSizeMake([[rdict objectForKey:@"width"] floatValue], [[rdict objectForKey:@"height"] floatValue]);
         if ([self.delegate respondsToSelector:@selector(PVCaptureManager:didRecievedWindowSize:)])
             [self.delegate PVCaptureManager:self didRecievedWindowSize:winSize];
+    } else if (dataType == GYRO_DATA)
+    {
+        CMGyroData *gdata = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        if ([self.delegate respondsToSelector:@selector(PVCaptureManager:didRecievedGyroscopeData:)])
+            [self.delegate PVCaptureManager:self didRecievedGyroscopeData:gdata];
+    } else if (dataType == ACCL_DATA)
+    {
+        CMAccelerometerData *accdata = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        if ([self.delegate respondsToSelector:@selector(PVCaptureManager:didRecievedAccelerometerData:)])
+            [self.delegate PVCaptureManager:self didRecievedAccelerometerData:accdata];
     }
 }
 

@@ -16,4 +16,6 @@ typedef enum {
 
 @interface PVObserverViewController : UIViewController
 
+- (id)initViewController;
+
 @end

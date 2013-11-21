@@ -37,6 +37,9 @@ const int kHaarOptions =  CV_HAAR_FIND_BIGGEST_OBJECT | CV_HAAR_DO_ROUGH_SEARCH;
         self.qualityPreset = AVCaptureSessionPresetMedium;
         
         self.captureManager = [PVCaptureManager sharedManager];
+        
+        self.tabBarItem = [[UITabBarItem alloc] init];
+        self.tabBarItem.title = NSLocalizedString(@"camera_tab", nil);
 
     }
     return self;
@@ -57,11 +60,17 @@ const int kHaarOptions =  CV_HAAR_FIND_BIGGEST_OBJECT | CV_HAAR_DO_ROUGH_SEARCH;
     self.switchButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.switchButton setTitle:@"Switch" forState:UIControlStateNormal];
     [self.switchButton addTarget:self action:@selector(switchPressed) forControlEvents:UIControlEventTouchUpInside];
+    self.switchButton.backgroundColor = [UIColor whiteColor];
+    self.switchButton.layer.masksToBounds = YES;
+    self.switchButton.layer.cornerRadius = 5.0f;
     [self.view addSubview:self.switchButton];
     
     self.startButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [self.startButton setTitle:@"Start" forState:UIControlStateNormal];
     [self.startButton addTarget:self action:@selector(startPressed) forControlEvents:UIControlEventTouchUpInside];
+    self.startButton.backgroundColor = [UIColor whiteColor];
+    self.startButton.layer.masksToBounds = YES;
+    self.startButton.layer.cornerRadius = 5.0f;
     [self.view addSubview:self.startButton];
     
     [self layoutSubviews];
@@ -78,8 +87,8 @@ const int kHaarOptions =  CV_HAAR_FIND_BIGGEST_OBJECT | CV_HAAR_DO_ROUGH_SEARCH;
 - (void)layoutSubviews
 {
     CGRect screen = self.view.bounds;
-    self.startButton.frame = CGRectMake(screen.size.width/4 - 40, screen.size.height - 80, 80, 40);
-    self.switchButton.frame = CGRectMake(screen.size.width/4*3 - 40, screen.size.height - 80, 80, 40);
+    self.startButton.frame = CGRectMake(screen.size.width/4 - 40, screen.size.height - 120, 80, 40);
+    self.switchButton.frame = CGRectMake(screen.size.width/4*3 - 40, screen.size.height - 120, 80, 40);
     
 }
 

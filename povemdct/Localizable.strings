@@ -13,3 +13,8 @@
 "server_button" = "server";
 "client_button" = "client";
 "client_main_label" = "Waiting for server messages";
+
+
+// tabs
+"gyro_tab" = "Gyro & Accl";
+"camera_tab" = "Camera";

@@ -11,7 +11,7 @@
 #import "GCDAsyncUdpSocket.h"
 #import "PVActivityView.h"
 #import "PVRootViewController.h"
-#import "PVMainViewController.h"
+#import "PVServerMainViewController.h"
 #import "PVClientMainViewController.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import <AVFoundation/AVFoundation.h>
@@ -37,7 +37,7 @@
 
 @implementation PVObserverViewController
 
-- (id)init
+- (id)initViewController
 {
     self = [super init];
     if (self) {
@@ -215,7 +215,7 @@
         
         self.choosenDevice = device;
         PVRootViewController *root = (PVRootViewController*)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
-        PVMainViewController *mainVC = [[PVMainViewController alloc] init];
+        PVServerMainViewController *mainVC = [[PVServerMainViewController alloc] initViewController];
         [root pushViewController:mainVC animated:YES];
         [mainVC release];
     }

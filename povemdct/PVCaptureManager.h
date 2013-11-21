@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreMotion/CoreMotion.h>
 
 @protocol PVCaptureManagerDelegate;
 
@@ -18,6 +19,8 @@
 - (void)sendFaceCaptureWithRect:(CGRect)captureRect;
 - (void)sendData:(NSData*)data;
 - (void)sendWindowSize:(CGSize)wsize;
+- (void)sendGyroData:(CMGyroData*)gdata;
+- (void)sendAccelerometerData:(CMAccelerometerData*)accdata;
 
 @end
 
@@ -26,6 +29,7 @@
 - (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedFaceCaptureAtRect:(CGRect)captureRect;
 - (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedData:(NSData*)data;
 - (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedWindowSize:(CGSize)winSize;
-//- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedGyroscopeData;
+- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedGyroscopeData:(CMGyroData*)gdata;
+- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedAccelerometerData:(CMAccelerometerData*)accdata;
 
 @end

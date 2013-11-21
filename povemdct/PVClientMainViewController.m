@@ -74,6 +74,7 @@
     [super dealloc];
 }
 
+#pragma mark Capture methods call back
 
 - (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedFaceCaptureAtRect:(CGRect)captureRect
 {
@@ -93,7 +94,33 @@
 - (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedWindowSize:(CGSize)winSize
 {
     self.winSize = winSize;
-    NSLog(@"Winsize received: %@", winSize);
+    @synchronized(_textView) {
+        self.textView.text = [NSString stringWithFormat:@"Winsize received: %@", NSStringFromCGSize(winSize)];
+    }
+}
+
+- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedGyroscopeData:(CMGyroData*)gdata
+{
+    NSString *logString = [NSString stringWithFormat:@"\n Gyro data received: x=%f, y=%f, z=%f", gdata.rotationRate.x, gdata.rotationRate.y, gdata.rotationRate.z];
+    
+    @synchronized(_textView) {
+        NSString *newString = [self.textView.text stringByAppendingString:logString];
+        self.textView.text = newString;
+        NSRange range = NSMakeRange(self.textView.text.length - 1, 1);
+        [self.textView scrollRangeToVisible:range];
+    }
+}
+
+- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedAccelerometerData:(CMAccelerometerData*)accdata
+{
+    NSString *logString = [NSString stringWithFormat:@"\n Accelerometer data received: x=%f, y=%f, z=%f", accdata.acceleration.x, accdata.acceleration.y, accdata.acceleration.z];
+    
+    @synchronized(_textView) {
+        NSString *newString = [self.textView.text stringByAppendingString:logString];
+        self.textView.text = newString;
+        NSRange range = NSMakeRange(self.textView.text.length - 1, 1);
+        [self.textView scrollRangeToVisible:range];
+    }
 }
 
 @end

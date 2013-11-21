@@ -8,11 +8,12 @@
 
 #import <CoreMotion/CoreMotion.h>
 #import "PVGyroCaptureViewController.h"
+#import "PVCaptureManager.h"
 
 #define SEGMENTED_GYRO 0
 #define SEGMENTED_ACCL 1
 
-#define UPDATE_SPEED 1.0f / 15.0f
+#define UPDATE_SPEED 1.0f / 2.0f
 
 @interface PVGyroCaptureViewController ()
 
@@ -24,6 +25,8 @@
 
 @property (nonatomic, retain) UISegmentedControl *segmentedControl;
 
+@property (retain, nonatomic) PVCaptureManager *captureManager;
+
 @end
 
 @implementation PVGyroCaptureViewController
@@ -34,6 +37,9 @@
     if (self) {
         
         self.motionManager = [[[CMMotionManager alloc] init] autorelease];
+        self.tabBarItem = [[UITabBarItem alloc] init];
+        self.tabBarItem.title = NSLocalizedString(@"gyro_tab", nil);
+        self.captureManager = [PVCaptureManager sharedManager];
     }
     return self;
 }
@@ -66,6 +72,10 @@
                 
                 NSString *z = [[NSString alloc] initWithFormat:@"z:%.02f", accelerometerData.acceleration.z];
                 self.gyro_zaxis.text = z;
+                
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [self.captureManager sendAccelerometerData:accelerometerData];
+                });
                
                 
             }];
@@ -107,6 +117,11 @@
                  
                  NSString *z = [[NSString alloc] initWithFormat:@"z:%.02f",gyroData.rotationRate.z];
                  self.gyro_zaxis.text = z;
+                 
+                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                     [self.captureManager sendGyroData:gyroData];
+                 });
+                 
              }];
         }
     }
@@ -131,6 +146,8 @@
     
     [self.gyro_zaxis removeFromSuperview];
     self.gyro_zaxis = nil;
+    
+    self.captureManager = nil;
     
     [super dealloc];
 }
@@ -174,6 +191,7 @@
     [self.view addSubview:_segmentedControl];
 
     [self layoutSubviews];
+    [self setupGyroscope];
 }
 
 - (void)segmentedControlISelectedIndexChanged:(UISegmentedControl*)sender
