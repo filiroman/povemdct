@@ -44,10 +44,22 @@
     return self;
 }
 
-- (void)setupAccelerometer
+- (void)stopGyro
 {
     if ([self.motionManager isGyroActive])
         [self.motionManager stopGyroUpdates];
+}
+
+- (void)stopAccelerometer
+{
+    if ([self.motionManager isAccelerometerActive])
+        [self.motionManager stopAccelerometerUpdates];
+}
+
+
+- (void)setupAccelerometer
+{
+    [self stopGyro];
     
     //accelerometer
     if([self.motionManager isAccelerometerAvailable])
@@ -91,8 +103,7 @@
 - (void)setupGyroscope
 {
     
-    if ([self.motionManager isAccelerometerActive])
-        [self.motionManager stopAccelerometerUpdates];
+    [self stopAccelerometer];
     
     //Gyroscope
     if([self.motionManager isGyroAvailable])
@@ -175,7 +186,7 @@
                          action:@selector(segmentedControlISelectedIndexChanged:)
                forControlEvents:UIControlEventValueChanged];
     
-    [self.segmentedControl setSelectedSegmentIndex:SEGMENTED_GYRO];
+    [self.segmentedControl setSelectedSegmentIndex:SEGMENTED_ACCL];
     
     self.gyro_xaxis = [[[UILabel alloc] init] autorelease];
     self.gyro_yaxis = [[[UILabel alloc] init] autorelease];
@@ -191,7 +202,20 @@
     [self.view addSubview:_segmentedControl];
 
     [self layoutSubviews];
-    [self setupGyroscope];
+    [self setupAccelerometer];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    
+    if (self.segmentedControl.selectedSegmentIndex == SEGMENTED_GYRO)
+    {
+        [self stopGyro];
+    } else {
+        
+        [self stopAccelerometer];
+    }
 }
 
 - (void)segmentedControlISelectedIndexChanged:(UISegmentedControl*)sender

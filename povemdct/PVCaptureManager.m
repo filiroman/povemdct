@@ -67,7 +67,7 @@ static PVCaptureManager *sharedManager;
 
 #pragma mark network methods
 
-- (void)PVNetworkManager:(PVNetworkManager*)manager didReceivedData:(NSData*)data fromDevice:(NSDictionary*)device withType:(long)dataType
+- (void)PVNetworkManager:(PVNetworkManager*)manager didReceivedData:(NSData*)data fromDevice:(NSDictionary*)device withType:(int)dataType
 {
     if (dataType == CAPTURE_DATA) {
         

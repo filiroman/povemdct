@@ -14,7 +14,8 @@ static PVNetworkManager *sharedNetworkManager = nil;
 
 @interface PVNetworkManager()
 {
-    int numberOfSends;
+    int _numberOfSends;
+    int _headerSize;
 }
 
 @property (nonatomic, retain) NSString *host;
@@ -36,13 +37,14 @@ static PVNetworkManager *sharedNetworkManager = nil;
     
     if (self = [super init]) {
         
-        numberOfSends = 5;
+        _numberOfSends = 5;
         
         self.delegates = [[[NSMutableArray alloc] init] autorelease];
         self.inPort = 9998;         // port for incoming connections
         self.outMultiPort = 9998;       //port for outcoming udp multicast
         self.host = @"255.255.255.255";     // multicast address
         self.socketQueue = nil;
+        _headerSize = -1;
         self.connectedDevices = [NSMutableArray array];
     }
     return self;
@@ -166,8 +168,12 @@ static PVNetworkManager *sharedNetworkManager = nil;
     
 }
 
-- (void)sendData:(NSData*)data_to_send withType:(long)dataType
+- (void)sendData:(NSData*)data_to_send withType:(int)dataType
 {
+    NSDictionary *headers = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:(int)dataType], @"type", [NSNumber numberWithInt:(int)[data_to_send length]], @"size", nil];
+    NSData *hdata = [NSKeyedArchiver archivedDataWithRootObject:headers];
+    [self sendHeaders:headers];
+    
     GCDAsyncSocket *newSocket = [self.connectedDevices objectAtIndex:0];
     NSString *host = [newSocket connectedHost];
     uint16_t port = [newSocket connectedPort];
@@ -176,12 +182,32 @@ static PVNetworkManager *sharedNetworkManager = nil;
         [self sendData:data_to_send toDevice:@{@"host": host, @"port" : [NSNumber numberWithInt:port]} withType:dataType];
 }
 
+- (void)sendHeaders:(NSDictionary*)headers
+{
+    GCDAsyncSocket *newSocket = [self.connectedDevices objectAtIndex:0];
+    NSString *host = [newSocket connectedHost];
+    uint16_t port = [newSocket connectedPort];
+    NSDictionary *conDevice = @{@"host": host, @"port" : [NSNumber numberWithInt:port]};
+    
+    NSData *hdata = [NSKeyedArchiver archivedDataWithRootObject:headers];
+    assert(hdata != nil);
+    
+    
+    // send header size
+    int hsize = [hdata length];
+    NSData *headerSize = [NSData dataWithBytes:&hsize length:sizeof(hsize)];
+    [self sendData:headerSize toDevice:conDevice withType:CONNECT_DATA];
+    
+    
+    [self sendData:hdata toDevice:conDevice withType:HEADER_DATA];
+}
+
 - (void)sendData:(NSData*)data_to_send
 {
     [self sendData:data_to_send withType:CAPTURE_DATA];
 }
 
-- (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
+- (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(int)tag
 {
     if (tag == CAPTURE_DATA)
          NSLog(@"Data sent from server!");
@@ -192,7 +218,7 @@ static PVNetworkManager *sharedNetworkManager = nil;
     int tag = 123;
     NSData *data = [_msg dataUsingEncoding:NSUTF8StringEncoding];
     
-    for (int i=0; i<numberOfSends; ++i) {
+    for (int i=0; i<_numberOfSends; ++i) {
         [_udpSocket sendData:data toHost:_host port:_outMultiPort withTimeout:-1 tag:tag];
     }
 }
@@ -213,7 +239,7 @@ withFilterContext:(id)filterContext
             [GCDAsyncUdpSocket getHost:&host port:&port fromAddress:address];
             
             NSData *data_to_send = [self.msg dataUsingEncoding:NSUTF8StringEncoding];
-            for (int i=0; i<numberOfSends; ++i) {
+            for (int i=0; i<_numberOfSends; ++i) {
                 [sock sendData:data_to_send toAddress:address withTimeout:-1 tag:123];
             }
         }
@@ -260,11 +286,14 @@ withFilterContext:(id)filterContext
     {
         NSString *host = [newSocket connectedHost];
         uint16_t port = [newSocket connectedPort];
+        NSDictionary *conDevice = @{@"host": host, @"port" : [NSNumber numberWithInt:port]};
         self.tcpSocket = newSocket;
         NSLog(@"Socket accepted %@:%d",host, port);
+        
+        
         for (id<PVNetworkManagerDelegate> delegate in self.delegates) {
             if ([delegate respondsToSelector:@selector(PVNetworkManager:didConnectedToDevice:)]) {
-                [delegate PVNetworkManager:self didConnectedToDevice:@{@"host": host, @"port" : [NSNumber numberWithInt:port]}];
+                [delegate PVNetworkManager:self didConnectedToDevice:conDevice];
             }
         }
     }
@@ -275,7 +304,8 @@ withFilterContext:(id)filterContext
     
     NSLog(@"Connected to host %@:%d", host, port);
     
-    //[self.tcpSocket readDataToLength:378 withTimeout:-1 tag:CAPTURE_DATA];
+    //[self.tcpSocket readDataToData:[GCDAsyncSocket ZeroData] withTimeout:-1 tag:HEADER_DATA];
+    [self.tcpSocket readDataToLength:HEADER_LENGTH_MSG_SIZE withTimeout:-1 tag:CONNECT_DATA];
     
     
     if (self.appType == PVApplicationTypeClient) {
@@ -290,6 +320,30 @@ withFilterContext:(id)filterContext
 
 - (void)socket:(GCDAsyncSocket *)sender didReadData:(NSData *)data withTag:(long)tag
 {
+    if (tag == CONNECT_DATA)
+    {
+        [data getBytes:&_headerSize length:sizeof(_headerSize)];
+        
+        if (_headerSize != -1)
+            [self.tcpSocket readDataToLength:_headerSize withTimeout:-1 tag:HEADER_DATA];
+        
+        return;
+        
+    } else if (tag == HEADER_DATA)
+    {
+        NSDictionary *hdata = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        
+        int htype = [[hdata objectForKey:@"type"] intValue];
+        int hsize = [[hdata objectForKey:@"size"] intValue];
+        
+        assert(hsize>0);
+        
+        [self.tcpSocket readDataToLength:hsize withTimeout:-1 tag:htype];
+        
+        return;
+    }
+    
+    
     NSString *host = [sender connectedHost];
     uint16_t port = [sender connectedPort];
     
@@ -299,10 +353,13 @@ withFilterContext:(id)filterContext
         }
     }
     
-    if (tag == CAPTURE_DATA) {
+    [self.tcpSocket readDataToLength:HEADER_LENGTH_MSG_SIZE withTimeout:-1 tag:CONNECT_DATA];
+    
+    
+    /*if (tag == CAPTURE_DATA) {
         
         //NSLog(@"Capture data received on client side");
-        [self.tcpSocket readDataToLength:378 withTimeout:-1 tag:CAPTURE_DATA];
+        [self.tcpSocket readDataToLength:CAPTURE_DATA_LENGTH withTimeout:-1 tag:CAPTURE_DATA];
         
     } else if (tag == WINSIZE_DATA)
     {
@@ -310,7 +367,7 @@ withFilterContext:(id)filterContext
     }
     
     else
-        NSLog(@"Other data received");
+        NSLog(@"Other data received");*/
 }
 
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err

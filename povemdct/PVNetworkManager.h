@@ -6,11 +6,15 @@
 //  Copyright (c) 2013 Roman Filippov. All rights reserved.
 //
 
-#define CONNECT_DATA 1
+#define CONNECT_DATA 0
+#define HEADER_DATA 1
 #define CAPTURE_DATA 2
 #define WINSIZE_DATA 3
 #define GYRO_DATA 4
 #define ACCL_DATA 5
+
+// length of message where size of header is presented (1 number only)
+#define HEADER_LENGTH_MSG_SIZE sizeof(int)
 
 #import <Foundation/Foundation.h>
 #import "PVObserverViewController.h"
@@ -35,9 +39,11 @@
 - (void)searchHosts;
 - (void)start:(id<PVNetworkManagerDelegate>)delegate;
 - (void)stop:(id<PVNetworkManagerDelegate>)delegate;
-- (void)sendData:(NSData*)data_to_send toDevice:(NSDictionary*)choosenDevice withType:(long)dataType;
-- (void)sendData:(NSData*)data_to_send withType:(long)dataType;
+//- (void)sendData:(NSData*)data_to_send toDevice:(NSDictionary*)choosenDevice withType:(int)dataType;
+- (void)sendData:(NSData*)data_to_send withType:(int)dataType;
 - (void)sendData:(NSData*)data_to_send;
+
+- (void)sendHeaders:(NSDictionary*)headers;
 
 - (void)connectWithDevice:(NSDictionary*)device;
 
@@ -49,6 +55,6 @@
 - (void)PVNetworkManager:(PVNetworkManager*)manager didFoundDevice:(NSDictionary*)device;
 - (void)PVNetworkManager:(PVNetworkManager*)manager didConnectedToDevice:(NSDictionary*)device;
 - (void)PVNetworkManager:(PVNetworkManager*)manager didReceivedData:(NSData*)data fromDevice:(NSDictionary*)device;
-- (void)PVNetworkManager:(PVNetworkManager*)manager didReceivedData:(NSData*)data fromDevice:(NSDictionary*)device withType:(long)dataType;
+- (void)PVNetworkManager:(PVNetworkManager*)manager didReceivedData:(NSData*)data fromDevice:(NSDictionary*)device withType:(int)dataType;
 
 @end
