@@ -9,12 +9,16 @@
 #import "PVCaptureManager.h"
 #import "PVNetworkManager.h"
 #import "NSData+NSValue.h"
+#import "NSMutableArray+NonRetaining.h"
 
 static PVCaptureManager *sharedManager;
 
 @interface PVCaptureManager ()
 
 @property (retain, nonatomic) PVNetworkManager *networkManager;
+@property (retain, nonatomic) NSMutableArray *cameraDelegates;
+@property (retain, nonatomic) NSMutableArray *gyroDelegates;
+@property (retain, nonatomic) NSMutableArray *delegates;
 
 @end
 
@@ -24,10 +28,26 @@ static PVCaptureManager *sharedManager;
 {
     if (self = [super init])
     {
+        
+        self.cameraDelegates = [NSMutableArray nonRetainingArray];
+        self.gyroDelegates = [NSMutableArray nonRetainingArray];
+        self.delegates = [NSMutableArray nonRetainingArray];
+        
         self.networkManager = [PVNetworkManager sharedManager];
         [self.networkManager start:(id)self];
     }
     return self;
+}
+
+- (void)dealloc
+{
+    self.cameraDelegates = nil;
+    self.gyroDelegates = nil;
+    self.delegates = nil;
+    
+    self.networkManager = nil;
+    
+    [super dealloc];
 }
 
 + (id)sharedManager
@@ -73,27 +93,62 @@ static PVCaptureManager *sharedManager;
         
         NSDictionary *rdict = (NSDictionary*) [NSKeyedUnarchiver unarchiveObjectWithData:data];
         CGRect captureRect = CGRectMake([[rdict objectForKey:@"x"] floatValue], [[rdict objectForKey:@"y"] floatValue], [[rdict objectForKey:@"width"] floatValue], [[rdict objectForKey:@"height"] floatValue]);
-        if ([self.delegate respondsToSelector:@selector(PVCaptureManager:didRecievedFaceCaptureAtRect:)])
-            [self.delegate PVCaptureManager:self didRecievedFaceCaptureAtRect:captureRect];
+        
+        for (id<PVCaptureManagerCameraDelegate> delegate in _cameraDelegates) {
+            if ([delegate respondsToSelector:@selector(PVCaptureManager:didRecievedFaceCaptureAtRect:)])
+                [delegate PVCaptureManager:self didRecievedFaceCaptureAtRect:captureRect];
+        }
+        
     } else if (dataType == WINSIZE_DATA)
     {
         
         NSDictionary *rdict = (NSDictionary*) [NSKeyedUnarchiver unarchiveObjectWithData:data];
         CGSize winSize = CGSizeMake([[rdict objectForKey:@"width"] floatValue], [[rdict objectForKey:@"height"] floatValue]);
-        if ([self.delegate respondsToSelector:@selector(PVCaptureManager:didRecievedWindowSize:)])
-            [self.delegate PVCaptureManager:self didRecievedWindowSize:winSize];
+        
+        for (id<PVCaptureManagerDelegate> delegate in _delegates) {
+            if ([delegate respondsToSelector:@selector(PVCaptureManager:didRecievedWindowSize:)])
+                [delegate PVCaptureManager:self didRecievedWindowSize:winSize];
+        }
+        
     } else if (dataType == GYRO_DATA)
     {
         CMGyroData *gdata = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-        if ([self.delegate respondsToSelector:@selector(PVCaptureManager:didRecievedGyroscopeData:)])
-            [self.delegate PVCaptureManager:self didRecievedGyroscopeData:gdata];
+        
+        for (id<PVCaptureManagerGyroDelegate> delegate in _gyroDelegates) {
+            if ([delegate respondsToSelector:@selector(PVCaptureManager:didRecievedGyroscopeData:)])
+                [delegate PVCaptureManager:self didRecievedGyroscopeData:gdata];
+        }
+        
     } else if (dataType == ACCL_DATA)
     {
         CMAccelerometerData *accdata = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-        if ([self.delegate respondsToSelector:@selector(PVCaptureManager:didRecievedAccelerometerData:)])
-            [self.delegate PVCaptureManager:self didRecievedAccelerometerData:accdata];
+        
+        for (id<PVCaptureManagerGyroDelegate> delegate in _gyroDelegates) {
+            if ([delegate respondsToSelector:@selector(PVCaptureManager:didRecievedAccelerometerData:)])
+                [delegate PVCaptureManager:self didRecievedAccelerometerData:accdata];
+        }
     }
 }
 
+@end
+
+
+@implementation PVCaptureManager (SubscribeMethods)
+
+- (void)subscribeToAllEvents:(id<PVCaptureManagerCameraDelegate, PVCaptureManagerGyroDelegate>) delegate
+{
+    [self subscribeToCameraEvents:delegate];
+    [self subscribeToGyroEvents:delegate];
+}
+
+- (void)subscribeToCameraEvents:(id<PVCaptureManagerCameraDelegate>) delegate
+{
+    [self.cameraDelegates addObject:delegate];
+}
+
+- (void)subscribeToGyroEvents:(id<PVCaptureManagerGyroDelegate>) delegate
+{
+    [self.gyroDelegates addObject:delegate];
+}
 
 @end

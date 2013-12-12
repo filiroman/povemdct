@@ -100,6 +100,26 @@
     }
 }
 
+- (void)setupMotion
+{
+    
+    [self stopAccelerometer];
+    [self stopGyro];
+    
+    if ([self.motionManager isDeviceMotionActive])
+    {
+        if ([self.motionManager isDeviceMotionActive] == NO)
+        {
+            [self.motionManager setDeviceMotionUpdateInterval:UPDATE_SPEED];
+            
+            [self.motionManager startDeviceMotionUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMDeviceMotion *motion, NSError *error) {
+                
+                
+            }];
+        }
+    }
+}
+
 - (void)setupGyroscope
 {
     

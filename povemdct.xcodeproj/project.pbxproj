@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E32BD57718575A37000170D2 /* NSMutableArray+NonRetaining.m in Sources */ = {isa = PBXBuildFile; fileRef = E32BD57618575A37000170D2 /* NSMutableArray+NonRetaining.m */; };
 		E33697901817DB8800A80510 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = E336978D1817DB8800A80510 /* GCDAsyncSocket.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		E33697911817DB8800A80510 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = E336978F1817DB8800A80510 /* GCDAsyncUdpSocket.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		E33697941817E0B800A80510 /* PVNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E33697931817E0B800A80510 /* PVNetworkManager.m */; };
@@ -57,6 +58,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E32BD57518575A37000170D2 /* NSMutableArray+NonRetaining.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSMutableArray+NonRetaining.h"; path = "Utils/NSMutableArray+NonRetaining.h"; sourceTree = "<group>"; };
+		E32BD57618575A37000170D2 /* NSMutableArray+NonRetaining.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSMutableArray+NonRetaining.m"; path = "Utils/NSMutableArray+NonRetaining.m"; sourceTree = "<group>"; };
 		E336978C1817DB8800A80510 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
 		E336978D1817DB8800A80510 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
 		E336978E1817DB8800A80510 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
@@ -146,6 +149,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E32BD56A18575931000170D2 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				E32BD57518575A37000170D2 /* NSMutableArray+NonRetaining.h */,
+				E32BD57618575A37000170D2 /* NSMutableArray+NonRetaining.m */,
+			);
+			name = Utils;
+			sourceTree = "<group>";
+		};
 		E3300B3A181A7ABA00F9BCA4 /* Common */ = {
 			isa = PBXGroup;
 			children = (
@@ -245,6 +257,7 @@
 		E3623D8617F5885000866CB2 /* povemdct */ = {
 			isa = PBXGroup;
 			children = (
+				E32BD56A18575931000170D2 /* Utils */,
 				E3300B3B181A7ACD00F9BCA4 /* Interface */,
 				E37A714D1819C72700983B72 /* PVCaptureManager.h */,
 				E37A714E1819C72700983B72 /* PVCaptureManager.m */,
@@ -418,6 +431,7 @@
 				E37A71521819CA8A00983B72 /* NSData+NSValue.m in Sources */,
 				E37A71491819AD3400983B72 /* PVNotifierView.m in Sources */,
 				E37A714C1819C4C800983B72 /* PVClientMainViewController.m in Sources */,
+				E32BD57718575A37000170D2 /* NSMutableArray+NonRetaining.m in Sources */,
 				E3623D9417F5885000866CB2 /* povemdct.xcdatamodeld in Sources */,
 				E3654ADF183EA85500352835 /* PVServerMainViewController.m in Sources */,
 				E3CEB77E1808581B00E460E5 /* VideoCaptureViewController.mm in Sources */,
