@@ -27,7 +27,7 @@
     if (self) {
         
         self.captureManager = [PVCaptureManager sharedManager];
-        self.captureManager.delegate = (id)self;
+        //self.captureManager.delegate = (id)self;
     }
     return self;
 }

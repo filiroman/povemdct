@@ -12,12 +12,16 @@
 #define WINSIZE_DATA 3
 #define GYRO_DATA 4
 #define ACCL_DATA 5
+#define MOTION_DATA 6
+#define CONTROL_DATA 7
+#define TOUCH_DATA 8
 
 // length of message where size of header is presented (1 number only)
 #define HEADER_LENGTH_MSG_SIZE sizeof(int)
 
 #import <Foundation/Foundation.h>
-#import "PVObserverViewController.h"
+#import "PVNetworkManager.h"
+#import "PVManager.h"
 
 @class GCDAsyncSocket;
 @class GCDAsyncUdpSocket;

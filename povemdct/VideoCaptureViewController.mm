@@ -15,6 +15,7 @@
 //#import "UIImage+OpenCV.h"
 
 #import "VideoCaptureViewController.h"
+#import <opencv2/opencv.hpp>
 
 // Number of frames to average for FPS calculation
 const int kFrameTimeBufferSize = 5;

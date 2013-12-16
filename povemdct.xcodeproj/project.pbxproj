@@ -11,15 +11,50 @@
 		E33697901817DB8800A80510 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = E336978D1817DB8800A80510 /* GCDAsyncSocket.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		E33697911817DB8800A80510 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = E336978F1817DB8800A80510 /* GCDAsyncUdpSocket.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 		E33697941817E0B800A80510 /* PVNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E33697931817E0B800A80510 /* PVNetworkManager.m */; };
-		E33697971817E1B200A80510 /* PVObserverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E33697961817E1B200A80510 /* PVObserverViewController.m */; };
+		E33BC692185A4DC1008A7E68 /* PVManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E33BC691185A4DC1008A7E68 /* PVManager.m */; };
 		E34288D2180828E4004737C7 /* haarcascade_frontalface_alt2.xml in Resources */ = {isa = PBXBuildFile; fileRef = E34288D1180828E4004737C7 /* haarcascade_frontalface_alt2.xml */; };
+		E34557EB185B26FC00D6478E /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D9C17F5885000866CB2 /* XCTest.framework */; };
+		E34557EC185B26FC00D6478E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D7E17F5885000866CB2 /* Foundation.framework */; };
+		E34557ED185B26FC00D6478E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D8217F5885000866CB2 /* UIKit.framework */; };
+		E34557F0185B26FC00D6478E /* libPOVEMDCT.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E34557DD185B26FC00D6478E /* libPOVEMDCT.a */; };
+		E34557F6185B26FC00D6478E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E34557F4185B26FC00D6478E /* InfoPlist.strings */; };
+		E3455800185B27D000D6478E /* NSMutableArray+NonRetaining.m in Sources */ = {isa = PBXBuildFile; fileRef = E32BD57618575A37000170D2 /* NSMutableArray+NonRetaining.m */; };
+		E3455802185B27D000D6478E /* PVGyroCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E3863576183E1E2700A8606A /* PVGyroCaptureManager.m */; };
+		E3455804185B27D000D6478E /* PVManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E33BC691185A4DC1008A7E68 /* PVManager.m */; };
+		E3455806185B27D000D6478E /* VideoCaptureViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E3CEB77D1808581B00E460E5 /* VideoCaptureViewController.mm */; };
+		E3455808185B27D000D6478E /* PVMainViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E3CEB7801808582D00E460E5 /* PVMainViewController.mm */; };
+		E345580A185B27D000D6478E /* NSData+NSValue.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A71511819CA8A00983B72 /* NSData+NSValue.m */; };
+		E345580C185B27D000D6478E /* PVCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A714E1819C72700983B72 /* PVCaptureManager.m */; };
+		E345580E185B27D000D6478E /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = E336978D1817DB8800A80510 /* GCDAsyncSocket.m */; };
+		E3455810185B27D000D6478E /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = E336978F1817DB8800A80510 /* GCDAsyncUdpSocket.m */; };
+		E3455812185B27D000D6478E /* PVNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E33697931817E0B800A80510 /* PVNetworkManager.m */; };
+		E3455813185B284C00D6478E /* NSMutableArray+NonRetaining.m in Sources */ = {isa = PBXBuildFile; fileRef = E32BD57618575A37000170D2 /* NSMutableArray+NonRetaining.m */; };
+		E3455814185B284C00D6478E /* PVGyroCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E3863576183E1E2700A8606A /* PVGyroCaptureManager.m */; };
+		E3455815185B284C00D6478E /* PVManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E33BC691185A4DC1008A7E68 /* PVManager.m */; };
+		E3455816185B284C00D6478E /* VideoCaptureViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E3CEB77D1808581B00E460E5 /* VideoCaptureViewController.mm */; };
+		E3455817185B284C00D6478E /* PVMainViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E3CEB7801808582D00E460E5 /* PVMainViewController.mm */; };
+		E3455818185B284C00D6478E /* NSData+NSValue.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A71511819CA8A00983B72 /* NSData+NSValue.m */; };
+		E3455819185B284C00D6478E /* PVNotifierView.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A71481819AD3400983B72 /* PVNotifierView.m */; };
+		E345581A185B284C00D6478E /* PVActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A713D1819A9DF00983B72 /* PVActivityView.m */; };
+		E345581B185B284C00D6478E /* PVCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A714E1819C72700983B72 /* PVCaptureManager.m */; };
+		E345581C185B284C00D6478E /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = E336978D1817DB8800A80510 /* GCDAsyncSocket.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		E345581D185B284C00D6478E /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = E336978F1817DB8800A80510 /* GCDAsyncUdpSocket.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		E345581E185B284C00D6478E /* PVNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E33697931817E0B800A80510 /* PVNetworkManager.m */; };
+		E345581F185B289200D6478E /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DBE17F5A25F00866CB2 /* Accelerate.framework */; };
+		E3455820185B289200D6478E /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DBF17F5A25F00866CB2 /* AssetsLibrary.framework */; };
+		E3455821185B289200D6478E /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DB817F589FA00866CB2 /* AVFoundation.framework */; };
+		E3455822185B289200D6478E /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3863578183E1F2600A8606A /* CoreMotion.framework */; };
+		E3455823185B28A700D6478E /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DC017F5A25F00866CB2 /* CoreImage.framework */; };
+		E3455824185B28A700D6478E /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DB917F589FA00866CB2 /* CoreMedia.framework */; };
+		E3455825185B28A700D6478E /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DBA17F589FA00866CB2 /* CoreVideo.framework */; };
+		E3455826185B28CB00D6478E /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DB617F5895F00866CB2 /* opencv2.framework */; };
+		E3455830185B2A1800D6478E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D8217F5885000866CB2 /* UIKit.framework */; };
+		E3455831185B2A2F00D6478E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D7E17F5885000866CB2 /* Foundation.framework */; };
 		E3623D7F17F5885000866CB2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D7E17F5885000866CB2 /* Foundation.framework */; };
 		E3623D8117F5885000866CB2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D8017F5885000866CB2 /* CoreGraphics.framework */; };
 		E3623D8317F5885000866CB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D8217F5885000866CB2 /* UIKit.framework */; };
 		E3623D8517F5885000866CB2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D8417F5885000866CB2 /* CoreData.framework */; };
 		E3623D8B17F5885000866CB2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E3623D8917F5885000866CB2 /* InfoPlist.strings */; };
-		E3623D8D17F5885000866CB2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E3623D8C17F5885000866CB2 /* main.m */; };
-		E3623D9117F5885000866CB2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E3623D9017F5885000866CB2 /* AppDelegate.m */; };
 		E3623D9417F5885000866CB2 /* povemdct.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E3623D9217F5885000866CB2 /* povemdct.xcdatamodeld */; };
 		E3623D9617F5885000866CB2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E3623D9517F5885000866CB2 /* Images.xcassets */; };
 		E3623D9D17F5885000866CB2 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D9C17F5885000866CB2 /* XCTest.framework */; };
@@ -33,21 +68,27 @@
 		E3623DC117F5A25F00866CB2 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DBE17F5A25F00866CB2 /* Accelerate.framework */; };
 		E3623DC217F5A25F00866CB2 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DBF17F5A25F00866CB2 /* AssetsLibrary.framework */; };
 		E3623DC317F5A25F00866CB2 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DC017F5A25F00866CB2 /* CoreImage.framework */; };
-		E3654ADF183EA85500352835 /* PVServerMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3654ADE183EA85500352835 /* PVServerMainViewController.m */; };
 		E37A7136181919E500983B72 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = E37A7135181919E500983B72 /* Localizable.strings */; };
-		E37A713B1819A3A500983B72 /* PVRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A713A1819A3A500983B72 /* PVRootViewController.m */; };
 		E37A713E1819A9DF00983B72 /* PVActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A713D1819A9DF00983B72 /* PVActivityView.m */; };
 		E37A71491819AD3400983B72 /* PVNotifierView.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A71481819AD3400983B72 /* PVNotifierView.m */; };
 		E37A714C1819C4C800983B72 /* PVClientMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A714B1819C4C800983B72 /* PVClientMainViewController.m */; };
 		E37A714F1819C72700983B72 /* PVCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A714E1819C72700983B72 /* PVCaptureManager.m */; };
 		E37A71521819CA8A00983B72 /* NSData+NSValue.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A71511819CA8A00983B72 /* NSData+NSValue.m */; };
-		E3863577183E1E2800A8606A /* PVGyroCaptureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E3863576183E1E2700A8606A /* PVGyroCaptureViewController.m */; };
+		E3863577183E1E2800A8606A /* PVGyroCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E3863576183E1E2700A8606A /* PVGyroCaptureManager.m */; };
 		E3863579183E1F2600A8606A /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3863578183E1F2600A8606A /* CoreMotion.framework */; };
+		E386F140185F0AB900D697F4 /* PVTouchCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E386F13F185F0AB900D697F4 /* PVTouchCaptureManager.m */; };
 		E3CEB77E1808581B00E460E5 /* VideoCaptureViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E3CEB77D1808581B00E460E5 /* VideoCaptureViewController.mm */; };
 		E3CEB7811808582D00E460E5 /* PVMainViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E3CEB7801808582D00E460E5 /* PVMainViewController.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		E34557EE185B26FC00D6478E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E3623D7317F5885000866CB2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E34557DC185B26FC00D6478E;
+			remoteInfo = POVEMDCT;
+		};
 		E3623DA117F5885000866CB2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E3623D7317F5885000866CB2 /* Project object */;
@@ -56,6 +97,18 @@
 			remoteInfo = povemdct;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E34557DB185B26FC00D6478E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		E32BD57518575A37000170D2 /* NSMutableArray+NonRetaining.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSMutableArray+NonRetaining.h"; path = "Utils/NSMutableArray+NonRetaining.h"; sourceTree = "<group>"; };
@@ -66,9 +119,17 @@
 		E336978F1817DB8800A80510 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
 		E33697921817E0B800A80510 /* PVNetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVNetworkManager.h; sourceTree = "<group>"; };
 		E33697931817E0B800A80510 /* PVNetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVNetworkManager.m; sourceTree = "<group>"; };
-		E33697951817E1B200A80510 /* PVObserverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVObserverViewController.h; sourceTree = "<group>"; };
-		E33697961817E1B200A80510 /* PVObserverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVObserverViewController.m; sourceTree = "<group>"; };
+		E33BC690185A4DC1008A7E68 /* PVManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVManager.h; sourceTree = "<group>"; };
+		E33BC691185A4DC1008A7E68 /* PVManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVManager.m; sourceTree = "<group>"; };
 		E34288D1180828E4004737C7 /* haarcascade_frontalface_alt2.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = haarcascade_frontalface_alt2.xml; sourceTree = "<group>"; };
+		E34557DD185B26FC00D6478E /* libPOVEMDCT.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPOVEMDCT.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		E34557E1185B26FC00D6478E /* POVEMDCT-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "POVEMDCT-Prefix.pch"; sourceTree = "<group>"; };
+		E34557E2185B26FC00D6478E /* POVEMDCT.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = POVEMDCT.h; sourceTree = "<group>"; };
+		E34557E4185B26FC00D6478E /* POVEMDCT.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = POVEMDCT.m; sourceTree = "<group>"; };
+		E34557EA185B26FC00D6478E /* POVEMDCTTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = POVEMDCTTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E34557F3185B26FC00D6478E /* POVEMDCTTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "POVEMDCTTests-Info.plist"; sourceTree = "<group>"; };
+		E34557F5185B26FC00D6478E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		E34557F7185B26FC00D6478E /* POVEMDCTTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = POVEMDCTTests.m; sourceTree = "<group>"; };
 		E3623D7B17F5885000866CB2 /* povemdct.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = povemdct.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3623D7E17F5885000866CB2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E3623D8017F5885000866CB2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -76,10 +137,7 @@
 		E3623D8417F5885000866CB2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		E3623D8817F5885000866CB2 /* povemdct-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "povemdct-Info.plist"; sourceTree = "<group>"; };
 		E3623D8A17F5885000866CB2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		E3623D8C17F5885000866CB2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E3623D8E17F5885000866CB2 /* povemdct-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "povemdct-Prefix.pch"; sourceTree = "<group>"; };
-		E3623D8F17F5885000866CB2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		E3623D9017F5885000866CB2 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		E3623D9317F5885000866CB2 /* povemdct.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = povemdct.xcdatamodel; sourceTree = "<group>"; };
 		E3623D9517F5885000866CB2 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		E3623D9B17F5885000866CB2 /* povemdctTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = povemdctTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -91,11 +149,7 @@
 		E3623DBE17F5A25F00866CB2 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		E3623DBF17F5A25F00866CB2 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		E3623DC017F5A25F00866CB2 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
-		E3654ADD183EA85500352835 /* PVServerMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVServerMainViewController.h; sourceTree = "<group>"; };
-		E3654ADE183EA85500352835 /* PVServerMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVServerMainViewController.m; sourceTree = "<group>"; };
 		E37A7135181919E500983B72 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
-		E37A71391819A3A500983B72 /* PVRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRootViewController.h; sourceTree = "<group>"; };
-		E37A713A1819A3A500983B72 /* PVRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVRootViewController.m; sourceTree = "<group>"; };
 		E37A713C1819A9DF00983B72 /* PVActivityView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVActivityView.h; sourceTree = "<group>"; };
 		E37A713D1819A9DF00983B72 /* PVActivityView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVActivityView.m; sourceTree = "<group>"; };
 		E37A71471819AD3400983B72 /* PVNotifierView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVNotifierView.h; sourceTree = "<group>"; };
@@ -106,9 +160,11 @@
 		E37A714E1819C72700983B72 /* PVCaptureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVCaptureManager.m; sourceTree = "<group>"; };
 		E37A71501819CA8A00983B72 /* NSData+NSValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+NSValue.h"; sourceTree = "<group>"; };
 		E37A71511819CA8A00983B72 /* NSData+NSValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+NSValue.m"; sourceTree = "<group>"; };
-		E3863575183E1E2700A8606A /* PVGyroCaptureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVGyroCaptureViewController.h; sourceTree = "<group>"; };
-		E3863576183E1E2700A8606A /* PVGyroCaptureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVGyroCaptureViewController.m; sourceTree = "<group>"; };
+		E3863575183E1E2700A8606A /* PVGyroCaptureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVGyroCaptureManager.h; sourceTree = "<group>"; };
+		E3863576183E1E2700A8606A /* PVGyroCaptureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVGyroCaptureManager.m; sourceTree = "<group>"; };
 		E3863578183E1F2600A8606A /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		E386F13E185F0AB900D697F4 /* PVTouchCaptureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVTouchCaptureManager.h; sourceTree = "<group>"; };
+		E386F13F185F0AB900D697F4 /* PVTouchCaptureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVTouchCaptureManager.m; sourceTree = "<group>"; };
 		E3CEB77C1808581B00E460E5 /* VideoCaptureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoCaptureViewController.h; sourceTree = "<group>"; };
 		E3CEB77D1808581B00E460E5 /* VideoCaptureViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VideoCaptureViewController.mm; sourceTree = "<group>"; };
 		E3CEB77F1808582D00E460E5 /* PVMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVMainViewController.h; sourceTree = "<group>"; };
@@ -116,6 +172,34 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		E34557DA185B26FC00D6478E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E3455831185B2A2F00D6478E /* Foundation.framework in Frameworks */,
+				E3455830185B2A1800D6478E /* UIKit.framework in Frameworks */,
+				E3455826185B28CB00D6478E /* opencv2.framework in Frameworks */,
+				E3455823185B28A700D6478E /* CoreImage.framework in Frameworks */,
+				E3455824185B28A700D6478E /* CoreMedia.framework in Frameworks */,
+				E3455825185B28A700D6478E /* CoreVideo.framework in Frameworks */,
+				E345581F185B289200D6478E /* Accelerate.framework in Frameworks */,
+				E3455820185B289200D6478E /* AssetsLibrary.framework in Frameworks */,
+				E3455821185B289200D6478E /* AVFoundation.framework in Frameworks */,
+				E3455822185B289200D6478E /* CoreMotion.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E34557E7185B26FC00D6478E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E34557EB185B26FC00D6478E /* XCTest.framework in Frameworks */,
+				E34557F0185B26FC00D6478E /* libPOVEMDCT.a in Frameworks */,
+				E34557ED185B26FC00D6478E /* UIKit.framework in Frameworks */,
+				E34557EC185B26FC00D6478E /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E3623D7817F5885000866CB2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -174,6 +258,7 @@
 		E3300B3B181A7ACD00F9BCA4 /* Interface */ = {
 			isa = PBXGroup;
 			children = (
+				E386F13D185F0A9400D697F4 /* Touch */,
 				E3863574183E1DE700A8606A /* Gyro&Accl */,
 				E3300B3C181A7AE000F9BCA4 /* Main */,
 				E37A71371819A2E200983B72 /* VideoCapture */,
@@ -185,14 +270,10 @@
 		E3300B3C181A7AE000F9BCA4 /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				E33697951817E1B200A80510 /* PVObserverViewController.h */,
-				E33697961817E1B200A80510 /* PVObserverViewController.m */,
 				E37A714A1819C4C800983B72 /* PVClientMainViewController.h */,
 				E37A714B1819C4C800983B72 /* PVClientMainViewController.m */,
-				E37A71391819A3A500983B72 /* PVRootViewController.h */,
-				E37A713A1819A3A500983B72 /* PVRootViewController.m */,
-				E3654ADD183EA85500352835 /* PVServerMainViewController.h */,
-				E3654ADE183EA85500352835 /* PVServerMainViewController.m */,
+				E33BC690185A4DC1008A7E68 /* PVManager.h */,
+				E33BC691185A4DC1008A7E68 /* PVManager.m */,
 			);
 			name = Main;
 			sourceTree = "<group>";
@@ -216,10 +297,48 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
+		E34557DF185B26FC00D6478E /* POVEMDCT */ = {
+			isa = PBXGroup;
+			children = (
+				E34557E2185B26FC00D6478E /* POVEMDCT.h */,
+				E34557E4185B26FC00D6478E /* POVEMDCT.m */,
+				E34557E0185B26FC00D6478E /* Supporting Files */,
+			);
+			path = POVEMDCT;
+			sourceTree = "<group>";
+		};
+		E34557E0185B26FC00D6478E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				E34557E1185B26FC00D6478E /* POVEMDCT-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E34557F1185B26FC00D6478E /* POVEMDCTTests */ = {
+			isa = PBXGroup;
+			children = (
+				E34557F7185B26FC00D6478E /* POVEMDCTTests.m */,
+				E34557F2185B26FC00D6478E /* Supporting Files */,
+			);
+			path = POVEMDCTTests;
+			sourceTree = "<group>";
+		};
+		E34557F2185B26FC00D6478E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				E34557F3185B26FC00D6478E /* POVEMDCTTests-Info.plist */,
+				E34557F4185B26FC00D6478E /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		E3623D7217F5885000866CB2 = {
 			isa = PBXGroup;
 			children = (
 				E3623D8617F5885000866CB2 /* povemdct */,
+				E34557DF185B26FC00D6478E /* POVEMDCT */,
+				E34557F1185B26FC00D6478E /* POVEMDCTTests */,
 				E3623D7D17F5885000866CB2 /* Frameworks */,
 				E3623D7C17F5885000866CB2 /* Products */,
 			);
@@ -230,6 +349,8 @@
 			children = (
 				E3623D7B17F5885000866CB2 /* povemdct.app */,
 				E3623D9B17F5885000866CB2 /* povemdctTests.xctest */,
+				E34557DD185B26FC00D6478E /* libPOVEMDCT.a */,
+				E34557EA185B26FC00D6478E /* POVEMDCTTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -263,8 +384,6 @@
 				E37A714E1819C72700983B72 /* PVCaptureManager.m */,
 				E336978B1817DB7300A80510 /* Network */,
 				E34288D0180828DA004737C7 /* Resources */,
-				E3623D8F17F5885000866CB2 /* AppDelegate.h */,
-				E3623D9017F5885000866CB2 /* AppDelegate.m */,
 				E3623D9517F5885000866CB2 /* Images.xcassets */,
 				E3623D9217F5885000866CB2 /* povemdct.xcdatamodeld */,
 				E3623D8717F5885000866CB2 /* Supporting Files */,
@@ -277,7 +396,6 @@
 			children = (
 				E3623D8817F5885000866CB2 /* povemdct-Info.plist */,
 				E3623D8917F5885000866CB2 /* InfoPlist.strings */,
-				E3623D8C17F5885000866CB2 /* main.m */,
 				E3623D8E17F5885000866CB2 /* povemdct-Prefix.pch */,
 			);
 			name = "Supporting Files";
@@ -316,15 +434,59 @@
 		E3863574183E1DE700A8606A /* Gyro&Accl */ = {
 			isa = PBXGroup;
 			children = (
-				E3863575183E1E2700A8606A /* PVGyroCaptureViewController.h */,
-				E3863576183E1E2700A8606A /* PVGyroCaptureViewController.m */,
+				E3863575183E1E2700A8606A /* PVGyroCaptureManager.h */,
+				E3863576183E1E2700A8606A /* PVGyroCaptureManager.m */,
 			);
 			name = "Gyro&Accl";
+			sourceTree = "<group>";
+		};
+		E386F13D185F0A9400D697F4 /* Touch */ = {
+			isa = PBXGroup;
+			children = (
+				E386F13E185F0AB900D697F4 /* PVTouchCaptureManager.h */,
+				E386F13F185F0AB900D697F4 /* PVTouchCaptureManager.m */,
+			);
+			name = Touch;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		E34557DC185B26FC00D6478E /* POVEMDCT */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E34557F9185B26FD00D6478E /* Build configuration list for PBXNativeTarget "POVEMDCT" */;
+			buildPhases = (
+				E34557D9185B26FC00D6478E /* Sources */,
+				E34557DA185B26FC00D6478E /* Frameworks */,
+				E34557DB185B26FC00D6478E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = POVEMDCT;
+			productName = POVEMDCT;
+			productReference = E34557DD185B26FC00D6478E /* libPOVEMDCT.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		E34557E9185B26FC00D6478E /* POVEMDCTTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E34557FC185B26FD00D6478E /* Build configuration list for PBXNativeTarget "POVEMDCTTests" */;
+			buildPhases = (
+				E34557E6185B26FC00D6478E /* Sources */,
+				E34557E7185B26FC00D6478E /* Frameworks */,
+				E34557E8185B26FC00D6478E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E34557EF185B26FC00D6478E /* PBXTargetDependency */,
+			);
+			name = POVEMDCTTests;
+			productName = POVEMDCTTests;
+			productReference = E34557EA185B26FC00D6478E /* POVEMDCTTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		E3623D7A17F5885000866CB2 /* povemdct */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E3623DAD17F5885000866CB2 /* Build configuration list for PBXNativeTarget "povemdct" */;
@@ -369,6 +531,9 @@
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Roman Filippov";
 				TargetAttributes = {
+					E34557E9185B26FC00D6478E = {
+						TestTargetID = E3623D7A17F5885000866CB2;
+					};
 					E3623D9A17F5885000866CB2 = {
 						TestTargetID = E3623D7A17F5885000866CB2;
 					};
@@ -388,11 +553,21 @@
 			targets = (
 				E3623D7A17F5885000866CB2 /* povemdct */,
 				E3623D9A17F5885000866CB2 /* povemdctTests */,
+				E34557DC185B26FC00D6478E /* POVEMDCT */,
+				E34557E9185B26FC00D6478E /* POVEMDCTTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		E34557E8185B26FC00D6478E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E34557F6185B26FC00D6478E /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E3623D7917F5885000866CB2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -414,26 +589,59 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		E34557D9185B26FC00D6478E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E3455813185B284C00D6478E /* NSMutableArray+NonRetaining.m in Sources */,
+				E3455814185B284C00D6478E /* PVGyroCaptureManager.m in Sources */,
+				E3455815185B284C00D6478E /* PVManager.m in Sources */,
+				E3455816185B284C00D6478E /* VideoCaptureViewController.mm in Sources */,
+				E3455817185B284C00D6478E /* PVMainViewController.mm in Sources */,
+				E3455818185B284C00D6478E /* NSData+NSValue.m in Sources */,
+				E3455819185B284C00D6478E /* PVNotifierView.m in Sources */,
+				E345581A185B284C00D6478E /* PVActivityView.m in Sources */,
+				E345581B185B284C00D6478E /* PVCaptureManager.m in Sources */,
+				E345581C185B284C00D6478E /* GCDAsyncSocket.m in Sources */,
+				E345581D185B284C00D6478E /* GCDAsyncUdpSocket.m in Sources */,
+				E345581E185B284C00D6478E /* PVNetworkManager.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E34557E6185B26FC00D6478E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E3455800185B27D000D6478E /* NSMutableArray+NonRetaining.m in Sources */,
+				E3455802185B27D000D6478E /* PVGyroCaptureManager.m in Sources */,
+				E3455804185B27D000D6478E /* PVManager.m in Sources */,
+				E3455806185B27D000D6478E /* VideoCaptureViewController.mm in Sources */,
+				E3455808185B27D000D6478E /* PVMainViewController.mm in Sources */,
+				E345580A185B27D000D6478E /* NSData+NSValue.m in Sources */,
+				E345580C185B27D000D6478E /* PVCaptureManager.m in Sources */,
+				E345580E185B27D000D6478E /* GCDAsyncSocket.m in Sources */,
+				E3455810185B27D000D6478E /* GCDAsyncUdpSocket.m in Sources */,
+				E3455812185B27D000D6478E /* PVNetworkManager.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E3623D7717F5885000866CB2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E37A713B1819A3A500983B72 /* PVRootViewController.m in Sources */,
 				E33697901817DB8800A80510 /* GCDAsyncSocket.m in Sources */,
-				E3863577183E1E2800A8606A /* PVGyroCaptureViewController.m in Sources */,
+				E3863577183E1E2800A8606A /* PVGyroCaptureManager.m in Sources */,
+				E386F140185F0AB900D697F4 /* PVTouchCaptureManager.m in Sources */,
 				E37A714F1819C72700983B72 /* PVCaptureManager.m in Sources */,
 				E33697941817E0B800A80510 /* PVNetworkManager.m in Sources */,
-				E3623D9117F5885000866CB2 /* AppDelegate.m in Sources */,
-				E33697971817E1B200A80510 /* PVObserverViewController.m in Sources */,
 				E3CEB7811808582D00E460E5 /* PVMainViewController.mm in Sources */,
-				E3623D8D17F5885000866CB2 /* main.m in Sources */,
 				E33697911817DB8800A80510 /* GCDAsyncUdpSocket.m in Sources */,
 				E37A71521819CA8A00983B72 /* NSData+NSValue.m in Sources */,
 				E37A71491819AD3400983B72 /* PVNotifierView.m in Sources */,
 				E37A714C1819C4C800983B72 /* PVClientMainViewController.m in Sources */,
 				E32BD57718575A37000170D2 /* NSMutableArray+NonRetaining.m in Sources */,
 				E3623D9417F5885000866CB2 /* povemdct.xcdatamodeld in Sources */,
-				E3654ADF183EA85500352835 /* PVServerMainViewController.m in Sources */,
+				E33BC692185A4DC1008A7E68 /* PVManager.m in Sources */,
 				E3CEB77E1808581B00E460E5 /* VideoCaptureViewController.mm in Sources */,
 				E37A713E1819A9DF00983B72 /* PVActivityView.m in Sources */,
 			);
@@ -449,6 +657,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		E34557EF185B26FC00D6478E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E34557DC185B26FC00D6478E /* POVEMDCT */;
+			targetProxy = E34557EE185B26FC00D6478E /* PBXContainerItemProxy */;
+		};
 		E3623DA217F5885000866CB2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = E3623D7A17F5885000866CB2 /* povemdct */;
@@ -457,6 +670,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		E34557F4185B26FC00D6478E /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E34557F5185B26FC00D6478E /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		E3623D8917F5885000866CB2 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -468,6 +689,100 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		E34557FA185B26FD00D6478E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				DSTROOT = /tmp/POVEMDCT.dst;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/romanfilippov/Development/iOS/povemdct/povemdct,
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "POVEMDCT/POVEMDCT-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/Users/romanfilippov/Desktop/macos,
+				);
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		E34557FB185B26FD00D6478E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				DSTROOT = /tmp/POVEMDCT.dst;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/romanfilippov/Development/iOS/povemdct/povemdct,
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "POVEMDCT/POVEMDCT-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/Users/romanfilippov/Desktop/macos,
+				);
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		E34557FD185B26FD00D6478E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/povemdct.app/povemdct";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "POVEMDCT/POVEMDCT-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "POVEMDCTTests/POVEMDCTTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		E34557FE185B26FD00D6478E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/povemdct.app/povemdct";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "POVEMDCT/POVEMDCT-Prefix.pch";
+				INFOPLIST_FILE = "POVEMDCTTests/POVEMDCTTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
 		E3623DAB17F5885000866CB2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -633,6 +948,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		E34557F9185B26FD00D6478E /* Build configuration list for PBXNativeTarget "POVEMDCT" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E34557FA185B26FD00D6478E /* Debug */,
+				E34557FB185B26FD00D6478E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E34557FC185B26FD00D6478E /* Build configuration list for PBXNativeTarget "POVEMDCTTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E34557FD185B26FD00D6478E /* Debug */,
+				E34557FE185B26FD00D6478E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		E3623D7617F5885000866CB2 /* Build configuration list for PBXProject "povemdct" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

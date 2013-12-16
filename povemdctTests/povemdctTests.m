@@ -1,18 +1,18 @@
 //
-//  povemdctTests.m
-//  povemdctTests
+//  POVEMDCTTests.m
+//  POVEMDCTTests
 //
-//  Created by Roman Filippov on 27.09.13.
+//  Created by Roman Filippov on 13.12.13.
 //  Copyright (c) 2013 Roman Filippov. All rights reserved.
 //
 
 #import <XCTest/XCTest.h>
 
-@interface povemdctTests : XCTestCase
+@interface POVEMDCTTests : XCTestCase
 
 @end
 
-@implementation povemdctTests
+@implementation POVEMDCTTests
 
 - (void)setUp
 {

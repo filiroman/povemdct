@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E3623D7A17F5885000866CB2"
-               BuildableName = "povemdct.app"
-               BlueprintName = "povemdct"
+               BlueprintIdentifier = "E34557DC185B26FC00D6478E"
+               BuildableName = "libPOVEMDCT.a"
+               BlueprintName = "POVEMDCT"
                ReferencedContainer = "container:povemdct.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,26 +28,7 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E3623D9A17F5885000866CB2"
-               BuildableName = "povemdctTests.xctest"
-               BlueprintName = "povemdctTests"
-               ReferencedContainer = "container:povemdct.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E3623D7A17F5885000866CB2"
-            BuildableName = "povemdct.app"
-            BlueprintName = "povemdct"
-            ReferencedContainer = "container:povemdct.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </TestAction>
    <LaunchAction
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
@@ -58,15 +39,6 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E3623D7A17F5885000866CB2"
-            BuildableName = "povemdct.app"
-            BlueprintName = "povemdct"
-            ReferencedContainer = "container:povemdct.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -76,15 +48,6 @@
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Release"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E3623D7A17F5885000866CB2"
-            BuildableName = "povemdct.app"
-            BlueprintName = "povemdct"
-            ReferencedContainer = "container:povemdct.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

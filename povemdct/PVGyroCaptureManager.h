@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PVGyroCaptureViewController : UIViewController
+@interface PVGyroCaptureManager : NSObject
 
-- (id)initViewController;
+- (BOOL)startGyroEvents;
+- (BOOL)startAccelerometerEvents;
+- (BOOL)startMotionEvents;
 
 @end

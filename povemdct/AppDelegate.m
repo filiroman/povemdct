@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "PVObserverViewController.h"
 #import "PVRootViewController.h"
 
 @implementation AppDelegate

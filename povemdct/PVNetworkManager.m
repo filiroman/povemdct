@@ -9,6 +9,7 @@
 #import "PVNetworkManager.h"
 #import "GCDAsyncUdpSocket.h"
 #import "GCDAsyncSocket.h"
+#import "NSMutableArray+NonRetaining.h"
 
 static PVNetworkManager *sharedNetworkManager = nil;
 
@@ -16,6 +17,7 @@ static PVNetworkManager *sharedNetworkManager = nil;
 {
     int _numberOfSends;
     int _headerSize;
+    
 }
 
 @property (nonatomic, retain) NSString *host;
@@ -27,6 +29,7 @@ static PVNetworkManager *sharedNetworkManager = nil;
 @property (assign) PVApplicationType appType;
 
 @property (nonatomic, retain) NSMutableArray *connectedDevices;
+@property (nonatomic, retain) NSMutableArray *connectedSockets;
 
 @end
 
@@ -39,13 +42,14 @@ static PVNetworkManager *sharedNetworkManager = nil;
         
         _numberOfSends = 5;
         
-        self.delegates = [[[NSMutableArray alloc] init] autorelease];
+        self.delegates = [NSMutableArray nonRetainingArray];
         self.inPort = 9998;         // port for incoming connections
         self.outMultiPort = 9998;       //port for outcoming udp multicast
         self.host = @"255.255.255.255";     // multicast address
         self.socketQueue = nil;
         _headerSize = -1;
         self.connectedDevices = [NSMutableArray array];
+        self.connectedSockets = [NSMutableArray array];
     }
     return self;
 }
@@ -56,9 +60,11 @@ static PVNetworkManager *sharedNetworkManager = nil;
     self.host = nil;
     self.msg = nil;
     self.connectedDevices = nil;
+    self.connectedSockets = nil;
     
     [self.udpSocket close], self.udpSocket = nil;
     [self.tcpSocket disconnect], self.tcpSocket = nil;
+    
     [super dealloc];
 }
 
@@ -84,16 +90,19 @@ static PVNetworkManager *sharedNetworkManager = nil;
 
 - (void)connectWithDevice:(NSDictionary*)device
 {
-    NSString *host = [device objectForKey:@"host"];
-    uint16_t port = [[device objectForKey:@"port"] intValue];
-    NSError *error = nil;
-    if (![self.tcpSocket connectToHost:host onPort:port error:&error])
-    {
-        NSLog(@"%@",[error description]);
-        return;
+    if (![self.connectedDevices containsObject:device]) {
+        
+        NSString *host = [device objectForKey:@"host"];
+        uint16_t port = [[device objectForKey:@"port"] intValue];
+        NSError *error = nil;
+        if (![self.tcpSocket connectToHost:host onPort:port error:&error])
+        {
+            NSLog(@"%@",[error description]);
+            return;
+        }
+        NSLog(@"Connected to %@:%d",host,port);
+        [self.connectedDevices addObject:device];
     }
-    NSLog(@"Starting connect to %@:%d",host,port);
-    
 }
 
 - (BOOL)setupSockets
@@ -174,9 +183,18 @@ static PVNetworkManager *sharedNetworkManager = nil;
     NSData *hdata = [NSKeyedArchiver archivedDataWithRootObject:headers];
     [self sendHeaders:headers];
     
-    GCDAsyncSocket *newSocket = [self.connectedDevices objectAtIndex:0];
-    NSString *host = [newSocket connectedHost];
-    uint16_t port = [newSocket connectedPort];
+    assert([self.connectedSockets count] > 0 || [self.connectedDevices count] > 0);
+    NSString *host;
+    uint16_t port;
+    if ([self.connectedSockets count] > 0) {
+        GCDAsyncSocket *newSocket = [self.connectedSockets objectAtIndex:0];
+        host = [newSocket connectedHost];
+        port = [newSocket connectedPort];
+    } else {
+        NSDictionary *device = [self.connectedDevices objectAtIndex:0];
+        host = [device objectForKey:@"host"];
+        port = [[device objectForKey:@"port"] intValue];
+    }
     
     if (host != nil)
         [self sendData:data_to_send toDevice:@{@"host": host, @"port" : [NSNumber numberWithInt:port]} withType:dataType];
@@ -184,12 +202,30 @@ static PVNetworkManager *sharedNetworkManager = nil;
 
 - (void)sendHeaders:(NSDictionary*)headers
 {
-    GCDAsyncSocket *newSocket = [self.connectedDevices objectAtIndex:0];
-    NSString *host = [newSocket connectedHost];
-    uint16_t port = [newSocket connectedPort];
+    assert([self.connectedSockets count] > 0 || [self.connectedDevices count] > 0);
+    NSString *host;
+    uint16_t port;
+    if ([self.connectedSockets count] > 0) {
+        GCDAsyncSocket *newSocket = [self.connectedSockets objectAtIndex:0];
+        host = [newSocket connectedHost];
+        port = [newSocket connectedPort];
+    } else {
+        NSDictionary *device = [self.connectedDevices objectAtIndex:0];
+        host = [device objectForKey:@"host"];
+        port = [[device objectForKey:@"port"] intValue];
+    }
+    
     NSDictionary *conDevice = @{@"host": host, @"port" : [NSNumber numberWithInt:port]};
     
-    NSData *hdata = [NSKeyedArchiver archivedDataWithRootObject:headers];
+    NSString *selfHost = self.tcpSocket.localHost;
+    uint16_t selfPort = self.tcpSocket.localPort;
+    
+    NSDictionary *selfDevice = @{@"host": selfHost, @"port": [NSNumber numberWithInt:selfPort]};
+    
+    NSMutableDictionary *dictionaryToSend = [NSMutableDictionary dictionaryWithDictionary:headers];
+    [dictionaryToSend setObject:selfDevice forKey:@"device"];
+    
+    NSData *hdata = [NSKeyedArchiver archivedDataWithRootObject:dictionaryToSend];
     assert(hdata != nil);
     
     
@@ -197,7 +233,6 @@ static PVNetworkManager *sharedNetworkManager = nil;
     int hsize = [hdata length];
     NSData *headerSize = [NSData dataWithBytes:&hsize length:sizeof(hsize)];
     [self sendData:headerSize toDevice:conDevice withType:CONNECT_DATA];
-    
     
     [self sendData:hdata toDevice:conDevice withType:HEADER_DATA];
 }
@@ -277,9 +312,9 @@ withFilterContext:(id)filterContext
 - (void)socket:(GCDAsyncSocket *)sender didAcceptNewSocket:(GCDAsyncSocket *)newSocket
 {
     
-    @synchronized(_connectedDevices)
+    @synchronized(_connectedSockets)
     {
-        [_connectedDevices addObject:newSocket];
+        [_connectedSockets addObject:newSocket];
     }
     
     if (self.appType == PVApplicationTypeServer)
@@ -289,6 +324,9 @@ withFilterContext:(id)filterContext
         NSDictionary *conDevice = @{@"host": host, @"port" : [NSNumber numberWithInt:port]};
         self.tcpSocket = newSocket;
         NSLog(@"Socket accepted %@:%d",host, port);
+        
+        if (self.appType == PVApplicationTypeServer)
+            [self.tcpSocket readDataToLength:HEADER_LENGTH_MSG_SIZE withTimeout:-1 tag:CONNECT_DATA];
         
         
         for (id<PVNetworkManagerDelegate> delegate in self.delegates) {
@@ -305,16 +343,17 @@ withFilterContext:(id)filterContext
     NSLog(@"Connected to host %@:%d", host, port);
     
     //[self.tcpSocket readDataToData:[GCDAsyncSocket ZeroData] withTimeout:-1 tag:HEADER_DATA];
-    [self.tcpSocket readDataToLength:HEADER_LENGTH_MSG_SIZE withTimeout:-1 tag:CONNECT_DATA];
+    if (self.appType == PVApplicationTypeClient)
+        [self.tcpSocket readDataToLength:HEADER_LENGTH_MSG_SIZE withTimeout:-1 tag:CONNECT_DATA];
     
     
-    if (self.appType == PVApplicationTypeClient) {
+    //if (self.appType == PVApplicationTypeClient) {
         for (id<PVNetworkManagerDelegate> delegate in self.delegates) {
             if ([delegate respondsToSelector:@selector(PVNetworkManager:didConnectedToDevice:)]) {
                 [delegate PVNetworkManager:self didConnectedToDevice:@{@"host": host, @"port" : [NSNumber numberWithInt:port]}];
             }
         }
-    }
+    //}
 }
 
 
@@ -353,7 +392,8 @@ withFilterContext:(id)filterContext
         }
     }
     
-    [self.tcpSocket readDataToLength:HEADER_LENGTH_MSG_SIZE withTimeout:-1 tag:CONNECT_DATA];
+    if (self.appType == PVApplicationTypeClient)
+        [self.tcpSocket readDataToLength:HEADER_LENGTH_MSG_SIZE withTimeout:-1 tag:CONNECT_DATA];
     
     
     /*if (tag == CAPTURE_DATA) {
@@ -372,10 +412,10 @@ withFilterContext:(id)filterContext
 
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
 {
-    NSLog(@"Socket disconnected");
-    @synchronized(_connectedDevices)
+    NSLog(@"Socket disconnectedq with error: %@", [err description]);
+    @synchronized(_connectedSockets)
     {
-        [_connectedDevices removeObject:sock];
+        [_connectedSockets removeObject:sock];
     }
 }
 
