@@ -43,8 +43,8 @@ static PVNetworkManager *sharedNetworkManager = nil;
         _numberOfSends = 5;
         
         self.delegates = [NSMutableArray nonRetainingArray];
-        self.inPort = 9998;         // port for incoming connections
-        self.outMultiPort = 9998;       //port for outcoming udp multicast
+        self.inPort = 9997;         // port for incoming connections
+        self.outMultiPort = 9997;       //port for outcoming udp multicast
         self.host = @"255.255.255.255";     // multicast address
         self.socketQueue = nil;
         _headerSize = -1;
