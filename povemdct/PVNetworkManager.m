@@ -143,7 +143,6 @@ static PVNetworkManager *sharedNetworkManager = nil;
 {
     if ([self setupSockets])
     {
-        //[self searchHosts];
         self.msg = @"pvm_server";
         NSError *error = nil;
         if (![self.tcpSocket acceptOnPort:self.inPort error:&error])
@@ -342,7 +341,6 @@ withFilterContext:(id)filterContext
     
     NSLog(@"Connected to host %@:%d", host, port);
     
-    //[self.tcpSocket readDataToData:[GCDAsyncSocket ZeroData] withTimeout:-1 tag:HEADER_DATA];
     if (self.appType == PVApplicationTypeClient)
         [self.tcpSocket readDataToLength:HEADER_LENGTH_MSG_SIZE withTimeout:-1 tag:CONNECT_DATA];
     
@@ -394,20 +392,6 @@ withFilterContext:(id)filterContext
     
     if (self.appType == PVApplicationTypeClient)
         [self.tcpSocket readDataToLength:HEADER_LENGTH_MSG_SIZE withTimeout:-1 tag:CONNECT_DATA];
-    
-    
-    /*if (tag == CAPTURE_DATA) {
-        
-        //NSLog(@"Capture data received on client side");
-        [self.tcpSocket readDataToLength:CAPTURE_DATA_LENGTH withTimeout:-1 tag:CAPTURE_DATA];
-        
-    } else if (tag == WINSIZE_DATA)
-    {
-        NSLog(@"Winsize data received");
-    }
-    
-    else
-        NSLog(@"Other data received");*/
 }
 
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
