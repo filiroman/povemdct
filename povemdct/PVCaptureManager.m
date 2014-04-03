@@ -86,6 +86,11 @@ static PVCaptureManager *sharedManager;
     [self.networkManager sendData:sendingData withType:WINSIZE_DATA];
 }
 
+- (void)sendData:(NSData *)data withType:(int)dataType
+{
+    [self.networkManager sendData:data withType:dataType];
+}
+
 - (void)sendTouchPoint:(CGPoint)touchPoint
 {
     NSDictionary *sdata = @{@"x": [NSNumber numberWithFloat:touchPoint.x], @"y": [NSNumber numberWithFloat:touchPoint.y]};
@@ -194,6 +199,23 @@ static PVCaptureManager *sharedManager;
             if ([delegate respondsToSelector:@selector(PVCaptureManager:didReceivedTouchAtPosition:)])
                 [delegate PVCaptureManager:self didReceivedTouchAtPosition:point];
         }
+    } else if (dataType == TIME_DATA)
+    {
+            NSNumber *timeData = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+            double diff = [[NSDate date] timeIntervalSince1970] - [timeData doubleValue];
+        
+        NSString *str = [NSString stringWithFormat:@"%f\n", diff*1000];
+        
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"file.txt"];
+        
+        NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:filePath];
+        [fileHandle seekToEndOfFile];
+        [fileHandle writeData:[str dataUsingEncoding:NSUTF8StringEncoding]];
+        [fileHandle closeFile];
+        
+        NSLog(@"%f", diff*1000);
     }
     
 }

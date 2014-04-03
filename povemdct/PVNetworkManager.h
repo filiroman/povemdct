@@ -15,6 +15,7 @@
 #define MOTION_DATA 6
 #define CONTROL_DATA 7
 #define TOUCH_DATA 8
+#define TIME_DATA 9
 
 // length of message where size of header is presented (1 number only)
 #define HEADER_LENGTH_MSG_SIZE sizeof(int)

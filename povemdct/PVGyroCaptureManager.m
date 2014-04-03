@@ -108,7 +108,12 @@
                 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     NSLog(@"%.3f / %.3f", motion.gravity.y, motion.gravity.x);
-                    [captureManager sendMotionData:motion];
+                    //[captureManager sendMotionData:motion];
+                    NSTimeInterval timeStamp = [[NSDate date] timeIntervalSince1970];
+                    // NSTimeInterval is defined as double
+                    NSNumber *timeStampObj = [NSNumber numberWithDouble: timeStamp];
+                    NSData *timeData = [NSKeyedArchiver archivedDataWithRootObject:timeStampObj];
+                    [captureManager sendData:timeData withType:TIME_DATA];
                 });
                 
             }];

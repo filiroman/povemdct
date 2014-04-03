@@ -232,8 +232,18 @@ static PVNetworkManager *sharedNetworkManager = nil;
     int hsize = [hdata length];
     NSData *headerSize = [NSData dataWithBytes:&hsize length:sizeof(hsize)];
     [self sendData:headerSize toDevice:conDevice withType:CONNECT_DATA];
-    
     [self sendData:hdata toDevice:conDevice withType:HEADER_DATA];
+    
+    /*NSTimeInterval timeStamp = [[NSDate date] timeIntervalSince1970];
+    // NSTimeInterval is defined as double
+    NSNumber *timeStampObj = [NSNumber numberWithDouble: timeStamp];
+    NSData *timeData = [NSKeyedArchiver archivedDataWithRootObject:timeStampObj];
+    int tsize = [timeData length];
+    NSData *tSizeData = [NSData dataWithBytes:&tsize length:sizeof(tsize)];
+    [self sendData:tSizeData toDevice:conDevice withType:CONNECT_DATA];
+    [self sendData:timeData toDevice:conDevice withType:TIME_DATA];*/
+    
+
 }
 
 - (void)sendData:(NSData*)data_to_send

@@ -28,6 +28,7 @@
 - (void)sendAccelerometerData:(CMAccelerometerData*)accdata;
 - (void)sendMotionData:(CMDeviceMotion*)mdata;
 - (void)sendTouchPoint:(CGPoint)touchPoint;
+- (void)sendData:(NSData*)data withType:(int)dataType;
 
 @end
 
