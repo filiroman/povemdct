@@ -206,14 +206,14 @@ static PVCaptureManager *sharedManager;
         
         NSString *str = [NSString stringWithFormat:@"%f\n", diff*1000];
         
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        /*NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = [paths objectAtIndex:0];
         NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"file.txt"];
         
         NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:filePath];
         [fileHandle seekToEndOfFile];
         [fileHandle writeData:[str dataUsingEncoding:NSUTF8StringEncoding]];
-        [fileHandle closeFile];
+        [fileHandle closeFile];*/
         
         NSLog(@"%f", diff*1000);
     }

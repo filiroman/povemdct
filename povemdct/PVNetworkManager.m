@@ -20,6 +20,9 @@ static PVNetworkManager *sharedNetworkManager = nil;
     
 }
 
+@property (retain, nonatomic) GCDAsyncUdpSocket *udpSocket;
+@property (retain, nonatomic) GCDAsyncSocket *tcpSocket;
+
 @property (nonatomic, retain) NSString *host;
 @property (nonatomic, retain) NSString *msg;
 @property (nonatomic, retain) NSMutableArray *delegates;
@@ -30,6 +33,9 @@ static PVNetworkManager *sharedNetworkManager = nil;
 
 @property (nonatomic, retain) NSMutableArray *connectedDevices;
 @property (nonatomic, retain) NSMutableArray *connectedSockets;
+
+@property (assign) NSUInteger inTCPPort;
+@property (assign) NSUInteger inUDPPort;
 
 @end
 
@@ -43,8 +49,8 @@ static PVNetworkManager *sharedNetworkManager = nil;
         _numberOfSends = 5;
         
         self.delegates = [NSMutableArray nonRetainingArray];
-        self.inPort = 9997;         // port for incoming connections
-        self.outMultiPort = 9997;       //port for outcoming udp multicast
+        self.inTCPPort = 9996;         // port for incoming tcp connections
+        self.inUDPPort = 9995;
         self.host = @"255.255.255.255";     // multicast address
         self.socketQueue = nil;
         _headerSize = -1;
@@ -95,12 +101,19 @@ static PVNetworkManager *sharedNetworkManager = nil;
         NSString *host = [device objectForKey:@"host"];
         uint16_t port = [[device objectForKey:@"port"] intValue];
         NSError *error = nil;
-        if (![self.tcpSocket connectToHost:host onPort:port error:&error])
+        if (![self.tcpSocket connectToHost:host onPort:self.inTCPPort error:&error])
         {
             NSLog(@"%@",[error description]);
             return;
         }
-        NSLog(@"Connected to %@:%d",host,port);
+        if (![self.udpSocket connectToHost:host onPort:port error:&error])
+        {
+            NSLog(@"%@",[error description]);
+            return;
+        }
+        
+        NSLog(@"TCP Connected to %@:%lu",host,(unsigned long)self.inTCPPort);
+        NSLog(@"UDP Connected to %@:%hu",host,port);
         [self.connectedDevices addObject:device];
     }
 }
@@ -112,21 +125,15 @@ static PVNetworkManager *sharedNetworkManager = nil;
     
     NSError *error = nil;
 	
-	while (![self.udpSocket bindToPort:self.inPort error:&error])
-	{
-        self.inPort = arc4random() % UINT16_MAX + 5000;
-	}
-	if (![self.udpSocket beginReceiving:&error])
-	{
-        NSLog(@"Error!");
-		return NO;
-	}
     if (![self.udpSocket enableBroadcast:YES error:&error])
     {
-        NSLog(@"Error!");
+        NSLog(@"BroadCast Error!");
         return NO;
     }
-    NSLog(@"Ready! at port:%d", self.inPort);
+
+   // NSLog(@"TCP is Ready at port: %lu", (unsigned long)self.inTCPPort);
+   // NSLog(@"UDP is Ready at port: %lu", (unsigned long)self.inUDPPort);
+    
     return YES;
 }
 
@@ -145,9 +152,21 @@ static PVNetworkManager *sharedNetworkManager = nil;
     {
         self.msg = @"pvm_server";
         NSError *error = nil;
-        if (![self.tcpSocket acceptOnPort:self.inPort error:&error])
+        
+        if (![self.tcpSocket acceptOnPort:self.inTCPPort error:&error])
         {
             NSLog(@"%@",[error localizedDescription]);
+            return;
+        }
+        if (![self.udpSocket bindToPort:self.inUDPPort error:&error])
+        {
+            NSLog(@"Bind error!");
+            return;
+        }
+        if (![self.udpSocket beginReceiving:&error])
+        {
+            NSLog(@"Error !");
+            return;
         }
     }
 }
@@ -157,6 +176,16 @@ static PVNetworkManager *sharedNetworkManager = nil;
     if ([self setupSockets])
     {
         self.msg = @"pvm_client";
+        if (![self.udpSocket bindToPort:self.inUDPPort error:nil])
+        {
+            NSLog(@"Bind error!");
+            return;
+        }
+        if (![self.udpSocket beginReceiving:nil])
+        {
+            NSLog(@"Error !");
+            return;
+        }
         [self searchHosts];
     }
 }
@@ -176,10 +205,27 @@ static PVNetworkManager *sharedNetworkManager = nil;
     
 }
 
+- (void)sendNotionalData:(NSData*)data_to_send withType:(int)dataType
+{
+    NSDictionary *headers = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:(int)dataType], @"type", data_to_send, @"data", nil];
+    NSData *hdata = [NSKeyedArchiver archivedDataWithRootObject:headers];
+    
+    NSDictionary *device = [self.connectedDevices objectAtIndex:0];
+    NSString *host = [device objectForKey:@"host"];
+    uint16_t port = [[device objectForKey:@"port"] intValue];
+    
+    [self.udpSocket sendData:hdata toHost:host port:self.inUDPPort withTimeout:-1 tag:dataType];;
+}
+
 - (void)sendData:(NSData*)data_to_send withType:(int)dataType
 {
+    if (!IS_SERVICE_DATA(dataType))
+    {
+        [self sendNotionalData:data_to_send withType:dataType];
+        return;
+    }
+    
     NSDictionary *headers = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:(int)dataType], @"type", [NSNumber numberWithInt:(int)[data_to_send length]], @"size", nil];
-    NSData *hdata = [NSKeyedArchiver archivedDataWithRootObject:headers];
     [self sendHeaders:headers];
     
     assert([self.connectedSockets count] > 0 || [self.connectedDevices count] > 0);
@@ -229,7 +275,7 @@ static PVNetworkManager *sharedNetworkManager = nil;
     
     
     // send header size
-    int hsize = [hdata length];
+    NSUInteger hsize = [hdata length];
     NSData *headerSize = [NSData dataWithBytes:&hsize length:sizeof(hsize)];
     [self sendData:headerSize toDevice:conDevice withType:CONNECT_DATA];
     [self sendData:hdata toDevice:conDevice withType:HEADER_DATA];
@@ -260,52 +306,95 @@ static PVNetworkManager *sharedNetworkManager = nil;
 - (void)searchHosts
 {
     int tag = 123;
-    NSData *data = [_msg dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *data_to_send = [NSDictionary dictionaryWithObject:_msg forKey:@"connect-message"];
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:data_to_send];
     
     for (int i=0; i<_numberOfSends; ++i) {
-        [_udpSocket sendData:data toHost:_host port:_outMultiPort withTimeout:-1 tag:tag];
+        [_udpSocket sendData:data toHost:_host port:self.inUDPPort withTimeout:-1 tag:tag];
     }
+    
+    /*if (![self.udpSocket beginReceiving:nil])
+    {
+        NSLog(@"Error !");
+        return;
+    }*/
 }
 
-#pragma mark - Socket delegate methods
+#pragma mark - UDP Socket delegate methods
 
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didReceiveData:(NSData *)data
       fromAddress:(NSData *)address
 withFilterContext:(id)filterContext
 {
+    NSDictionary *dataDict = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    
+    NSAssert(dataDict != nil, @"UDP Data can not be nil!");
+    
     if (self.appType == PVApplicationTypeServer)
     {
-        NSString *msg = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        //NSString *msg = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        NSString *msg = [dataDict objectForKey:@"connect-message"];
         if ([msg rangeOfString:@"pvm_client"].location != NSNotFound)
         {
             NSString *host = nil;
             uint16_t port = 0;
             [GCDAsyncUdpSocket getHost:&host port:&port fromAddress:address];
             
-            NSData *data_to_send = [self.msg dataUsingEncoding:NSUTF8StringEncoding];
+            NSDictionary *data_to_send_dict = [NSDictionary dictionaryWithObject:_msg forKey:@"connect-message"];
+            NSData *data_to_send = [NSKeyedArchiver archivedDataWithRootObject:data_to_send_dict];
+            
             for (int i=0; i<_numberOfSends; ++i) {
                 [sock sendData:data_to_send toAddress:address withTimeout:-1 tag:123];
             }
         }
     } else {
         
-        NSString *msg = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        if ([msg rangeOfString:@"pvm_server"].location != NSNotFound)
-        {
-            NSString *host = nil;
-            uint16_t port = 0;
-            [GCDAsyncUdpSocket getHost:&host port:&port fromAddress:address];
-            
-            [sock sendData:[self.msg dataUsingEncoding:NSUTF8StringEncoding] toAddress:address withTimeout:-1 tag:123];
-            
-            for (id<PVNetworkManagerDelegate> delegate in self.delegates) {
-                if ([delegate respondsToSelector:@selector(PVNetworkManager:didFoundDevice:)]) {
-                    [delegate PVNetworkManager:self didFoundDevice:@{@"host": host, @"port" : [NSNumber numberWithInt:port]}];
+        NSString *msg = [dataDict objectForKey:@"connect-message"];
+        if (msg != nil) {
+            if ([msg rangeOfString:@"pvm_server"].location != NSNotFound)
+            {
+                NSString *host = nil;
+                uint16_t port = 0;
+                [GCDAsyncUdpSocket getHost:&host port:&port fromAddress:address];
+                
+                //[sock sendData:[self.msg dataUsingEncoding:NSUTF8StringEncoding] toAddress:address withTimeout:-1 tag:123];
+                
+                for (id<PVNetworkManagerDelegate> delegate in self.delegates) {
+                    if ([delegate respondsToSelector:@selector(PVNetworkManager:didFoundDevice:)]) {
+                        [delegate PVNetworkManager:self didFoundDevice:@{@"host": host, @"port" : [NSNumber numberWithInt:port]}];
+                    }
                 }
+                
+                return;
+            }
+            
+            if([msg rangeOfString:@"pvm_client"].location != NSNotFound)
+                return;
+        }
+        
+        NSString *host = nil;
+        uint16_t port = 0;
+        [GCDAsyncUdpSocket getHost:&host port:&port fromAddress:address];
+        
+        int dataType = [[dataDict objectForKey:@"type"] intValue];
+        NSData *receivedData = [dataDict objectForKey:@"data"];
+        
+        for (id<PVNetworkManagerDelegate> delegate in self.delegates) {
+            if ([delegate respondsToSelector:@selector(PVNetworkManager:didReceivedData:fromDevice:withType:)]) {
+                [delegate PVNetworkManager:self didReceivedData:receivedData fromDevice:@{@"host": host, @"port" : [NSNumber numberWithInt:port]} withType:dataType];
             }
         }
 
+
     }
+}
+
+- (void)udpSocket:(GCDAsyncUdpSocket *)sock didConnectToAddress:(NSData *)address
+{
+    NSString *host = nil;
+    uint16_t port = 0;
+    [GCDAsyncUdpSocket getHost:&host port:&port fromAddress:address];
+    NSLog(@"Connected by UDP to host %@:%d", host, port);
 }
 
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didSendDataWithTag:(long)tag
@@ -317,6 +406,8 @@ withFilterContext:(id)filterContext
 {
 	// You could add checks here
 }
+
+#pragma mark - TCP Socket delegate methods
 
 - (void)socket:(GCDAsyncSocket *)sender didAcceptNewSocket:(GCDAsyncSocket *)newSocket
 {
@@ -334,6 +425,11 @@ withFilterContext:(id)filterContext
         self.tcpSocket = newSocket;
         NSLog(@"Socket accepted %@:%d",host, port);
         
+        if (![self.connectedDevices containsObject:conDevice])
+        {
+            [self.connectedDevices addObject:conDevice];
+        }
+        
         if (self.appType == PVApplicationTypeServer)
             [self.tcpSocket readDataToLength:HEADER_LENGTH_MSG_SIZE withTimeout:-1 tag:CONNECT_DATA];
         
@@ -349,7 +445,7 @@ withFilterContext:(id)filterContext
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
     
-    NSLog(@"Connected to host %@:%d", host, port);
+    NSLog(@"Connected by TCP to host %@:%d", host, port);
     
     if (self.appType == PVApplicationTypeClient)
         [self.tcpSocket readDataToLength:HEADER_LENGTH_MSG_SIZE withTimeout:-1 tag:CONNECT_DATA];

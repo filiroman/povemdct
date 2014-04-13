@@ -8,14 +8,16 @@
 
 #define CONNECT_DATA 0
 #define HEADER_DATA 1
-#define CAPTURE_DATA 2
+#define CONTROL_DATA 2
 #define WINSIZE_DATA 3
-#define GYRO_DATA 4
-#define ACCL_DATA 5
-#define MOTION_DATA 6
-#define CONTROL_DATA 7
+#define CAPTURE_DATA 4
+#define GYRO_DATA 5
+#define ACCL_DATA 6
+#define MOTION_DATA 7
 #define TOUCH_DATA 8
 #define TIME_DATA 9
+
+#define IS_SERVICE_DATA(a) (a<4)
 
 // length of message where size of header is presented (1 number only)
 #define HEADER_LENGTH_MSG_SIZE sizeof(int)
@@ -31,13 +33,6 @@
 @protocol PVNetworkManagerDelegate;
 
 @interface PVNetworkManager : NSObject
-
-@property (retain, nonatomic) GCDAsyncUdpSocket *udpSocket;
-@property (retain, nonatomic) GCDAsyncSocket *tcpSocket;
-
-
-@property (assign) NSUInteger inPort;
-@property (assign) NSUInteger outMultiPort;
 
 + (id)sharedManager;
 - (void)setupSocketForApplicationType:(PVApplicationType)appType;
