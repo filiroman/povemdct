@@ -14,4 +14,8 @@
 - (BOOL)startAccelerometerEvents;
 - (BOOL)startMotionEvents;
 
++ (PVGyroCaptureManager*)sharedManager;
+
+- (NSString*)deviceCapabilities;
+
 @end

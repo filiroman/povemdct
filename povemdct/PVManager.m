@@ -16,7 +16,8 @@ static PVManager *sharedManager;
 @interface PVManager ()
 
 //@property (retain, nonatomic) NSDictionary *choosenDevice;
-@property (retain, nonatomic) NSMutableArray *devices;
+@property (retain, nonatomic) NSMutableArray *foundDevices;
+@property (retain, nonatomic) NSMutableArray *connectedDevices;
 
 @property (retain, nonatomic) PVNetworkManager *networkManager;
 @property (assign, nonatomic) PVApplicationType applcationType;
@@ -31,7 +32,8 @@ static PVManager *sharedManager;
 {
     if (self = [super init])
     {
-        self.devices = [[NSMutableArray alloc] init];
+        self.foundDevices = [[[NSMutableArray alloc] init] autorelease];
+        self.connectedDevices = [[[NSMutableArray alloc] init] autorelease];
         self.networkManager = [PVNetworkManager sharedManager];
         self.captureManager = [PVCaptureManager sharedManager];
         [_networkManager start:(id)self];
@@ -41,7 +43,8 @@ static PVManager *sharedManager;
 
 - (void)dealloc
 {
-    self.devices = nil;
+    self.foundDevices = nil;
+    self.connectedDevices = nil;
     self.networkManager = nil;
     self.captureManager = nil;
     [super dealloc];
@@ -75,26 +78,48 @@ static PVManager *sharedManager;
     self.captureManager.appType = _applcationType;
 }
 
+- (void) connectWithDevice:(NSDictionary*)device
+{
+    NSDictionary *fdevice = nil;
+    for (NSDictionary *dv in _foundDevices) {
+        NSDictionary *fd = [dv objectForKey:@"device"];
+        
+        if ([device isEqual:fd])
+        {
+            fdevice = [dv retain];
+            [_foundDevices removeObject:dv];
+            break;
+        }
+    }
+    
+    if (fdevice != nil)
+        [self.networkManager connectWithDevice:[fdevice autorelease]];
+}
 
 #pragma mark PVNetworkManager delegate
 
 - (void)PVNetworkManager:(PVNetworkManager*)manager didFoundDevice:(NSDictionary*)device
 {
-    [self.networkManager connectWithDevice:device];
+    if (![_foundDevices containsObject:device]) {
+        
+        [_foundDevices addObject:device];
+    }
     
+    NSDictionary *foundedDevice = [device objectForKey:@"device"];
+    NSString *capabilities = [device objectForKey:@"capabilities"];
+    if ([self.delegate respondsToSelector:@selector(PVManager:didFoundDevice:withCapabilities:)])
+        [self.delegate PVManager:self didFoundDevice:foundedDevice withCapabilities:capabilities];
 }
 
 - (void)PVNetworkManager:(PVNetworkManager*)manager didConnectedToDevice:(NSDictionary*)device
 {
     
-    if (![_devices containsObject:device]) {
-        
-        [_devices addObject:device];
-    }
+    NSDictionary *connectedDevice = [device objectForKey:@"device"];
+    NSString *capabilities = [device objectForKey:@"capabilities"];
     
     if (self.applcationType == PVApplicationTypeClient)
     {
-        [self.delegate PVManagerDidEstablishedConnection:self];
+        [self.delegate PVManager:self didEstablishedConnectionWithDevice:connectedDevice withCapabilities:capabilities];
 
     } else {
 

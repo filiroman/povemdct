@@ -30,41 +30,47 @@
 - (void)sendTouchPoint:(CGPoint)touchPoint;
 - (void)sendData:(NSData*)data withType:(int)dataType;
 
+- (NSString*)deviceCapabilities;
+
 @end
 
 @interface PVCaptureManager (SubscribeMethods)
 
-- (void)subscribeToAllEvents:(id<PVCaptureManagerCameraDelegate, PVCaptureManagerGyroDelegate>) delegate;
-- (void)subscribeToCameraEvents:(id<PVCaptureManagerCameraDelegate>) delegate;
-- (void)subscribeToGyroEvents:(id<PVCaptureManagerGyroDelegate>) delegate;
-- (void)subscribeToTouchEvents:(id<PVCaptureManagerTouchDelegate>) delegate;
+- (void)subscribeToAllEvents:(id<PVCaptureManagerCameraDelegate, PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device;
+- (void)subscribeToCameraEvents:(id<PVCaptureManagerCameraDelegate>) delegate forDevice:(NSDictionary*)device;
+- (void)subscribeToGyroEvents:(id<PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device;
+- (void)subscribeToAccelerometerEvents:(id<PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device;
+- (void)subscribeToMotionEvents:(id<PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device;
+- (void)subscribeToTouchEvents:(id<PVCaptureManagerTouchDelegate>) delegate forDevice:(NSDictionary*)device;
 
 @end
 
 @protocol PVCaptureManagerDelegate <NSObject>
 
-- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedData:(NSData*)data;
-- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedWindowSize:(CGSize)winSize;
+- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedData:(NSData*)data fromDevice:(NSDictionary*)device;
+- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedWindowSize:(CGSize)winSize fromDevice:(NSDictionary*)device;
 
 @end
 
 @protocol PVCaptureManagerTouchDelegate <NSObject>
 
-- (void)PVCaptureManager:(PVCaptureManager*)manager didReceivedTouchAtPosition:(CGPoint)touchPosition;
+- (void)PVCaptureManager:(PVCaptureManager*)manager didReceivedTouchAtPosition:(CGPoint)touchPosition fromDevice:(NSDictionary*)device;
 
 @end
 
 @protocol PVCaptureManagerCameraDelegate <NSObject>
 
-- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedFaceCaptureAtRect:(CGRect)captureRect;
+- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedFaceCaptureAtRect:(CGRect)captureRect fromDevice:(NSDictionary*)device;
 
 @end
 
 @protocol PVCaptureManagerGyroDelegate <NSObject>
 
-- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedGyroscopeData:(CMGyroData*)gdata;
-- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedAccelerometerData:(CMAccelerometerData*)accdata;
-- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedMotionData:(CMDeviceMotion*)mdata;
+@optional
+
+- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedGyroscopeData:(CMGyroData*)gdata fromDevice:(NSDictionary*)device;
+- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedAccelerometerData:(CMAccelerometerData*)accdata fromDevice:(NSDictionary*)device;
+- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedMotionData:(CMDeviceMotion*)mdata fromDevice:(NSDictionary*)device;
 
 
 @end

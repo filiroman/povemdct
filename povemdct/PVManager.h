@@ -26,6 +26,8 @@ typedef enum {
 - (void) startClientSide:(id<PVManagerDelegate>)delegate;
 - (void) startServerSize:(id<PVManagerDelegate>)delegate;
 
+- (void) connectWithDevice:(NSDictionary*)device;
+
 //- (void)sendCommands:(NSDictionary*)commands;
 
 @end
@@ -33,7 +35,8 @@ typedef enum {
 
 @protocol PVManagerDelegate <NSObject>
 
-- (void)PVManagerDidEstablishedConnection:(PVManager*)manager;
+- (void)PVManager:(PVManager*)manager didFoundDevice:(NSDictionary*)device withCapabilities:(NSString*)capabilities;
+- (void)PVManager:(PVManager*)manager didEstablishedConnectionWithDevice:(NSDictionary*)device withCapabilities:(NSString*)capabilities;
 
 @end
 

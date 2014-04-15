@@ -13,7 +13,9 @@
 #define SEGMENTED_GYRO 0
 #define SEGMENTED_ACCL 1
 
-#define UPDATE_SPEED 1.0f / 5.0f
+#define UPDATE_SPEED 1.0f / 20.0f
+
+static PVGyroCaptureManager *sharedManager = nil;
 
 @interface PVGyroCaptureManager ()
 
@@ -22,6 +24,14 @@
 @end
 
 @implementation PVGyroCaptureManager
+
++ (PVGyroCaptureManager*)sharedManager
+{
+    if (sharedManager == nil)
+        sharedManager = [[PVGyroCaptureManager alloc] init];
+    
+    return sharedManager;
+}
 
 - (id)init
 {
@@ -45,6 +55,19 @@
         [self.motionManager stopAccelerometerUpdates];
 }
 
+- (NSString*)deviceCapabilities
+{
+    NSMutableString *capabilities = [NSMutableString string];
+    
+    if ([self.motionManager isGyroAvailable])
+        [capabilities appendString:@"gyro"];
+    if ([self.motionManager isAccelerometerAvailable])
+        [capabilities appendString:@",accelerometer"];
+    if ([self.motionManager isDeviceMotionAvailable])
+        [capabilities appendString:@",devicemotion"];
+    
+    return capabilities;
+}
 
 - (BOOL)startAccelerometerEvents
 {

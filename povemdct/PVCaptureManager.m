@@ -18,10 +18,7 @@ static PVCaptureManager *sharedManager;
 @interface PVCaptureManager ()
 
 @property (retain, nonatomic) PVNetworkManager *networkManager;
-@property (retain, nonatomic) NSMutableArray *cameraDelegates;
-@property (retain, nonatomic) NSMutableArray *gyroDelegates;
-@property (retain, nonatomic) NSMutableArray *touchDelegates;
-@property (retain, nonatomic) NSMutableArray *delegates;
+@property (retain, nonatomic) NSMutableDictionary *delegates;
 
 @property (retain, nonatomic) PVGyroCaptureManager *gyroCapture;
 //@property (retain, nonatomic) PVTouchCaptureManager *touchCapture;
@@ -34,27 +31,27 @@ static PVCaptureManager *sharedManager;
 {
     if (self = [super init])
     {
-        
-        self.cameraDelegates = [NSMutableArray nonRetainingArray];
-        self.gyroDelegates = [NSMutableArray nonRetainingArray];
-        self.delegates = [NSMutableArray nonRetainingArray];
-        self.touchDelegates = [NSMutableArray nonRetainingArray];
+        self.delegates = [NSMutableDictionary dictionary];
         
         self.networkManager = [PVNetworkManager sharedManager];
         [self.networkManager start:(id)self];
         
-        self.gyroCapture = [[[PVGyroCaptureManager alloc] init] autorelease];
+        self.gyroCapture = [PVGyroCaptureManager sharedManager];
         //self.touchCapture = [[[PVTouchCaptureManager alloc] init] autorelease];
     }
     return self;
 }
 
+- (NSString*)deviceCapabilities
+{
+    NSString *gyroCapabilities = [self.gyroCapture deviceCapabilities];
+    
+    return gyroCapabilities;
+}
+
 - (void)dealloc
 {
-    self.cameraDelegates = nil;
-    self.gyroDelegates = nil;
     self.delegates = nil;
-    self.touchDelegates = nil;
     
     self.gyroCapture = nil;
     //self.touchCapture = nil;
@@ -76,19 +73,19 @@ static PVCaptureManager *sharedManager;
 {
     NSDictionary *sdata = @{@"x": [NSNumber numberWithFloat:captureRect.origin.x], @"y" : [NSNumber numberWithFloat:captureRect.origin.y], @"width" : [NSNumber numberWithFloat:captureRect.size.width], @"height" : [NSNumber numberWithFloat:captureRect.size.height]};
     NSData *sendingData = [NSKeyedArchiver archivedDataWithRootObject:sdata];
-    [self.networkManager sendData:sendingData];
+    //[self.networkManager sendData:sendingData];
 }
 
 - (void)sendWindowSize:(CGSize)wsize
 {
     NSDictionary *sdata = @{@"width" : [NSNumber numberWithFloat:wsize.width], @"height" : [NSNumber numberWithFloat:wsize.height]};
     NSData *sendingData = [NSKeyedArchiver archivedDataWithRootObject:sdata];
-    [self.networkManager sendData:sendingData withType:WINSIZE_DATA];
+    //[self.networkManager sendData:sendingData withType:WINSIZE_DATA];
 }
 
 - (void)sendData:(NSData *)data withType:(int)dataType
 {
-    [self.networkManager sendData:data withType:dataType];
+    //[self.networkManager sendData:data withType:dataType];
 }
 
 - (void)sendTouchPoint:(CGPoint)touchPoint
@@ -96,25 +93,32 @@ static PVCaptureManager *sharedManager;
     NSDictionary *sdata = @{@"x": [NSNumber numberWithFloat:touchPoint.x], @"y": [NSNumber numberWithFloat:touchPoint.y]};
     
     NSData *sendingData = [NSKeyedArchiver archivedDataWithRootObject:sdata];
-    [self.networkManager sendData:sendingData withType:TOUCH_DATA];
+    //[self.networkManager sendData:sendingData withType:TOUCH_DATA];
 }
 
 - (void)sendGyroData:(CMGyroData*)gdata
 {
     NSData *sendingData = [NSKeyedArchiver archivedDataWithRootObject:gdata];
-    [self.networkManager sendData:sendingData withType:GYRO_DATA];
+    //[self.networkManager sendData:sendingData withType:GYRO_DATA];
 }
 
 - (void)sendAccelerometerData:(CMAccelerometerData*)accdata
 {
     NSData *sendingData = [NSKeyedArchiver archivedDataWithRootObject:accdata];
-    [self.networkManager sendData:sendingData withType:ACCL_DATA];
+    //[self.networkManager sendData:sendingData withType:ACCL_DATA];
 }
 
 - (void)sendMotionData:(CMDeviceMotion*)mdata
 {
     NSData *sendingData = [NSKeyedArchiver archivedDataWithRootObject:mdata];
-    [self.networkManager sendData:sendingData withType:MOTION_DATA];
+    
+    NSArray *motionDelegates = [_delegates objectForKey:@"motion"];
+    
+    assert(motionDelegates != nil);
+    
+    for (NSDictionary *device in motionDelegates) {
+        [self.networkManager sendData:sendingData withType:MOTION_DATA toDevice:device];
+    }
 }
 
 #pragma mark network methods
@@ -131,15 +135,23 @@ static PVCaptureManager *sharedManager;
         {
             NSString *event = [rdict objectForKey:@"event"];
             
+            //NSDictionary *device = [rdict objectForKey:@"device"];
+            
             if ([event isEqualToString:@"camera"])
             {
-                [self subscribeToCameraEvents:(id)self];
+                [self subscribeToCameraEvents:(id)self forDevice:device];
             } else if ([event isEqualToString:@"motion"])
             {
-                [self subscribeToGyroEvents:(id)self];
+                [self subscribeToMotionEvents:(id)self forDevice:device];
+            } else if ([event isEqualToString:@"gyro"])
+            {
+                [self subscribeToGyroEvents:(id)self forDevice:device];
+            } else if ([event isEqualToString:@"accl"])
+            {
+                [self subscribeToAccelerometerEvents:(id)self forDevice:device];
             } else if ([event isEqualToString:@"touch"])
             {
-                [self subscribeToTouchEvents:(id)self];
+                [self subscribeToTouchEvents:(id)self forDevice:device];
             }
         }
     }
@@ -148,9 +160,11 @@ static PVCaptureManager *sharedManager;
         NSDictionary *rdict = (NSDictionary*) [NSKeyedUnarchiver unarchiveObjectWithData:data];
         CGRect captureRect = CGRectMake([[rdict objectForKey:@"x"] floatValue], [[rdict objectForKey:@"y"] floatValue], [[rdict objectForKey:@"width"] floatValue], [[rdict objectForKey:@"height"] floatValue]);
         
-        for (id<PVCaptureManagerCameraDelegate> delegate in _cameraDelegates) {
-            if ([delegate respondsToSelector:@selector(PVCaptureManager:didRecievedFaceCaptureAtRect:)])
-                [delegate PVCaptureManager:self didRecievedFaceCaptureAtRect:captureRect];
+        NSMutableArray *cameraDelegates = [_delegates objectForKey:@"camera"];
+        
+        for (id<PVCaptureManagerCameraDelegate> delegate in cameraDelegates) {
+            if ([delegate respondsToSelector:@selector(PVCaptureManager:didRecievedFaceCaptureAtRect:fromDevice:)])
+                [delegate PVCaptureManager:self didRecievedFaceCaptureAtRect:captureRect fromDevice:device];
         }
         
     } else if (dataType == WINSIZE_DATA)
@@ -159,35 +173,43 @@ static PVCaptureManager *sharedManager;
         NSDictionary *rdict = (NSDictionary*) [NSKeyedUnarchiver unarchiveObjectWithData:data];
         CGSize winSize = CGSizeMake([[rdict objectForKey:@"width"] floatValue], [[rdict objectForKey:@"height"] floatValue]);
         
-        for (id<PVCaptureManagerDelegate> delegate in _delegates) {
-            if ([delegate respondsToSelector:@selector(PVCaptureManager:didRecievedWindowSize:)])
-                [delegate PVCaptureManager:self didRecievedWindowSize:winSize];
+        NSMutableArray *systemDelegates = [_delegates objectForKey:@"system"];
+        
+        for (id<PVCaptureManagerDelegate> delegate in systemDelegates) {
+            if ([delegate respondsToSelector:@selector(PVCaptureManager:didRecievedWindowSize:fromDevice:)])
+                [delegate PVCaptureManager:self didRecievedWindowSize:winSize fromDevice:device];
         }
         
     } else if (dataType == GYRO_DATA)
     {
         CMGyroData *gdata = [NSKeyedUnarchiver unarchiveObjectWithData:data];
         
-        for (id<PVCaptureManagerGyroDelegate> delegate in _gyroDelegates) {
-            if ([delegate respondsToSelector:@selector(PVCaptureManager:didRecievedGyroscopeData:)])
-                [delegate PVCaptureManager:self didRecievedGyroscopeData:gdata];
+        NSMutableArray *gyroDelegates = [_delegates objectForKey:@"gyro"];
+        
+        for (id<PVCaptureManagerGyroDelegate> delegate in gyroDelegates) {
+            if ([delegate respondsToSelector:@selector(PVCaptureManager:didRecievedGyroscopeData:fromDevice:)])
+                [delegate PVCaptureManager:self didRecievedGyroscopeData:gdata fromDevice:device];
         }
         
     } else if (dataType == ACCL_DATA)
     {
         CMAccelerometerData *accdata = [NSKeyedUnarchiver unarchiveObjectWithData:data];
         
-        for (id<PVCaptureManagerGyroDelegate> delegate in _gyroDelegates) {
-            if ([delegate respondsToSelector:@selector(PVCaptureManager:didRecievedAccelerometerData:)])
-                [delegate PVCaptureManager:self didRecievedAccelerometerData:accdata];
+        NSMutableArray *acclDelegates = [_delegates objectForKey:@"accl"];
+        
+        for (id<PVCaptureManagerGyroDelegate> delegate in acclDelegates) {
+            if ([delegate respondsToSelector:@selector(PVCaptureManager:didRecievedAccelerometerData:fromDevice:)])
+                [delegate PVCaptureManager:self didRecievedAccelerometerData:accdata fromDevice:device];
         }
     } else if (dataType == MOTION_DATA)
     {
         CMDeviceMotion *mdata = [NSKeyedUnarchiver unarchiveObjectWithData:data];
         
-        for (id<PVCaptureManagerGyroDelegate> delegate in _gyroDelegates) {
-            if ([delegate respondsToSelector:@selector(PVCaptureManager:didRecievedMotionData:)])
-                [delegate PVCaptureManager:self didRecievedMotionData:mdata];
+        NSMutableArray *motionDelegates = [_delegates objectForKey:@"motion"];
+        
+        for (id<PVCaptureManagerGyroDelegate> delegate in motionDelegates) {
+            if ([delegate respondsToSelector:@selector(PVCaptureManager:didRecievedMotionData:fromDevice:)])
+                [delegate PVCaptureManager:self didRecievedMotionData:mdata fromDevice:device];
         }
     } else if (dataType == TOUCH_DATA)
     {
@@ -195,9 +217,11 @@ static PVCaptureManager *sharedManager;
         
         CGPoint point = CGPointMake([[tdata objectForKey:@"x"] floatValue], [[tdata objectForKey:@"y"] floatValue]);
         
-        for (id<PVCaptureManagerTouchDelegate> delegate in _touchDelegates) {
-            if ([delegate respondsToSelector:@selector(PVCaptureManager:didReceivedTouchAtPosition:)])
-                [delegate PVCaptureManager:self didReceivedTouchAtPosition:point];
+        NSMutableArray *touchDelegates = [_delegates objectForKey:@"touch"];
+        
+        for (id<PVCaptureManagerTouchDelegate> delegate in touchDelegates) {
+            if ([delegate respondsToSelector:@selector(PVCaptureManager:didReceivedTouchAtPosition:fromDevice:)])
+                [delegate PVCaptureManager:self didReceivedTouchAtPosition:point fromDevice:device];
         }
     } else if (dataType == TIME_DATA)
     {
@@ -225,69 +249,125 @@ static PVCaptureManager *sharedManager;
 
 @implementation PVCaptureManager (SubscribeMethods)
 
-- (void)subscribeToAllEvents:(id<PVCaptureManagerCameraDelegate, PVCaptureManagerGyroDelegate>) delegate
+- (void)supscribeWithEvent:(NSString*)event andDevice:(NSDictionary*)device
 {
-    [self subscribeToCameraEvents:delegate];
-    [self subscribeToGyroEvents:delegate];
+    NSMutableDictionary *commands = [NSMutableDictionary dictionary];
+    [commands setObject:@"subscribe" forKey:@"type"];
+    [commands setObject:event forKey:@"event"];
+    [commands setObject:device forKey:@"device"];
+    
+    NSData *hdata = [NSKeyedArchiver archivedDataWithRootObject:commands];
+    
+    assert(hdata != nil);
+    
+    [self.networkManager sendData:hdata withType:CONTROL_DATA toDevice:device];
 }
 
-- (void)subscribeToCameraEvents:(id<PVCaptureManagerCameraDelegate>) delegate
+- (void)subscribeToAllEvents:(id<PVCaptureManagerCameraDelegate, PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device
 {
-    if (![self.cameraDelegates containsObject:delegate])
-        [self.cameraDelegates addObject:delegate];
+    //[self subscribeToCameraEvents:delegate];
+    //[self subscribeToGyroEvents:delegate];
+}
+
+- (void)subscribeToCameraEvents:(id<PVCaptureManagerCameraDelegate>) delegate forDevice:(NSDictionary*)device
+{
+    NSMutableArray *cameraDelegates = [_delegates objectForKey:@"camera"];
+    if (cameraDelegates == nil)
+    {
+        cameraDelegates = [NSMutableArray array];
+        [_delegates setObject:cameraDelegates forKey:@"camera"];
+    }
     
     if (self.appType == PVApplicationTypeClient) {
+        
+        if (![cameraDelegates containsObject:delegate])
+            [cameraDelegates addObject:delegate];
     
-        NSMutableDictionary *commands = [NSMutableDictionary dictionary];
-        [commands setObject:@"subscribe" forKey:@"type"];
-        [commands setObject:@"camera" forKey:@"event"];
-        
-        NSData *hdata = [NSKeyedArchiver archivedDataWithRootObject:commands];
-        
-        assert(hdata != nil);
-        
-        [self.networkManager sendData:hdata withType:CONTROL_DATA];
+        [self supscribeWithEvent:@"camera" andDevice:device];
     }
 }
 
-- (void)subscribeToGyroEvents:(id<PVCaptureManagerGyroDelegate>) delegate
+- (void)subscribeToGyroEvents:(id<PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device
 {
-    if (![self.gyroDelegates containsObject:delegate])
-        [self.gyroDelegates addObject:delegate];
+    NSMutableArray *gyroDelegates = [_delegates objectForKey:@"gyro"];
+    if (gyroDelegates == nil)
+    {
+        gyroDelegates = [NSMutableArray array];
+        [_delegates setObject:gyroDelegates forKey:@"gyro"];
+    }
     
     if (self.appType == PVApplicationTypeClient) {
         
-        NSMutableDictionary *commands = [NSMutableDictionary dictionary];
-        [commands setObject:@"subscribe" forKey:@"type"];
-        [commands setObject:@"motion" forKey:@"event"];
+        if (![gyroDelegates containsObject:delegate])
+            [gyroDelegates addObject:delegate];
         
-        NSData *hdata = [NSKeyedArchiver archivedDataWithRootObject:commands];
-        
-        assert(hdata != nil);
-        
-        [self.networkManager sendData:hdata withType:CONTROL_DATA];
+        [self supscribeWithEvent:@"gyro" andDevice:device];
     } else {
+        
+        [self.gyroCapture startGyroEvents];
+    }
+}
+
+- (void)subscribeToAccelerometerEvents:(id<PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device
+{
+    NSMutableArray *acclDelegates = [_delegates objectForKey:@"accl"];
+    if (acclDelegates == nil)
+    {
+        acclDelegates = [NSMutableArray array];
+        [_delegates setObject:acclDelegates forKey:@"accl"];
+    }
+    
+    if (self.appType == PVApplicationTypeClient) {
+        
+        if (![acclDelegates containsObject:delegate])
+            [acclDelegates addObject:delegate];
+        
+        [self supscribeWithEvent:@"accl" andDevice:device];
+    } else {
+        
+        [self.gyroCapture startAccelerometerEvents];
+    }
+}
+
+- (void)subscribeToMotionEvents:(id<PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device
+{
+    NSMutableArray *motionDelegates = [_delegates objectForKey:@"motion"];
+    if (motionDelegates == nil)
+    {
+        motionDelegates = [NSMutableArray array];
+        [_delegates setObject:motionDelegates forKey:@"motion"];
+    }
+    
+    if (self.appType == PVApplicationTypeClient) {
+        
+        if (![motionDelegates containsObject:delegate])
+            [motionDelegates addObject:delegate];
+        
+        [self supscribeWithEvent:@"motion" andDevice:device];
+    } else {
+        
+        if (![motionDelegates containsObject:device])
+            [motionDelegates addObject:device];
         
         [self.gyroCapture startMotionEvents];
     }
 }
 
-- (void)subscribeToTouchEvents:(id<PVCaptureManagerTouchDelegate>) delegate
+- (void)subscribeToTouchEvents:(id<PVCaptureManagerTouchDelegate>) delegate forDevice:(NSDictionary*)device
 {
-    if (![self.touchDelegates containsObject:delegate])
-        [self.touchDelegates addObject:delegate];
+    NSMutableArray *touchDelegates = [_delegates objectForKey:@"touch"];
+    if (touchDelegates == nil)
+    {
+        touchDelegates = [NSMutableArray array];
+        [_delegates setObject:touchDelegates forKey:@"touch"];
+    }
     
     if (self.appType == PVApplicationTypeClient) {
         
-        NSMutableDictionary *commands = [NSMutableDictionary dictionary];
-        [commands setObject:@"subscribe" forKey:@"type"];
-        [commands setObject:@"touch" forKey:@"type"];
+        if (![touchDelegates containsObject:delegate])
+            [touchDelegates addObject:delegate];
         
-        NSData *hdata = [NSKeyedArchiver archivedDataWithRootObject:commands];
-        
-        assert(hdata != nil);
-        
-        [self.networkManager sendData:hdata withType:CONTROL_DATA];
+        [self supscribeWithEvent:@"touch" andDevice:device];
     } else {
         //[self.touchCapture startTouchEvents:];
     }
