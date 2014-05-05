@@ -85,7 +85,13 @@ static PVCaptureManager *sharedManager;
 
 - (void)sendData:(NSData *)data withType:(int)dataType
 {
-    //[self.networkManager sendData:data withType:dataType];
+    NSArray *motionDelegates = [_delegates objectForKey:@"motion"];
+    
+    assert(motionDelegates != nil);
+    
+    for (NSDictionary *device in motionDelegates) {
+        [self.networkManager sendData:data withType:dataType toDevice:device];
+    }
 }
 
 - (void)sendTouchPoint:(CGPoint)touchPoint

@@ -24,7 +24,7 @@ typedef enum {
 + (id) sharedManager;
 
 - (void) startClientSide:(id<PVManagerDelegate>)delegate;
-- (void) startServerSize:(id<PVManagerDelegate>)delegate;
+- (void) startServerSize:(id<PVManagerDelegate>)delegate;		
 
 - (void) connectWithDevice:(NSDictionary*)device;
 

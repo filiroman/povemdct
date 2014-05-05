@@ -357,8 +357,8 @@ withFilterContext:(id)filterContext
     if (self.appType == PVApplicationTypeServer)
     {
         //NSString *msg = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSString *msg = [dataDict objectForKey:@"connect-message"];
-        if ([msg rangeOfString:@"pvm_client"].location != NSNotFound)
+        NSString *msg = [generalDict objectForKey:@"connect-message"];
+        if ([msg rangeOfString:@"pvm_client"].location != NSNotFound && msg != nil)
         {
             NSString *host = nil;
             uint16_t port = 0;
@@ -413,6 +413,32 @@ withFilterContext:(id)filterContext
                 [sock sendData:data_to_send toAddress:address withTimeout:-1 tag:123];
             }
         }
+        
+        int dataType = [[generalDict objectForKey:@"type"] intValue];
+        NSData *receivedData = [generalDict objectForKey:@"data"];
+        
+        if (dataType == TIME_DATA)
+        {
+            NSNumber *timeData = [NSKeyedUnarchiver unarchiveObjectWithData:receivedData];
+            double diff = [[NSDate date] timeIntervalSince1970] - [timeData doubleValue];
+            
+            NSString *str = [NSString stringWithFormat:@"%f\n", diff*1000];
+            
+            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+            NSString *documentsDirectory = [paths objectAtIndex:0];
+            NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"file.txt"];
+            
+            if (![[NSFileManager defaultManager] fileExistsAtPath:filePath])
+                [str writeToFile:filePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+            else {
+            
+                NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:filePath];
+                [fileHandle seekToEndOfFile];
+                [fileHandle writeData:[str dataUsingEncoding:NSUTF8StringEncoding]];
+                [fileHandle closeFile];
+            }
+        }
+        
     } else {
         
         NSString *msg = [dataDict objectForKey:@"connect-message"];
@@ -457,6 +483,12 @@ withFilterContext:(id)filterContext
         
         int dataType = [[generalDict objectForKey:@"type"] intValue];
         NSData *receivedData = [generalDict objectForKey:@"data"];
+        
+        if (dataType == TIME_DATA) {
+            NSLog(@"Time recieved and sent!");
+            [sock sendData:data toAddress:address withTimeout:-1 tag:123];
+            return;
+        }
         
         for (id<PVNetworkManagerDelegate> delegate in self.delegates) {
             if ([delegate respondsToSelector:@selector(PVNetworkManager:didReceivedData:fromDevice:withType:)]) {

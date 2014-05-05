@@ -92,9 +92,9 @@ static PVGyroCaptureManager *sharedManager = nil;
             
             [self.motionManager startAccelerometerUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMAccelerometerData *accelerometerData, NSError *error) {
                 
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     [captureManager sendAccelerometerData:accelerometerData];
-                });
+                //});
                
                 
             }];
@@ -132,11 +132,11 @@ static PVGyroCaptureManager *sharedManager = nil;
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     NSLog(@"%.3f / %.3f", motion.gravity.y, motion.gravity.x);
                     [captureManager sendMotionData:motion];
-                    /*NSTimeInterval timeStamp = [[NSDate date] timeIntervalSince1970];
+                    //NSTimeInterval timeStamp = [[NSDate date] timeIntervalSince1970];
                     
-                    NSNumber *timeStampObj = [NSNumber numberWithDouble: timeStamp];
-                    NSData *timeData = [NSKeyedArchiver archivedDataWithRootObject:timeStampObj];
-                    [captureManager sendData:timeData withType:TIME_DATA];*/
+                    //NSNumber *timeStampObj = [NSNumber numberWithDouble: timeStamp];
+                    //NSData *timeData = [NSKeyedArchiver archivedDataWithRootObject:timeStampObj];
+                    //[captureManager sendData:timeData withType:TIME_DATA];
                 });
                 
             }];
