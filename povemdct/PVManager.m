@@ -8,7 +8,7 @@
 
 #import "PVManager.h"
 #import "PVNetworkManager.h"
-#import "PVActivityView.h"
+//#import "PVActivityView.h"
 #import "PVCaptureManager.h"
 
 static PVManager *sharedManager;

@@ -104,19 +104,36 @@ static PVCaptureManager *sharedManager;
 
 - (void)sendGyroData:(CMGyroData*)gdata
 {
-    NSData *sendingData = [NSKeyedArchiver archivedDataWithRootObject:gdata];
-    //[self.networkManager sendData:sendingData withType:GYRO_DATA];
+    PVGyroData *gyroData = [PVGyroData gyroDataWithData:gdata];
+    NSData *sendingData = [NSKeyedArchiver archivedDataWithRootObject:gyroData];
+    
+    NSArray *gyroDelegates = [_delegates objectForKey:@"gyro"];
+    
+    assert(gyroDelegates != nil);
+    
+    for (NSDictionary *device in gyroDelegates) {
+        [self.networkManager sendData:sendingData withType:GYRO_DATA toDevice:device];
+    }
 }
 
 - (void)sendAccelerometerData:(CMAccelerometerData*)accdata
 {
-    NSData *sendingData = [NSKeyedArchiver archivedDataWithRootObject:accdata];
-    //[self.networkManager sendData:sendingData withType:ACCL_DATA];
+    PVAccelerometerData *acclData = [PVAccelerometerData accelerometerDataWithData:accdata];
+    NSData *sendingData = [NSKeyedArchiver archivedDataWithRootObject:acclData];
+    
+    NSArray *acclDelegates = [_delegates objectForKey:@"accl"];
+    
+    assert(acclDelegates != nil);
+    
+    for (NSDictionary *device in acclDelegates) {
+        [self.networkManager sendData:sendingData withType:ACCL_DATA toDevice:device];
+    }
 }
 
 - (void)sendMotionData:(CMDeviceMotion*)mdata
 {
-    NSData *sendingData = [NSKeyedArchiver archivedDataWithRootObject:mdata];
+    PVMotionData *motionData = [PVMotionData motionDataWithData:mdata];
+    NSData *sendingData = [NSKeyedArchiver archivedDataWithRootObject:motionData];
     
     NSArray *motionDelegates = [_delegates objectForKey:@"motion"];
     
@@ -188,7 +205,7 @@ static PVCaptureManager *sharedManager;
         
     } else if (dataType == GYRO_DATA)
     {
-        CMGyroData *gdata = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        PVGyroData *gdata = [NSKeyedUnarchiver unarchiveObjectWithData:data];
         
         NSMutableArray *gyroDelegates = [_delegates objectForKey:@"gyro"];
         
@@ -199,7 +216,7 @@ static PVCaptureManager *sharedManager;
         
     } else if (dataType == ACCL_DATA)
     {
-        CMAccelerometerData *accdata = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        PVAccelerometerData *accdata = [NSKeyedUnarchiver unarchiveObjectWithData:data];
         
         NSMutableArray *acclDelegates = [_delegates objectForKey:@"accl"];
         
@@ -209,7 +226,7 @@ static PVCaptureManager *sharedManager;
         }
     } else if (dataType == MOTION_DATA)
     {
-        CMDeviceMotion *mdata = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        PVMotionData *mdata = [NSKeyedUnarchiver unarchiveObjectWithData:data];
         
         NSMutableArray *motionDelegates = [_delegates objectForKey:@"motion"];
         

@@ -7,10 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreMotion/CoreMotion.h>
-#import <UIKit/UIKit.h>
 #import "PVNetworkManager.h"
 #import "PVManager.h"
+#import "PVGyroData.h"
+#import "PVAccelerometerData.h"
+#import "PVMotionData.h"
+
+#if TARGET_OS_IPHONE
+    #import <CoreMotion/CoreMotion.h>
+    #import <UIKit/UIKit.h>
+#endif
 
 @protocol PVCaptureManagerDelegate;
 @protocol PVCaptureManagerCameraDelegate;
@@ -24,9 +30,11 @@
 + (id)sharedManager;
 - (void)sendFaceCaptureWithRect:(CGRect)captureRect;
 - (void)sendWindowSize:(CGSize)wsize;
-- (void)sendGyroData:(CMGyroData*)gdata;
-- (void)sendAccelerometerData:(CMAccelerometerData*)accdata;
-- (void)sendMotionData:(CMDeviceMotion*)mdata;
+#if TARGET_OS_IPHONE
+    - (void)sendGyroData:(CMGyroData*)gdata;
+    - (void)sendAccelerometerData:(CMAccelerometerData*)accdata;
+    - (void)sendMotionData:(CMDeviceMotion*)mdata;
+#endif
 - (void)sendTouchPoint:(CGPoint)touchPoint;
 - (void)sendData:(NSData*)data withType:(int)dataType;
 
@@ -68,9 +76,9 @@
 
 @optional
 
-- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedGyroscopeData:(CMGyroData*)gdata fromDevice:(NSDictionary*)device;
-- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedAccelerometerData:(CMAccelerometerData*)accdata fromDevice:(NSDictionary*)device;
-- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedMotionData:(CMDeviceMotion*)mdata fromDevice:(NSDictionary*)device;
+- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedGyroscopeData:(PVGyroData*)gdata fromDevice:(NSDictionary*)device;
+- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedAccelerometerData:(PVAccelerometerData*)accdata fromDevice:(NSDictionary*)device;
+- (void)PVCaptureManager:(PVCaptureManager*)manager didRecievedMotionData:(PVMotionData*)mdata fromDevice:(NSDictionary*)device;
 
 
 @end

@@ -40,10 +40,3 @@ typedef enum {
 
 @end
 
-/*@interface PVManager (SubscribeMethods)
-
-- (void)subscribeToAllEvents:(id<PVCaptureManagerCameraDelegate, PVCaptureManagerGyroDelegate>) delegate;
-- (void)subscribeToCameraEvents:(id<PVCaptureManagerCameraDelegate>) delegate;
-- (void)subscribeToGyroEvents:(id<PVCaptureManagerGyroDelegate>) delegate;
-
-@end*/
