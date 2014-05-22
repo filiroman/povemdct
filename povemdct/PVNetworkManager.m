@@ -10,7 +10,7 @@
 #import "GCDAsyncUdpSocket.h"
 #import "GCDAsyncSocket.h"
 #import "NSMutableArray+NonRetaining.h"
-#import "PVGyroCaptureManager.h"
+#import "PVCaptureManager.h"
 
 static PVNetworkManager *sharedNetworkManager = nil;
 
@@ -296,15 +296,15 @@ static PVNetworkManager *sharedNetworkManager = nil;
     
     NSDictionary *conDevice = @{@"host": host, @"tcp_port" : [NSNumber numberWithInt:port]};
     
-    NSMutableDictionary *dictionaryToSend = [NSMutableDictionary dictionaryWithDictionary:headers];
+    //NSMutableDictionary *dictionaryToSend = [NSMutableDictionary dictionaryWithDictionary:headers];
     //[dictionaryToSend setObject:selfDevice forKey:@"from"];
     
-    NSData *hdata = [NSKeyedArchiver archivedDataWithRootObject:dictionaryToSend];
+    NSData *hdata = [NSKeyedArchiver archivedDataWithRootObject:headers];
     assert(hdata != nil);
     
     
     // send header size
-    NSUInteger hsize = [hdata length];
+    uint32_t hsize = [hdata length];
     NSData *headerSize = [NSData dataWithBytes:&hsize length:sizeof(hsize)];
     [self sendData:headerSize toDevice:conDevice withType:CONNECT_DATA];
     [self sendData:hdata toDevice:conDevice withType:HEADER_DATA];
@@ -403,7 +403,7 @@ withFilterContext:(id)filterContext
             
             NSDictionary *data_to_send_dict = [NSDictionary dictionaryWithObjectsAndKeys:_msg, @"connect-message", [NSNumber numberWithInt:tcpSocketPort], @"tcp_port", nil];
             
-            NSString *dCapabilities = [[PVGyroCaptureManager sharedManager] deviceCapabilities];
+            NSString *dCapabilities = [[PVCaptureManager sharedManager] deviceCapabilities];
             
             NSDictionary *final_dict = [NSDictionary dictionaryWithObjectsAndKeys:data_to_send_dict, @"device", dCapabilities, @"capabilities", nil];
             

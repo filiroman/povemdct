@@ -20,7 +20,7 @@
 #define IS_SERVICE_DATA(a) (a<4)
 
 // length of message where size of header is presented (1 number only)
-#define HEADER_LENGTH_MSG_SIZE sizeof(int)
+#define HEADER_LENGTH_MSG_SIZE sizeof(uint32_t)
 
 #import <Foundation/Foundation.h>
 #import "PVNetworkManager.h"

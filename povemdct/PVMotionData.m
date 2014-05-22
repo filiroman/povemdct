@@ -11,31 +11,46 @@
 @implementation PVMotionData
 
 #if TARGET_OS_IPHONE
-    + (id) motionDataWithData:(CMDeviceMotion*)gdata
+
+- (id) initWithRotationRate:(PVRotationRate)rrate userAcceleration:(PVAcceleration)uaccl gravity:(PVAcceleration)gravity attitude:(PVAttitude*)attitude magneticField:(PVCalibratedMagneticField)mfield
+{
+    if (self = [super init])
     {
-        PVMotionData *motionData = [[PVMotionData alloc] init];
-        
-        PVRotationRate rrate;
-        rrate.x = gdata.rotationRate.x;
-        rrate.y = gdata.rotationRate.y;
-        rrate.z = gdata.rotationRate.z;
-        
-        PVAcceleration userAccl;
-        userAccl.x = gdata.userAcceleration.x;
-        userAccl.y = gdata.userAcceleration.y;
-        userAccl.z = gdata.userAcceleration.z;
-        
-        PVAcceleration grav;
-        grav.x = gdata.gravity.x;
-        grav.y = gdata.gravity.y;
-        grav.z = gdata.gravity.z;
-        
-        motionData.rotationRate = rrate;
-        motionData.userAcceleration = userAccl;
-        motionData.gravity = grav;
-        
-        return [motionData autorelease];
+        _rotationRate = rrate;
+        _userAcceleration = uaccl;
+        _gravity = gravity;
+        _attitude = [attitude retain];
+        _magneticField = mfield;
     }
+    return self;
+}
+
++ (id) motionDataWithData:(CMDeviceMotion*)gdata
+{
+    CMRotationRate crrate = gdata.rotationRate;
+    PVRotationRate rrate = *(PVRotationRate*) &crrate;
+    /*rrate.x = gdata.rotationRate.x;
+    rrate.y = gdata.rotationRate.y;
+    rrate.z = gdata.rotationRate.z;*/
+    
+    CMAcceleration uaccl = gdata.userAcceleration;
+    PVAcceleration userAccl = *(PVAcceleration*) &uaccl;
+    /*userAccl.x = gdata.userAcceleration.x;
+    userAccl.y = gdata.userAcceleration.y;
+    userAccl.z = gdata.userAcceleration.z;*/
+    
+    CMAcceleration gravAccl = gdata.gravity;
+    PVAcceleration grav = *(PVAcceleration*) &gravAccl;
+    /*grav.x = gdata.gravity.x;
+    grav.y = gdata.gravity.y;
+    grav.z = gdata.gravity.z;*/
+    
+    PVCalibratedMagneticField field;
+    
+    PVMotionData *motionData = [[PVMotionData alloc] initWithRotationRate:rrate userAcceleration:userAccl gravity:grav attitude:nil magneticField:field];
+    
+    return [motionData autorelease];
+}
 #endif
 
 - (id)initWithCoder:(NSCoder *)aDecoder
@@ -46,17 +61,17 @@
         PVAcceleration accl;
         NSData *rdata = [aDecoder decodeObjectForKey:@"userAcceleration"];
         [rdata getBytes:&accl length:sizeof(accl)];
-        self.userAcceleration = accl;
+        _userAcceleration = accl;
         
         PVAcceleration gravity;
         NSData *gdata = [aDecoder decodeObjectForKey:@"gravity"];
         [gdata getBytes:&gravity length:sizeof(gravity)];
-        self.gravity = gravity;
+        _gravity = gravity;
         
         PVRotationRate rrate;
         NSData *rrdata = [aDecoder decodeObjectForKey:@"rotationRate"];
         [rrdata getBytes:&rrate length:sizeof(rrate)];
-        self.rotationRate = rrate;
+        _rotationRate = rrate;
     }
     return self;
 }

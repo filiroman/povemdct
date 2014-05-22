@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "PVGyroData.h"
 #import "PVAccelerometerData.h"
+#import "PVAttitude.h"
 #if TARGET_OS_IPHONE
     #import <CoreMotion/CoreMotion.h>
 #endif
@@ -48,9 +49,11 @@ typedef struct {
 
 @interface PVMotionData : NSObject <NSCoding>
 
-@property (assign, nonatomic) PVRotationRate rotationRate;
-@property (assign, nonatomic) PVAcceleration userAcceleration;
-@property (assign, nonatomic) PVAcceleration gravity;
+@property (readonly, nonatomic) PVRotationRate rotationRate;
+@property (readonly, nonatomic) PVAcceleration userAcceleration;
+@property (readonly, nonatomic) PVAcceleration gravity;
+@property (readonly, nonatomic) PVCalibratedMagneticField magneticField;
+@property (readonly, retain, nonatomic) PVAttitude* attitude;
 
 #if TARGET_OS_IPHONE
     + (id) motionDataWithData:(CMDeviceMotion*)gdata;

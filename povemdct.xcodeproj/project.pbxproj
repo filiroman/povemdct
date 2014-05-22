@@ -32,8 +32,6 @@
 		E3455812185B27D000D6478E /* PVNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E33697931817E0B800A80510 /* PVNetworkManager.m */; };
 		E3455813185B284C00D6478E /* NSMutableArray+NonRetaining.m in Sources */ = {isa = PBXBuildFile; fileRef = E32BD57618575A37000170D2 /* NSMutableArray+NonRetaining.m */; };
 		E3455815185B284C00D6478E /* PVManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E33BC691185A4DC1008A7E68 /* PVManager.m */; };
-		E3455816185B284C00D6478E /* VideoCaptureViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E3CEB77D1808581B00E460E5 /* VideoCaptureViewController.mm */; };
-		E3455817185B284C00D6478E /* PVMainViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E3CEB7801808582D00E460E5 /* PVMainViewController.mm */; };
 		E3455818185B284C00D6478E /* NSData+NSValue.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A71511819CA8A00983B72 /* NSData+NSValue.m */; };
 		E345581B185B284C00D6478E /* PVCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A714E1819C72700983B72 /* PVCaptureManager.m */; };
 		E345581C185B284C00D6478E /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = E336978D1817DB8800A80510 /* GCDAsyncSocket.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
@@ -48,6 +46,7 @@
 		E3455825185B28A700D6478E /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623DBA17F589FA00866CB2 /* CoreVideo.framework */; };
 		E3455830185B2A1800D6478E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D8217F5885000866CB2 /* UIKit.framework */; };
 		E3455831185B2A2F00D6478E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D7E17F5885000866CB2 /* Foundation.framework */; };
+		E355B4B0191E26A100B11EB8 /* PVAttitude.m in Sources */ = {isa = PBXBuildFile; fileRef = E355B4AF191E26A100B11EB8 /* PVAttitude.m */; };
 		E3623D7F17F5885000866CB2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D7E17F5885000866CB2 /* Foundation.framework */; };
 		E3623D8117F5885000866CB2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D8017F5885000866CB2 /* CoreGraphics.framework */; };
 		E3623D8317F5885000866CB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3623D8217F5885000866CB2 /* UIKit.framework */; };
@@ -80,7 +79,6 @@
 		E3FB98F3191CF9AE0018A003 /* PVGyroData.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A903D1918D34300CA7F0D /* PVGyroData.m */; };
 		E3FB98F4191CF9AE0018A003 /* PVAccelerometerData.m in Sources */ = {isa = PBXBuildFile; fileRef = E330A625191B8C9500342375 /* PVAccelerometerData.m */; };
 		E3FB98F5191CF9AE0018A003 /* PVMotionData.m in Sources */ = {isa = PBXBuildFile; fileRef = E330A628191B8DAA00342375 /* PVMotionData.m */; };
-		E3FB98F6191CF9BC0018A003 /* PVGyroCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E3863576183E1E2700A8606A /* PVGyroCaptureManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -136,6 +134,8 @@
 		E34557F3185B26FC00D6478E /* POVEMDCTTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "POVEMDCTTests-Info.plist"; sourceTree = "<group>"; };
 		E34557F5185B26FC00D6478E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		E34557F7185B26FC00D6478E /* POVEMDCTTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = POVEMDCTTests.m; sourceTree = "<group>"; };
+		E355B4AE191E26A100B11EB8 /* PVAttitude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVAttitude.h; sourceTree = "<group>"; };
+		E355B4AF191E26A100B11EB8 /* PVAttitude.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVAttitude.m; sourceTree = "<group>"; };
 		E3623D7B17F5885000866CB2 /* povemdct.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = povemdct.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E3623D7E17F5885000866CB2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E3623D8017F5885000866CB2 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -445,6 +445,8 @@
 				E330A625191B8C9500342375 /* PVAccelerometerData.m */,
 				E330A627191B8DAA00342375 /* PVMotionData.h */,
 				E330A628191B8DAA00342375 /* PVMotionData.m */,
+				E355B4AE191E26A100B11EB8 /* PVAttitude.h */,
+				E355B4AF191E26A100B11EB8 /* PVAttitude.m */,
 			);
 			name = "Gyro&Accl";
 			sourceTree = "<group>";
@@ -602,14 +604,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E3FB98F6191CF9BC0018A003 /* PVGyroCaptureManager.m in Sources */,
 				E3FB98F3191CF9AE0018A003 /* PVGyroData.m in Sources */,
 				E3FB98F4191CF9AE0018A003 /* PVAccelerometerData.m in Sources */,
 				E3FB98F5191CF9AE0018A003 /* PVMotionData.m in Sources */,
 				E3455813185B284C00D6478E /* NSMutableArray+NonRetaining.m in Sources */,
 				E3455815185B284C00D6478E /* PVManager.m in Sources */,
-				E3455816185B284C00D6478E /* VideoCaptureViewController.mm in Sources */,
-				E3455817185B284C00D6478E /* PVMainViewController.mm in Sources */,
 				E3455818185B284C00D6478E /* NSData+NSValue.m in Sources */,
 				E345581B185B284C00D6478E /* PVCaptureManager.m in Sources */,
 				E345581C185B284C00D6478E /* GCDAsyncSocket.m in Sources */,
@@ -640,6 +639,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E33697901817DB8800A80510 /* GCDAsyncSocket.m in Sources */,
+				E355B4B0191E26A100B11EB8 /* PVAttitude.m in Sources */,
 				E3863577183E1E2800A8606A /* PVGyroCaptureManager.m in Sources */,
 				E386F140185F0AB900D697F4 /* PVTouchCaptureManager.m in Sources */,
 				E37A714F1819C72700983B72 /* PVCaptureManager.m in Sources */,
@@ -725,8 +725,9 @@
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
 			};
 			name = Debug;
 		};
@@ -750,8 +751,9 @@
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = macosx;
 			};
 			name = Release;
 		};
@@ -801,7 +803,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -831,8 +833,9 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = NO;
+				SDKROOT = macosx;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -841,7 +844,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -865,7 +868,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				SDKROOT = iphoneos;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				SDKROOT = macosx;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -874,7 +878,7 @@
 		E3623DAE17F5885000866CB2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = NO;
@@ -888,9 +892,11 @@
 				GCC_PREFIX_HEADER = "povemdct/povemdct-Prefix.pch";
 				INFOPLIST_FILE = "povemdct/povemdct-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
+				VALID_ARCHS = "i386 x86_64";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -898,7 +904,7 @@
 		E3623DAF17F5885000866CB2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = NO;
@@ -912,9 +918,11 @@
 				GCC_PREFIX_HEADER = "povemdct/povemdct-Prefix.pch";
 				INFOPLIST_FILE = "povemdct/povemdct-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
+				VALID_ARCHS = "i386 x86_64";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

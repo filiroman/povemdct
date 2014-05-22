@@ -11,7 +11,9 @@
 #import "NSData+NSValue.h"
 #import "NSMutableArray+NonRetaining.h"
 //#import "PVTouchCaptureManager.h"
-#import "PVGyroCaptureManager.h"
+#if TARGET_OS_IPHONE
+    #import "PVGyroCaptureManager.h"
+#endif
 
 static PVCaptureManager *sharedManager;
 
@@ -20,7 +22,11 @@ static PVCaptureManager *sharedManager;
 @property (retain, nonatomic) PVNetworkManager *networkManager;
 @property (retain, nonatomic) NSMutableDictionary *delegates;
 
+#if TARGET_OS_IPHONE
+
 @property (retain, nonatomic) PVGyroCaptureManager *gyroCapture;
+
+#endif
 //@property (retain, nonatomic) PVTouchCaptureManager *touchCapture;
 
 @end
@@ -36,7 +42,10 @@ static PVCaptureManager *sharedManager;
         self.networkManager = [PVNetworkManager sharedManager];
         [self.networkManager start:(id)self];
         
+        #if TARGET_OS_IPHONE
         self.gyroCapture = [PVGyroCaptureManager sharedManager];
+        #endif
+        
         //self.touchCapture = [[[PVTouchCaptureManager alloc] init] autorelease];
     }
     return self;
@@ -44,16 +53,21 @@ static PVCaptureManager *sharedManager;
 
 - (NSString*)deviceCapabilities
 {
-    NSString *gyroCapabilities = [self.gyroCapture deviceCapabilities];
+    NSMutableString *capabilities = [NSMutableString string];
+    #if TARGET_OS_IPHONE
+    [capabilities appendString:[self.gyroCapture deviceCapabilities]];
+    #endif
     
-    return gyroCapabilities;
+    return capabilities;
 }
 
 - (void)dealloc
 {
     self.delegates = nil;
     
+    #if TARGET_OS_IPHONE
     self.gyroCapture = nil;
+    #endif
     //self.touchCapture = nil;
     self.networkManager = nil;
     
@@ -102,6 +116,8 @@ static PVCaptureManager *sharedManager;
     //[self.networkManager sendData:sendingData withType:TOUCH_DATA];
 }
 
+#if TARGET_OS_IPHONE
+
 - (void)sendGyroData:(CMGyroData*)gdata
 {
     PVGyroData *gyroData = [PVGyroData gyroDataWithData:gdata];
@@ -143,6 +159,8 @@ static PVCaptureManager *sharedManager;
         [self.networkManager sendData:sendingData withType:MOTION_DATA toDevice:device];
     }
 }
+
+#endif
 
 #pragma mark network methods
 
@@ -326,8 +344,9 @@ static PVCaptureManager *sharedManager;
         
         [self supscribeWithEvent:@"gyro" andDevice:device];
     } else {
-        
+        #if TARGET_OS_IPHONE
         [self.gyroCapture startGyroEvents];
+        #endif
     }
 }
 
@@ -347,8 +366,9 @@ static PVCaptureManager *sharedManager;
         
         [self supscribeWithEvent:@"accl" andDevice:device];
     } else {
-        
+        #if TARGET_OS_IPHONE
         [self.gyroCapture startAccelerometerEvents];
+        #endif
     }
 }
 
@@ -372,7 +392,9 @@ static PVCaptureManager *sharedManager;
         if (![motionDelegates containsObject:device])
             [motionDelegates addObject:device];
         
+        #if TARGET_OS_IPHONE
         [self.gyroCapture startMotionEvents];
+        #endif
     }
 }
 
