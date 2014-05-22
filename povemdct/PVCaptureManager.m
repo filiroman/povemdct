@@ -10,7 +10,7 @@
 #import "PVNetworkManager.h"
 #import "NSData+NSValue.h"
 #import "NSMutableArray+NonRetaining.h"
-//#import "PVTouchCaptureManager.h"
+#import "PVTouchCaptureManager.h"
 #if TARGET_OS_IPHONE
     #import "PVGyroCaptureManager.h"
 #endif
@@ -27,7 +27,7 @@ static PVCaptureManager *sharedManager;
 @property (retain, nonatomic) PVGyroCaptureManager *gyroCapture;
 
 #endif
-//@property (retain, nonatomic) PVTouchCaptureManager *touchCapture;
+@property (retain, nonatomic) PVTouchCaptureManager *touchCapture;
 
 @end
 
@@ -46,7 +46,7 @@ static PVCaptureManager *sharedManager;
         self.gyroCapture = [PVGyroCaptureManager sharedManager];
         #endif
         
-        //self.touchCapture = [[[PVTouchCaptureManager alloc] init] autorelease];
+        self.touchCapture = [PVTouchCaptureManager sharedManager];
     }
     return self;
 }
@@ -57,6 +57,7 @@ static PVCaptureManager *sharedManager;
     #if TARGET_OS_IPHONE
     [capabilities appendString:[self.gyroCapture deviceCapabilities]];
     #endif
+    [capabilities appendString:[self.touchCapture deviceCapabilities]];
     
     return capabilities;
 }
@@ -68,7 +69,7 @@ static PVCaptureManager *sharedManager;
     #if TARGET_OS_IPHONE
     self.gyroCapture = nil;
     #endif
-    //self.touchCapture = nil;
+    self.touchCapture = nil;
     self.networkManager = nil;
     
     [super dealloc];
@@ -99,10 +100,8 @@ static PVCaptureManager *sharedManager;
 
 - (void)sendData:(NSData *)data withType:(int)dataType
 {
-    NSArray *motionDelegates = [_delegates objectForKey:@"motion"];
-    
-    assert(motionDelegates != nil);
-    
+    NSArray *motionDelegates = [_delegates objectForKey:@"general"];
+
     for (NSDictionary *device in motionDelegates) {
         [self.networkManager sendData:data withType:dataType toDevice:device];
     }
@@ -266,8 +265,8 @@ static PVCaptureManager *sharedManager;
         }
     } else if (dataType == TIME_DATA)
     {
-            NSNumber *timeData = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-            double diff = [[NSDate date] timeIntervalSince1970] - [timeData doubleValue];
+        NSNumber *timeData = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        double diff = [[NSDate date] timeIntervalSince1970] - [timeData doubleValue];
         
         NSString *str = [NSString stringWithFormat:@"%f\n", diff*1000];
         
@@ -280,7 +279,7 @@ static PVCaptureManager *sharedManager;
         [fileHandle writeData:[str dataUsingEncoding:NSUTF8StringEncoding]];
         [fileHandle closeFile];*/
         
-        NSLog(@"%f", diff*1000);
+        NSLog(@"%@", str);
     }
     
 }
@@ -414,7 +413,7 @@ static PVCaptureManager *sharedManager;
         
         [self supscribeWithEvent:@"touch" andDevice:device];
     } else {
-        //[self.touchCapture startTouchEvents:];
+        [self.touchCapture startTouchEvents];
     }
 }
 

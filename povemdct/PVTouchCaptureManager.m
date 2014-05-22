@@ -8,42 +8,83 @@
 
 #import "PVTouchCaptureManager.h"
 #import "PVCaptureManager.h"
-#import <UIKit/UIKit.h>
+#import "PVWindow.h"
+
+static PVTouchCaptureManager *sharedManager = nil;
 
 @interface PVTouchCaptureManager ()
 
-@property (nonatomic, retain) UITapGestureRecognizer *tapRecognizer;
-@property (nonatomic, retain) UIView *parentView;
+@property (nonatomic, assign) PVWindow *window;
 
 @end
 
 @implementation PVTouchCaptureManager
 
-- (BOOL)startTouchEvents:(UIView*)parent
++ (id)sharedManager
 {
-    self.tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapDetected:)];
-    self.tapRecognizer.numberOfTapsRequired = 1;
-    self.parentView = parent;
+    if (sharedManager == nil)
+        sharedManager = [[PVTouchCaptureManager alloc] init];
     
-    [parent addGestureRecognizer:self.tapRecognizer];
+    return sharedManager;
 }
 
-- (void)tapDetected:(UIGestureRecognizer *)gestureRecognizer
+- (id)init
 {
-    
-    if (gestureRecognizer.state==UIGestureRecognizerStateEnded)
+    if (self = [super init])
     {
-        
-        CGPoint point = [gestureRecognizer locationInView:self.parentView];
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [[PVCaptureManager sharedManager] sendTouchPoint:point];
-        });
+#if TARGET_OS_IPHONE
+        self.window = [[[UIApplication sharedApplication] windows]
+                                               lastObject];
+#elif TARGET_OS_MAC
+        self.window = [[[NSApplication sharedApplication] windows]
+                       lastObject];
+#endif
     }
+    return self;
+}
+
+- (void)startTouchEvents
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(touched:)
+                                                 name:kTouchPhaseBeganCustomNotification
+                                               object:nil];
+    
+    ((PVWindow *)self.window).enableTouchNotifications = YES;
+}
+
+- (void)stopTouchEvents
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:kTouchPhaseBeganCustomNotification
+                                                  object:nil];
+    ((PVWindow *)self.window).enableTouchNotifications = NO;
+}
+
+- (void)touched:(NSNotification *)event
+{
+#if TARGET_OS_IPHONE
+    UIEvent *touchEvent = event.object;
+#elif TARGET_OS_MAC
+    NSEvent *touchEvent = event.object;
+#endif
+    
+    NSLog(@"event received");
+    //[[PVCaptureManager sharedManager] sendTouchPoint:<#(CGPoint)#>]
 }
 
 - (void)dealloc
 {
-    self.tapRecognizer = nil;
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:kTouchPhaseBeganCustomNotification
+                                                  object:nil];
+    ((PVWindow *)self.window).enableTouchNotifications = NO;
+    [super dealloc];
+}
+
+- (NSString*)deviceCapabilities
+{
+    return @"touch";
 }
 
 @end

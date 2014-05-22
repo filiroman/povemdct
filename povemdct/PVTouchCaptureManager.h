@@ -10,6 +10,10 @@
 
 @interface PVTouchCaptureManager : NSObject
 
-- (BOOL)startTouchEvents:(UIView*)parent;
+- (void)startTouchEvents;
+- (void)stopTouchEvents;
+
++ (id)sharedManager;
+- (NSString*)deviceCapabilities;
 
 @end

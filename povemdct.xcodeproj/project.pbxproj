@@ -74,6 +74,11 @@
 		E3863577183E1E2800A8606A /* PVGyroCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E3863576183E1E2700A8606A /* PVGyroCaptureManager.m */; };
 		E3863579183E1F2600A8606A /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3863578183E1F2600A8606A /* CoreMotion.framework */; };
 		E386F140185F0AB900D697F4 /* PVTouchCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E386F13F185F0AB900D697F4 /* PVTouchCaptureManager.m */; };
+		E39EB9AD192DD904004F875B /* PVWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = E39EB9AC192DD904004F875B /* PVWindow.m */; };
+		E39EB9AF192DDAB4004F875B /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E39EB9AE192DDAB4004F875B /* AppKit.framework */; };
+		E39EB9B0192DF3E7004F875B /* PVWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = E39EB9AC192DD904004F875B /* PVWindow.m */; };
+		E39EB9BF192E2E07004F875B /* PVGyroCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E3863576183E1E2700A8606A /* PVGyroCaptureManager.m */; };
+		E39EB9C0192E2E0D004F875B /* PVTouchCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E386F13F185F0AB900D697F4 /* PVTouchCaptureManager.m */; };
 		E3CEB77E1808581B00E460E5 /* VideoCaptureViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E3CEB77D1808581B00E460E5 /* VideoCaptureViewController.mm */; };
 		E3CEB7811808582D00E460E5 /* PVMainViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = E3CEB7801808582D00E460E5 /* PVMainViewController.mm */; };
 		E3FB98F3191CF9AE0018A003 /* PVGyroData.m in Sources */ = {isa = PBXBuildFile; fileRef = E37A903D1918D34300CA7F0D /* PVGyroData.m */; };
@@ -171,6 +176,9 @@
 		E3863578183E1F2600A8606A /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		E386F13E185F0AB900D697F4 /* PVTouchCaptureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVTouchCaptureManager.h; sourceTree = "<group>"; };
 		E386F13F185F0AB900D697F4 /* PVTouchCaptureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVTouchCaptureManager.m; sourceTree = "<group>"; };
+		E39EB9AB192DD904004F875B /* PVWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVWindow.h; sourceTree = "<group>"; };
+		E39EB9AC192DD904004F875B /* PVWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVWindow.m; sourceTree = "<group>"; };
+		E39EB9AE192DDAB4004F875B /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		E3CEB77C1808581B00E460E5 /* VideoCaptureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoCaptureViewController.h; sourceTree = "<group>"; };
 		E3CEB77D1808581B00E460E5 /* VideoCaptureViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VideoCaptureViewController.mm; sourceTree = "<group>"; };
 		E3CEB77F1808582D00E460E5 /* PVMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVMainViewController.h; sourceTree = "<group>"; };
@@ -182,6 +190,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E39EB9AF192DDAB4004F875B /* AppKit.framework in Frameworks */,
 				E3455831185B2A2F00D6478E /* Foundation.framework in Frameworks */,
 				E3455830185B2A1800D6478E /* UIKit.framework in Frameworks */,
 				E3455823185B28A700D6478E /* CoreImage.framework in Frameworks */,
@@ -361,6 +370,7 @@
 		E3623D7D17F5885000866CB2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E39EB9AE192DDAB4004F875B /* AppKit.framework */,
 				E3863578183E1F2600A8606A /* CoreMotion.framework */,
 				E3623DBE17F5A25F00866CB2 /* Accelerate.framework */,
 				E3623DBF17F5A25F00866CB2 /* AssetsLibrary.framework */,
@@ -390,6 +400,8 @@
 				E3623D9517F5885000866CB2 /* Images.xcassets */,
 				E3623D9217F5885000866CB2 /* povemdct.xcdatamodeld */,
 				E3623D8717F5885000866CB2 /* Supporting Files */,
+				E39EB9AB192DD904004F875B /* PVWindow.h */,
+				E39EB9AC192DD904004F875B /* PVWindow.m */,
 			);
 			path = povemdct;
 			sourceTree = "<group>";
@@ -604,6 +616,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E39EB9C0192E2E0D004F875B /* PVTouchCaptureManager.m in Sources */,
+				E39EB9BF192E2E07004F875B /* PVGyroCaptureManager.m in Sources */,
+				E39EB9B0192DF3E7004F875B /* PVWindow.m in Sources */,
 				E3FB98F3191CF9AE0018A003 /* PVGyroData.m in Sources */,
 				E3FB98F4191CF9AE0018A003 /* PVAccelerometerData.m in Sources */,
 				E3FB98F5191CF9AE0018A003 /* PVMotionData.m in Sources */,
@@ -646,6 +661,7 @@
 				E33697941817E0B800A80510 /* PVNetworkManager.m in Sources */,
 				E3CEB7811808582D00E460E5 /* PVMainViewController.mm in Sources */,
 				E33697911817DB8800A80510 /* GCDAsyncUdpSocket.m in Sources */,
+				E39EB9AD192DD904004F875B /* PVWindow.m in Sources */,
 				E37A903E1918D34300CA7F0D /* PVGyroData.m in Sources */,
 				E37A71521819CA8A00983B72 /* NSData+NSValue.m in Sources */,
 				E37A71491819AD3400983B72 /* PVNotifierView.m in Sources */,
@@ -725,9 +741,9 @@
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
+				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Debug;
 		};
@@ -751,9 +767,9 @@
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
+				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 			};
 			name = Release;
 		};
