@@ -41,9 +41,8 @@
 - (void)stop:(id<PVNetworkManagerDelegate>)delegate;
 //- (void)sendData:(NSData*)data_to_send toDevice:(NSDictionary*)choosenDevice withType:(int)dataType;
 - (void)sendData:(NSData*)data_to_send withType:(int)dataType toDevice:(NSDictionary*)device;
-- (void)sendData:(NSData*)data_to_send;
 
-- (void)sendHeaders:(NSDictionary*)headers;
+- (void)sendHeaders:(NSDictionary*)headers toDevice:(NSDictionary*)device;
 
 - (void)connectWithDevice:(NSDictionary*)device;
 

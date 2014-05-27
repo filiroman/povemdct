@@ -12,7 +12,7 @@
 #define SEGMENTED_GYRO 0
 #define SEGMENTED_ACCL 1
 
-#define UPDATE_SPEED 1.0f / 20.0f
+#define UPDATE_SPEED 1.0f / 2.0f
 
 static PVGyroCaptureManager *sharedManager = nil;
 
@@ -129,13 +129,13 @@ static PVGyroCaptureManager *sharedManager = nil;
             [self.motionManager startDeviceMotionUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMDeviceMotion *motion, NSError *error) {
                 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    NSLog(@"%.3f / %.3f", motion.gravity.y, motion.gravity.x);
-                    [captureManager sendMotionData:motion];
-                    //NSTimeInterval timeStamp = [[NSDate date] timeIntervalSince1970];
+                    //NSLog(@"%.3f / %.3f", motion.gravity.y, motion.gravity.x);
+                    //[captureManager sendMotionData:motion];
+                    NSTimeInterval timeStamp = [[NSDate date] timeIntervalSince1970];
                     
-                    //NSNumber *timeStampObj = [NSNumber numberWithDouble: timeStamp];
-                    //NSData *timeData = [NSKeyedArchiver archivedDataWithRootObject:timeStampObj];
-                    //[captureManager sendData:timeData withType:TIME_DATA];
+                    NSNumber *timeStampObj = [NSNumber numberWithDouble: timeStamp];
+                    NSData *timeData = [NSKeyedArchiver archivedDataWithRootObject:timeStampObj];
+                    [captureManager sendData:timeData withType:TIME_DATA];
                 });
                 
             }];

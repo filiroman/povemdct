@@ -87,16 +87,6 @@ static PVNetworkManager *sharedNetworkManager = nil;
     [_delegates removeObject:delegate];
 }
 
-/*- (dispatch_queue_t)newSocketQueueForConnectionFromAddress:(NSData *)address onSocket:(GCDAsyncSocket *)sock
-{
-    if (self.socketQueue == nil) {
-        self.socketQueue = dispatch_queue_create("com.rf.povemdct.socketsqueue", NULL);
-    } else {
-        dispatch_retain(self.socketQueue);
-    }
-    return self.socketQueue;
-}*/
-
 - (void)connectWithDevice:(NSDictionary*)device_to_connect
 {
     @synchronized (_connectedDevices) {
@@ -270,21 +260,6 @@ static PVNetworkManager *sharedNetworkManager = nil;
     NSDictionary *headers = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:(int)dataType], @"type", [NSNumber numberWithInt:(int)[data_to_send length]], @"size", nil];
     
     [self sendHeaders:headers toDevice:device];
-    
-    /*assert([self.connectedSockets count] > 0 || [self.connectedDevices count] > 0);
-    NSString *host;
-    uint16_t port;
-    if ([self.connectedSockets count] > 0) {
-        GCDAsyncSocket *newSocket = [self.connectedSockets objectAtIndex:0];
-        host = [newSocket connectedHost];
-        port = [newSocket connectedPort];
-    } else {
-        NSDictionary *device = [self.connectedDevices objectAtIndex:0];
-        host = [device objectForKey:@"host"];
-        port = [[device objectForKey:@"port"] intValue];
-    }
-    
-    if (host != nil)*/
     [self sendData:data_to_send toDevice:device withType:dataType];
 }
 
@@ -296,9 +271,6 @@ static PVNetworkManager *sharedNetworkManager = nil;
     
     NSDictionary *conDevice = @{@"host": host, @"tcp_port" : [NSNumber numberWithInt:port]};
     
-    //NSMutableDictionary *dictionaryToSend = [NSMutableDictionary dictionaryWithDictionary:headers];
-    //[dictionaryToSend setObject:selfDevice forKey:@"from"];
-    
     NSData *hdata = [NSKeyedArchiver archivedDataWithRootObject:headers];
     assert(hdata != nil);
     
@@ -308,22 +280,7 @@ static PVNetworkManager *sharedNetworkManager = nil;
     NSData *headerSize = [NSData dataWithBytes:&hsize length:sizeof(hsize)];
     [self sendData:headerSize toDevice:conDevice withType:CONNECT_DATA];
     [self sendData:hdata toDevice:conDevice withType:HEADER_DATA];
-    
-    /*NSTimeInterval timeStamp = [[NSDate date] timeIntervalSince1970];
-    // NSTimeInterval is defined as double
-    NSNumber *timeStampObj = [NSNumber numberWithDouble: timeStamp];
-    NSData *timeData = [NSKeyedArchiver archivedDataWithRootObject:timeStampObj];
-    int tsize = [timeData length];
-    NSData *tSizeData = [NSData dataWithBytes:&tsize length:sizeof(tsize)];
-    [self sendData:tSizeData toDevice:conDevice withType:CONNECT_DATA];
-    [self sendData:timeData toDevice:conDevice withType:TIME_DATA];*/
-    
 
-}
-
-- (void)sendData:(NSData*)data_to_send
-{
-    //[self sendData:data_to_send withType:CAPTURE_DATA];
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(int)tag
@@ -382,10 +339,6 @@ withFilterContext:(id)filterContext
                 
                 [_connectingCandidates addObject:cdict];
             }
-            
-            // to do: include device capabilities to header
-            
-            
             
             int tcpSocketPort = arc4random() % 10000 + 5000;
             
@@ -449,13 +402,6 @@ withFilterContext:(id)filterContext
                 uint16_t port = 0;
                 [GCDAsyncUdpSocket getHost:&host port:&port fromAddress:address];
                 
-                //NSNumber *tcpConnectPort = [dataDict objectForKey:@"tcp_port"];
-                
-                /*NSDictionary *data_to_send_dict = [NSDictionary dictionaryWithObject:@"start_connection" forKey:@"connect-message"];
-                NSData *data_to_send = [NSKeyedArchiver archivedDataWithRootObject:data_to_send_dict];
-                
-                [sock sendData:data_to_send toAddress:address withTimeout:-1 tag:123];*/
-                
                 NSMutableDictionary *deviceDict = [NSMutableDictionary dictionaryWithDictionary:[generalDict objectForKey:@"device"]];
                 [deviceDict setObject:host forKey:@"host"];
                 
@@ -508,16 +454,6 @@ withFilterContext:(id)filterContext
     NSLog(@"Connected by UDP to host %@:%d", host, port);
 }
 
-- (void)udpSocket:(GCDAsyncUdpSocket *)sock didSendDataWithTag:(long)tag
-{
-	// You could add checks here
-}
-
-- (void)udpSocket:(GCDAsyncUdpSocket *)sock didNotSendDataWithTag:(long)tag dueToError:(NSError *)error
-{
-	// You could add checks here
-}
-
 #pragma mark - TCP Socket delegate methods
 
 - (void)socket:(GCDAsyncSocket *)sender  didAcceptNewSocket:(GCDAsyncSocket *)newSocket
@@ -546,25 +482,6 @@ withFilterContext:(id)filterContext
             {
                 [_connectedDevices addObject:conDevice];
             }
-            /*for (NSMutableDictionary *dict in _connectedDevices) {
-                NSString *fhost = [dict objectForKey:@"host"];
-                
-                if ([fhost isEqualToString:host])
-                {
-                    conDevice = dict;
-                    break;
-                }
-            }
-            
-            if (conDevice == nil)
-            {
-                
-                [_connectedDevices addObject:conDevice];
-            } else
-            {
-                [conDevice setObject:[NSNumber numberWithInt:port] forKey:@"tcp_port"];
-                [conDevice setObject:newSocket forKey:@"tcp_socket"];
-            }*/
         }
         
         [newSocket readDataToLength:HEADER_LENGTH_MSG_SIZE withTimeout:-1 tag:CONNECT_DATA];
@@ -582,12 +499,6 @@ withFilterContext:(id)filterContext
 {
     
     NSLog(@"Connected by TCP to host %@:%d", host, port);
-    
-    //if (self.appType == PVApplicationTypeClient)
-    //[sock readDataToLength:HEADER_LENGTH_MSG_SIZE withTimeout:-1 tag:CONNECT_DATA];
-    
-    
-    //if (self.appType == PVApplicationTypeClient) {
     
     NSDictionary *foundDevice = nil;
     
@@ -615,7 +526,6 @@ withFilterContext:(id)filterContext
             [delegate PVNetworkManager:self didConnectedToDevice:finalDict];
         }
     }
-    //}
 }
 
 
@@ -661,10 +571,6 @@ withFilterContext:(id)filterContext
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
 {
     NSLog(@"Socket disconnectedq with error: %@", [err description]);
-    /*@synchronized(_connectedSockets)
-    {
-        [_connectedSockets removeObject:sock];
-    }*/
 }
 
 

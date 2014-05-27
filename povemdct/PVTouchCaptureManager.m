@@ -65,12 +65,13 @@ static PVTouchCaptureManager *sharedManager = nil;
 {
 #if TARGET_OS_IPHONE
     UIEvent *touchEvent = event.object;
-#elif TARGET_OS_MAC
-    NSEvent *touchEvent = event.object;
+    NSSet *touches = [touchEvent allTouches];
+    UITouch *touch = [touches anyObject];
+    CGPoint location = [touch locationInView:touch.view];
+    [[PVCaptureManager sharedManager] sendTouchPoint:location];
 #endif
     
     NSLog(@"event received");
-    //[[PVCaptureManager sharedManager] sendTouchPoint:<#(CGPoint)#>]
 }
 
 - (void)dealloc

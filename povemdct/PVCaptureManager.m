@@ -88,19 +88,29 @@ static PVCaptureManager *sharedManager;
 {
     NSDictionary *sdata = @{@"x": [NSNumber numberWithFloat:captureRect.origin.x], @"y" : [NSNumber numberWithFloat:captureRect.origin.y], @"width" : [NSNumber numberWithFloat:captureRect.size.width], @"height" : [NSNumber numberWithFloat:captureRect.size.height]};
     NSData *sendingData = [NSKeyedArchiver archivedDataWithRootObject:sdata];
-    //[self.networkManager sendData:sendingData];
+    
+    NSArray *cameraDelegates = [_delegates objectForKey:@"camera"];
+    
+    for (NSDictionary *device in cameraDelegates) {
+        [self.networkManager sendData:sendingData withType:CAPTURE_DATA toDevice:device];
+    }
 }
 
 - (void)sendWindowSize:(CGSize)wsize
 {
     NSDictionary *sdata = @{@"width" : [NSNumber numberWithFloat:wsize.width], @"height" : [NSNumber numberWithFloat:wsize.height]};
     NSData *sendingData = [NSKeyedArchiver archivedDataWithRootObject:sdata];
-    //[self.networkManager sendData:sendingData withType:WINSIZE_DATA];
+    
+    NSArray *systemDelegates = [_delegates objectForKey:@"system"];
+    
+    for (NSDictionary *device in systemDelegates) {
+        [self.networkManager sendData:sendingData withType:WINSIZE_DATA toDevice:device];
+    }
 }
 
 - (void)sendData:(NSData *)data withType:(int)dataType
 {
-    NSArray *motionDelegates = [_delegates objectForKey:@"general"];
+    NSArray *motionDelegates = [_delegates objectForKey:@"system"];
 
     for (NSDictionary *device in motionDelegates) {
         [self.networkManager sendData:data withType:dataType toDevice:device];
@@ -112,7 +122,12 @@ static PVCaptureManager *sharedManager;
     NSDictionary *sdata = @{@"x": [NSNumber numberWithFloat:touchPoint.x], @"y": [NSNumber numberWithFloat:touchPoint.y]};
     
     NSData *sendingData = [NSKeyedArchiver archivedDataWithRootObject:sdata];
-    //[self.networkManager sendData:sendingData withType:TOUCH_DATA];
+    
+    NSArray *touchDelegates = [_delegates objectForKey:@"touch"];
+    
+    for (NSDictionary *device in touchDelegates) {
+        [self.networkManager sendData:sendingData withType:TOUCH_DATA toDevice:device];
+    }
 }
 
 #if TARGET_OS_IPHONE
@@ -174,8 +189,6 @@ static PVCaptureManager *sharedManager;
         if ([type isEqualToString:@"subscribe"])
         {
             NSString *event = [rdict objectForKey:@"event"];
-            
-            //NSDictionary *device = [rdict objectForKey:@"device"];
             
             if ([event isEqualToString:@"camera"])
             {
@@ -344,6 +357,10 @@ static PVCaptureManager *sharedManager;
         [self supscribeWithEvent:@"gyro" andDevice:device];
     } else {
         #if TARGET_OS_IPHONE
+        
+        if (![gyroDelegates containsObject:device])
+            [gyroDelegates addObject:device];
+        
         [self.gyroCapture startGyroEvents];
         #endif
     }
@@ -366,6 +383,10 @@ static PVCaptureManager *sharedManager;
         [self supscribeWithEvent:@"accl" andDevice:device];
     } else {
         #if TARGET_OS_IPHONE
+        
+        if (![acclDelegates containsObject:device])
+            [acclDelegates addObject:device];
+        
         [self.gyroCapture startAccelerometerEvents];
         #endif
     }
@@ -413,6 +434,10 @@ static PVCaptureManager *sharedManager;
         
         [self supscribeWithEvent:@"touch" andDevice:device];
     } else {
+        
+        if (![touchDelegates containsObject:device])
+            [touchDelegates addObject:device];
+        
         [self.touchCapture startTouchEvents];
     }
 }
