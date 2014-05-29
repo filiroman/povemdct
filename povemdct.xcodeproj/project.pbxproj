@@ -74,6 +74,7 @@
 		E3863577183E1E2800A8606A /* PVGyroCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E3863576183E1E2700A8606A /* PVGyroCaptureManager.m */; };
 		E3863579183E1F2600A8606A /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3863578183E1F2600A8606A /* CoreMotion.framework */; };
 		E386F140185F0AB900D697F4 /* PVTouchCaptureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E386F13F185F0AB900D697F4 /* PVTouchCaptureManager.m */; };
+		E3912D4F1935DB0A00A285F9 /* UIView+touchesDetector.m in Sources */ = {isa = PBXBuildFile; fileRef = E3912D4E1935DB0A00A285F9 /* UIView+touchesDetector.m */; };
 		E39EB9AD192DD904004F875B /* PVWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = E39EB9AC192DD904004F875B /* PVWindow.m */; };
 		E39EB9AF192DDAB4004F875B /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E39EB9AE192DDAB4004F875B /* AppKit.framework */; };
 		E39EB9B0192DF3E7004F875B /* PVWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = E39EB9AC192DD904004F875B /* PVWindow.m */; };
@@ -176,6 +177,8 @@
 		E3863578183E1F2600A8606A /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		E386F13E185F0AB900D697F4 /* PVTouchCaptureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVTouchCaptureManager.h; sourceTree = "<group>"; };
 		E386F13F185F0AB900D697F4 /* PVTouchCaptureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVTouchCaptureManager.m; sourceTree = "<group>"; };
+		E3912D4D1935DB0A00A285F9 /* UIView+touchesDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+touchesDetector.h"; sourceTree = "<group>"; };
+		E3912D4E1935DB0A00A285F9 /* UIView+touchesDetector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+touchesDetector.m"; sourceTree = "<group>"; };
 		E39EB9AB192DD904004F875B /* PVWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVWindow.h; sourceTree = "<group>"; };
 		E39EB9AC192DD904004F875B /* PVWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PVWindow.m; sourceTree = "<group>"; };
 		E39EB9AE192DDAB4004F875B /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -468,6 +471,8 @@
 			children = (
 				E386F13E185F0AB900D697F4 /* PVTouchCaptureManager.h */,
 				E386F13F185F0AB900D697F4 /* PVTouchCaptureManager.m */,
+				E3912D4D1935DB0A00A285F9 /* UIView+touchesDetector.h */,
+				E3912D4E1935DB0A00A285F9 /* UIView+touchesDetector.m */,
 			);
 			name = Touch;
 			sourceTree = "<group>";
@@ -661,6 +666,7 @@
 				E33697941817E0B800A80510 /* PVNetworkManager.m in Sources */,
 				E3CEB7811808582D00E460E5 /* PVMainViewController.mm in Sources */,
 				E33697911817DB8800A80510 /* GCDAsyncUdpSocket.m in Sources */,
+				E3912D4F1935DB0A00A285F9 /* UIView+touchesDetector.m in Sources */,
 				E39EB9AD192DD904004F875B /* PVWindow.m in Sources */,
 				E37A903E1918D34300CA7F0D /* PVGyroData.m in Sources */,
 				E37A71521819CA8A00983B72 /* NSData+NSValue.m in Sources */,
