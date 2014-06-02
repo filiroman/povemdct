@@ -13,6 +13,7 @@
 #import "PVTouchCaptureManager.h"
 #if TARGET_OS_IPHONE
     #import "PVGyroCaptureManager.h"
+    #import "PVFaceCaptureManager.h"
 #endif
 
 static PVCaptureManager *sharedManager;
@@ -24,6 +25,7 @@ static PVCaptureManager *sharedManager;
 
 #if TARGET_OS_IPHONE
 
+@property (retain, nonatomic) PVFaceCaptureManager *fcManager;
 @property (retain, nonatomic) PVGyroCaptureManager *gyroCapture;
 
 #endif
@@ -43,7 +45,8 @@ static PVCaptureManager *sharedManager;
         [self.networkManager start:(id)self];
         
         #if TARGET_OS_IPHONE
-        self.gyroCapture = [PVGyroCaptureManager sharedManager];
+            self.gyroCapture = [PVGyroCaptureManager sharedManager];
+            self.fcManager = [[[PVFaceCaptureManager alloc] init] autorelease];
         #endif
         
         self.touchCapture = [PVTouchCaptureManager sharedManager];
@@ -56,6 +59,7 @@ static PVCaptureManager *sharedManager;
     NSMutableString *capabilities = [NSMutableString string];
     #if TARGET_OS_IPHONE
     [capabilities appendString:[self.gyroCapture deviceCapabilities]];
+    [capabilities appendString:[self.fcManager deviceCapabilities]];
     #endif
     [capabilities appendString:[self.touchCapture deviceCapabilities]];
     
@@ -67,6 +71,7 @@ static PVCaptureManager *sharedManager;
     self.delegates = nil;
     
     #if TARGET_OS_IPHONE
+    self.fcManager = nil;
     self.gyroCapture = nil;
     #endif
     self.touchCapture = nil;
@@ -206,6 +211,26 @@ static PVCaptureManager *sharedManager;
             {
                 [self subscribeToTouchEvents:(id)self forDevice:device];
             }
+        } else if ([type isEqualToString:@"unsubscribe"])
+        {
+            NSString *event = [rdict objectForKey:@"event"];
+            
+            if ([event isEqualToString:@"camera"])
+            {
+                [self unsubscribeFromCameraEventsForDevice:device];
+            } else if ([event isEqualToString:@"motion"])
+            {
+                [self unsubscribeFromMotionEventsForDevice:device];
+            } else if ([event isEqualToString:@"gyro"])
+            {
+                [self unsubscribeFromGyroEventsForDevice:device];
+            } else if ([event isEqualToString:@"accl"])
+            {
+                [self unsubscribeFromAccelerometerEventsForDevice:device];
+            } else if ([event isEqualToString:@"touch"])
+            {
+                [self unsubscribeFromTouchEventsForDevice:device];
+            }
         }
     }
     else if (dataType == CAPTURE_DATA) {
@@ -302,12 +327,11 @@ static PVCaptureManager *sharedManager;
 
 @implementation PVCaptureManager (SubscribeMethods)
 
-- (void)supscribeWithEvent:(NSString*)event andDevice:(NSDictionary*)device
+- (void)subscribeWithEvent:(NSString*)event andDevice:(NSDictionary*)device
 {
     NSMutableDictionary *commands = [NSMutableDictionary dictionary];
     [commands setObject:@"subscribe" forKey:@"type"];
     [commands setObject:event forKey:@"event"];
-    [commands setObject:device forKey:@"device"];
     
     NSData *hdata = [NSKeyedArchiver archivedDataWithRootObject:commands];
     
@@ -316,11 +340,20 @@ static PVCaptureManager *sharedManager;
     [self.networkManager sendData:hdata withType:CONTROL_DATA toDevice:device];
 }
 
-- (void)subscribeToAllEvents:(id<PVCaptureManagerCameraDelegate, PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device
+- (void)unsubscribeWithEvent:(NSString*)event andDevice:(NSDictionary*)device
 {
-    //[self subscribeToCameraEvents:delegate];
-    //[self subscribeToGyroEvents:delegate];
+    NSMutableDictionary *commands = [NSMutableDictionary dictionary];
+    [commands setObject:@"unsubscribe" forKey:@"type"];
+    [commands setObject:event forKey:@"event"];
+    
+    NSData *hdata = [NSKeyedArchiver archivedDataWithRootObject:commands];
+    
+    assert(hdata != nil);
+    
+    [self.networkManager sendData:hdata withType:CONTROL_DATA toDevice:device];
 }
+
+#pragma mark - subscribe methods
 
 - (void)subscribeToCameraEvents:(id<PVCaptureManagerCameraDelegate>) delegate forDevice:(NSDictionary*)device
 {
@@ -336,7 +369,14 @@ static PVCaptureManager *sharedManager;
         if (![cameraDelegates containsObject:delegate])
             [cameraDelegates addObject:delegate];
     
-        [self supscribeWithEvent:@"camera" andDevice:device];
+        [self subscribeWithEvent:@"camera" andDevice:device];
+    } else {
+        
+        if (![cameraDelegates containsObject:device])
+            [cameraDelegates addObject:device];
+#if TARGET_OS_IPHONE
+        [self.fcManager startCaptureSession];
+#endif
     }
 }
 
@@ -352,14 +392,22 @@ static PVCaptureManager *sharedManager;
     if (self.appType == PVApplicationTypeClient) {
         
         if (![gyroDelegates containsObject:delegate])
-            [gyroDelegates addObject:delegate];
+        {
+            @synchronized(gyroDelegates) {
+                [gyroDelegates addObject:delegate];
+            }
+        }
         
-        [self supscribeWithEvent:@"gyro" andDevice:device];
+        [self subscribeWithEvent:@"gyro" andDevice:device];
     } else {
         #if TARGET_OS_IPHONE
         
         if (![gyroDelegates containsObject:device])
-            [gyroDelegates addObject:device];
+        {
+            @synchronized(gyroDelegates) {
+                [gyroDelegates addObject:device];
+            }
+        }
         
         [self.gyroCapture startGyroEvents];
         #endif
@@ -380,7 +428,7 @@ static PVCaptureManager *sharedManager;
         if (![acclDelegates containsObject:delegate])
             [acclDelegates addObject:delegate];
         
-        [self supscribeWithEvent:@"accl" andDevice:device];
+        [self subscribeWithEvent:@"accl" andDevice:device];
     } else {
         #if TARGET_OS_IPHONE
         
@@ -406,7 +454,7 @@ static PVCaptureManager *sharedManager;
         if (![motionDelegates containsObject:delegate])
             [motionDelegates addObject:delegate];
         
-        [self supscribeWithEvent:@"motion" andDevice:device];
+        [self subscribeWithEvent:@"motion" andDevice:device];
     } else {
         
         if (![motionDelegates containsObject:device])
@@ -432,13 +480,145 @@ static PVCaptureManager *sharedManager;
         if (![touchDelegates containsObject:delegate])
             [touchDelegates addObject:delegate];
         
-        [self supscribeWithEvent:@"touch" andDevice:device];
+        [self subscribeWithEvent:@"touch" andDevice:device];
     } else {
         
         if (![touchDelegates containsObject:device])
             [touchDelegates addObject:device];
         
         [self.touchCapture startTouchEvents];
+    }
+}
+
+#pragma mark - unsubscribe methods
+
+- (void)unsubscribeFromCameraEventsForDevice:(NSDictionary*)device
+{
+    NSMutableArray *cameraDelegates = [_delegates objectForKey:@"camera"];
+    if (cameraDelegates == nil)
+        return;
+    
+    if (self.appType == PVApplicationTypeClient) {
+        
+        if ([cameraDelegates containsObject:delegate])
+            [cameraDelegates removeObject:delegate];
+        
+        [self unsubscribeWithEvent:@"camera" andDevice:device];
+    } else {
+        
+        if ([cameraDelegates containsObject:device]) {
+            
+            if ([cameraDelegates count] == 0)
+                [self.fcManager stopCaptureSession];
+            
+            @synchronized(cameraDelegates) {
+                [cameraDelegates removeObject:device];
+            }
+        }
+    }
+}
+
+- (void)unsubscribeFromGyroEventsForDevice:(NSDictionary*)device
+{
+    NSMutableArray *gyroDelegates = [_delegates objectForKey:@"gyro"];
+    if (gyroDelegates == nil)
+        return;
+    
+    if (self.appType == PVApplicationTypeClient) {
+        
+        if ([gyroDelegates containsObject:delegate])
+            [gyroDelegates removeObject:delegate];
+        
+        [self unsubscribeWithEvent:@"gyro" andDevice:device];
+    } else {
+        
+        if ([gyroDelegates containsObject:device]) {
+            
+            if ([gyroDelegates count] == 0)
+                [self.gyroCapture stopGyro];
+            
+            @synchronized(gyroDelegates) {
+                [gyroDelegates removeObject:device];
+            }
+        }
+    }
+}
+
+- (void)unsubscribeFromAccelerometerEventsForDevice:(NSDictionary*)device
+{
+    NSMutableArray *acclDelegates = [_delegates objectForKey:@"accl"];
+    if (acclDelegates == nil)
+        return;
+    
+    if (self.appType == PVApplicationTypeClient) {
+        
+        if ([acclDelegates containsObject:delegate])
+            [acclDelegates removeObject:delegate];
+        
+        [self unsubscribeWithEvent:@"accl" andDevice:device];
+    } else {
+        
+        if ([acclDelegates containsObject:device]) {
+            
+            if ([acclDelegates count] == 0)
+                [self.gyroCapture stopAccelerometer];
+            
+            @synchronized(acclDelegates) {
+                [acclDelegates removeObject:device];
+            }
+        }
+    }
+}
+
+- (void)unsubscribeFromMotionEventsForDevice:(NSDictionary*)device
+{
+    NSMutableArray *motionDelegates = [_delegates objectForKey:@"motion"];
+    if (motionDelegates == nil)
+        return;
+    
+    if (self.appType == PVApplicationTypeClient) {
+        
+        if ([motionDelegates containsObject:delegate])
+            [motionDelegates removeObject:delegate];
+        
+        [self unsubscribeWithEvent:@"motion" andDevice:device];
+    } else {
+        
+        if ([motionDelegates containsObject:device]) {
+            
+            if ([motionDelegates count] == 0)
+                [self.gyroCapture stopDeviceMotion];
+            
+            @synchronized(motionDelegates) {
+                [motionDelegates removeObject:device];
+            }
+        }
+    }
+}
+
+- (void)unsubscribeFromTouchEventsForDevice:(NSDictionary*)device
+{
+    NSMutableArray *touchDelegates = [_delegates objectForKey:@"touch"];
+    if (touchDelegates == nil)
+        return;
+    
+    if (self.appType == PVApplicationTypeClient) {
+        
+        if ([touchDelegates containsObject:delegate])
+            [touchDelegates removeObject:delegate];
+        
+        [self unsubscribeWithEvent:@"touch" andDevice:device];
+    } else {
+        
+        if ([touchDelegates containsObject:device]) {
+            
+            if ([touchDelegates count] == 0)
+                [self.touchCapture stopTouchEvents];
+            
+            @synchronized(touchDelegates) {
+                [touchDelegates removeObject:device];
+            }
+        }
     }
 }
 

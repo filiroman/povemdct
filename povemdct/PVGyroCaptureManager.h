@@ -12,6 +12,10 @@
 - (BOOL)startAccelerometerEvents;
 - (BOOL)startMotionEvents;
 
+- (void)stopAccelerometer;
+- (void)stopGyro;
+- (void)stopDeviceMotion;
+
 + (PVGyroCaptureManager*)sharedManager;
 
 - (NSString*)deviceCapabilities;

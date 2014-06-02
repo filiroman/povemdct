@@ -8,14 +8,12 @@
 
 #import "PVManager.h"
 #import "PVNetworkManager.h"
-//#import "PVActivityView.h"
 #import "PVCaptureManager.h"
 
 static PVManager *sharedManager;
 
 @interface PVManager ()
 
-//@property (retain, nonatomic) NSDictionary *choosenDevice;
 @property (retain, nonatomic) NSMutableArray *foundDevices;
 @property (retain, nonatomic) NSMutableArray *connectedDevices;
 

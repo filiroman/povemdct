@@ -10,6 +10,7 @@
 
 @implementation PVWindow
 
+#if TARGET_OS_IPHONE
 - (void)sendEvent:(UIEvent *)event
 {
     [super sendEvent:event];  // Apple says you must always call this!
@@ -17,4 +18,16 @@
     if (self.enableTouchNotifications) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kTouchPhaseBeganCustomNotification object:event];
     }
-}@end
+}
+#elif TARGET_OS_MAC
+- (void)sendEvent:(NSEvent *)event
+{
+    [super sendEvent:event];  // Apple says you must always call this!
+    
+    if (self.enableTouchNotifications) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kTouchPhaseBeganCustomNotification object:event];
+    }
+}
+#endif
+
+@end

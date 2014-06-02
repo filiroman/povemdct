@@ -1,6 +1,6 @@
 //
-//  WPNetworkManager.m
-//  WirelessPlayer
+//  PVNetworkManager.m
+//
 //
 //  Created by Roman Filippov on 18.06.13.
 //  Copyright (c) 2013 Roman Filippov. All rights reserved.

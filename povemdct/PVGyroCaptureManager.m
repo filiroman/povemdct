@@ -12,7 +12,7 @@
 #define SEGMENTED_GYRO 0
 #define SEGMENTED_ACCL 1
 
-#define UPDATE_SPEED 1.0f / 2.0f
+#define UPDATE_SPEED 1.0f / 10.0f
 
 static PVGyroCaptureManager *sharedManager = nil;
 
@@ -54,6 +54,12 @@ static PVGyroCaptureManager *sharedManager = nil;
         [self.motionManager stopAccelerometerUpdates];
 }
 
+- (void)stopDeviceMotion
+{
+    if ([self.motionManager isDeviceMotionActive])
+        [self.motionManager stopDeviceMotionUpdates];
+}
+
 - (NSString*)deviceCapabilities
 {
     NSMutableString *capabilities = [NSMutableString string];
@@ -73,6 +79,7 @@ static PVGyroCaptureManager *sharedManager = nil;
     BOOL started = NO;
     
     [self stopGyro];
+    [self stopDeviceMotion];
     
     //accelerometer
     if([self.motionManager isAccelerometerAvailable])
@@ -129,13 +136,13 @@ static PVGyroCaptureManager *sharedManager = nil;
             [self.motionManager startDeviceMotionUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMDeviceMotion *motion, NSError *error) {
                 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    //NSLog(@"%.3f / %.3f", motion.gravity.y, motion.gravity.x);
-                    //[captureManager sendMotionData:motion];
-                    NSTimeInterval timeStamp = [[NSDate date] timeIntervalSince1970];
+                    NSLog(@"%.3f / %.3f", motion.gravity.y, motion.gravity.x);
+                    [captureManager sendMotionData:motion];
+                    /*NSTimeInterval timeStamp = [[NSDate date] timeIntervalSince1970];
                     
                     NSNumber *timeStampObj = [NSNumber numberWithDouble: timeStamp];
                     NSData *timeData = [NSKeyedArchiver archivedDataWithRootObject:timeStampObj];
-                    [captureManager sendData:timeData withType:TIME_DATA];
+                    [captureManager sendData:timeData withType:TIME_DATA];*/
                 });
                 
             }];
@@ -156,6 +163,7 @@ static PVGyroCaptureManager *sharedManager = nil;
     BOOL started = NO;
     
     [self stopAccelerometer];
+    [self stopDeviceMotion];
     
     //Gyroscope
     if([self.motionManager isGyroAvailable])
@@ -189,6 +197,7 @@ static PVGyroCaptureManager *sharedManager = nil;
     }
     return started;
 }
+
 
 - (void)dealloc
 {

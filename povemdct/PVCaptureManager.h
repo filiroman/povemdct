@@ -44,12 +44,17 @@
 
 @interface PVCaptureManager (SubscribeMethods)
 
-- (void)subscribeToAllEvents:(id<PVCaptureManagerCameraDelegate, PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device;
 - (void)subscribeToCameraEvents:(id<PVCaptureManagerCameraDelegate>) delegate forDevice:(NSDictionary*)device;
 - (void)subscribeToGyroEvents:(id<PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device;
 - (void)subscribeToAccelerometerEvents:(id<PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device;
 - (void)subscribeToMotionEvents:(id<PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device;
 - (void)subscribeToTouchEvents:(id<PVCaptureManagerTouchDelegate>) delegate forDevice:(NSDictionary*)device;
+
+- (void)unsubscribeFromCameraEventsForDevice:(NSDictionary*)device;
+- (void)unsubscribeFromGyroEventsForDevice:(NSDictionary*)device;
+- (void)unsubscribeFromAccelerometerEventsForDevice:(NSDictionary*)device;
+- (void)unsubscribeFromMotionEventsForDevice:(NSDictionary*)device;
+- (void)unsubscribeFromTouchEventsForDevice:(NSDictionary*)device;
 
 @end
 
