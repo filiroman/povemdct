@@ -50,11 +50,11 @@
 - (void)subscribeToMotionEvents:(id<PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device;
 - (void)subscribeToTouchEvents:(id<PVCaptureManagerTouchDelegate>) delegate forDevice:(NSDictionary*)device;
 
-- (void)unsubscribeFromCameraEventsForDevice:(NSDictionary*)device;
-- (void)unsubscribeFromGyroEventsForDevice:(NSDictionary*)device;
-- (void)unsubscribeFromAccelerometerEventsForDevice:(NSDictionary*)device;
-- (void)unsubscribeFromMotionEventsForDevice:(NSDictionary*)device;
-- (void)unsubscribeFromTouchEventsForDevice:(NSDictionary*)device;
+- (void)unsubscribeFromCameraEvents:(id<PVCaptureManagerCameraDelegate>) delegate forDevice:(NSDictionary*)device;
+- (void)unsubscribeFromGyroEvents:(id<PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device;
+- (void)unsubscribeFromAccelerometerEvents:(id<PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device;
+- (void)unsubscribeFromMotionEvents:(id<PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device;
+- (void)unsubscribeFromTouchEvents:(id<PVCaptureManagerTouchDelegate>) delegate forDevice:(NSDictionary*)device;
 
 @end
 

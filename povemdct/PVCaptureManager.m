@@ -217,19 +217,19 @@ static PVCaptureManager *sharedManager;
             
             if ([event isEqualToString:@"camera"])
             {
-                [self unsubscribeFromCameraEventsForDevice:device];
+                [self unsubscribeFromCameraEvents:(id)self forDevice:device];
             } else if ([event isEqualToString:@"motion"])
             {
-                [self unsubscribeFromMotionEventsForDevice:device];
+                [self unsubscribeFromMotionEvents:(id)self forDevice:device];
             } else if ([event isEqualToString:@"gyro"])
             {
-                [self unsubscribeFromGyroEventsForDevice:device];
+                [self unsubscribeFromGyroEvents:(id)self forDevice:device];
             } else if ([event isEqualToString:@"accl"])
             {
-                [self unsubscribeFromAccelerometerEventsForDevice:device];
+                [self unsubscribeFromAccelerometerEvents:(id)self forDevice:device];
             } else if ([event isEqualToString:@"touch"])
             {
-                [self unsubscribeFromTouchEventsForDevice:device];
+                [self unsubscribeFromTouchEvents:(id)self forDevice:device];
             }
         }
     }
@@ -307,15 +307,6 @@ static PVCaptureManager *sharedManager;
         double diff = [[NSDate date] timeIntervalSince1970] - [timeData doubleValue];
         
         NSString *str = [NSString stringWithFormat:@"%f\n", diff*1000];
-        
-        /*NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString *documentsDirectory = [paths objectAtIndex:0];
-        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"file.txt"];
-        
-        NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:filePath];
-        [fileHandle seekToEndOfFile];
-        [fileHandle writeData:[str dataUsingEncoding:NSUTF8StringEncoding]];
-        [fileHandle closeFile];*/
         
         NSLog(@"%@", str);
     }
@@ -492,7 +483,7 @@ static PVCaptureManager *sharedManager;
 
 #pragma mark - unsubscribe methods
 
-- (void)unsubscribeFromCameraEventsForDevice:(NSDictionary*)device
+- (void)unsubscribeFromCameraEvents:(id<PVCaptureManagerCameraDelegate>) delegate forDevice:(NSDictionary*)device
 {
     NSMutableArray *cameraDelegates = [_delegates objectForKey:@"camera"];
     if (cameraDelegates == nil)
@@ -506,19 +497,21 @@ static PVCaptureManager *sharedManager;
         [self unsubscribeWithEvent:@"camera" andDevice:device];
     } else {
         
+#if TARGET_OS_IPHONE
         if ([cameraDelegates containsObject:device]) {
             
-            if ([cameraDelegates count] == 0)
+            if ([cameraDelegates count] == 1)
                 [self.fcManager stopCaptureSession];
             
             @synchronized(cameraDelegates) {
                 [cameraDelegates removeObject:device];
             }
         }
+#endif
     }
 }
 
-- (void)unsubscribeFromGyroEventsForDevice:(NSDictionary*)device
+- (void)unsubscribeFromGyroEvents:(id<PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device
 {
     NSMutableArray *gyroDelegates = [_delegates objectForKey:@"gyro"];
     if (gyroDelegates == nil)
@@ -532,19 +525,21 @@ static PVCaptureManager *sharedManager;
         [self unsubscribeWithEvent:@"gyro" andDevice:device];
     } else {
         
+#if TARGET_OS_IPHONE
         if ([gyroDelegates containsObject:device]) {
             
-            if ([gyroDelegates count] == 0)
+            if ([gyroDelegates count] == 1)
                 [self.gyroCapture stopGyro];
             
             @synchronized(gyroDelegates) {
                 [gyroDelegates removeObject:device];
             }
         }
+#endif
     }
 }
 
-- (void)unsubscribeFromAccelerometerEventsForDevice:(NSDictionary*)device
+- (void)unsubscribeFromAccelerometerEvents:(id<PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device
 {
     NSMutableArray *acclDelegates = [_delegates objectForKey:@"accl"];
     if (acclDelegates == nil)
@@ -558,19 +553,21 @@ static PVCaptureManager *sharedManager;
         [self unsubscribeWithEvent:@"accl" andDevice:device];
     } else {
         
+#if TARGET_OS_IPHONE
         if ([acclDelegates containsObject:device]) {
             
-            if ([acclDelegates count] == 0)
+            if ([acclDelegates count] == 1)
                 [self.gyroCapture stopAccelerometer];
             
             @synchronized(acclDelegates) {
                 [acclDelegates removeObject:device];
             }
         }
+#endif
     }
 }
 
-- (void)unsubscribeFromMotionEventsForDevice:(NSDictionary*)device
+- (void)unsubscribeFromMotionEvents:(id<PVCaptureManagerGyroDelegate>) delegate forDevice:(NSDictionary*)device
 {
     NSMutableArray *motionDelegates = [_delegates objectForKey:@"motion"];
     if (motionDelegates == nil)
@@ -584,19 +581,21 @@ static PVCaptureManager *sharedManager;
         [self unsubscribeWithEvent:@"motion" andDevice:device];
     } else {
         
+#if TARGET_OS_IPHONE
         if ([motionDelegates containsObject:device]) {
             
-            if ([motionDelegates count] == 0)
+            if ([motionDelegates count] == 1)
                 [self.gyroCapture stopDeviceMotion];
             
             @synchronized(motionDelegates) {
                 [motionDelegates removeObject:device];
             }
         }
+#endif
     }
 }
 
-- (void)unsubscribeFromTouchEventsForDevice:(NSDictionary*)device
+- (void)unsubscribeFromTouchEvents:(id<PVCaptureManagerTouchDelegate>) delegate forDevice:(NSDictionary*)device
 {
     NSMutableArray *touchDelegates = [_delegates objectForKey:@"touch"];
     if (touchDelegates == nil)
@@ -612,7 +611,7 @@ static PVCaptureManager *sharedManager;
         
         if ([touchDelegates containsObject:device]) {
             
-            if ([touchDelegates count] == 0)
+            if ([touchDelegates count] == 1)
                 [self.touchCapture stopTouchEvents];
             
             @synchronized(touchDelegates) {
